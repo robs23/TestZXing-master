@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
+using TestZXing.Static;
 
 namespace TestZXing.Classes
 {
@@ -21,20 +22,8 @@ namespace TestZXing.Classes
 
         public async Task<string> ReloadUsers()
         {
-            //using (var client = new HttpClient())
-            //{
-            //    try
-            //    {
-            //        var response = await client.GetStringAsync(url);
-            //        return JsonConvert.DeserializeObject<List<User>>(response);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Debug.WriteLine(ex.Message);
-            //        throw;
-            //    }
-            //}
-            string url = "https://jsonplaceholder.typicode.com/posts";
+            //string url = "https://jsonplaceholder.typicode.com/posts";
+            string url = "http://jde_api.robs23.webserwer.pl/GetMechanics?token=" + RuntimeSettings.TenantToken;
 
             try
             {

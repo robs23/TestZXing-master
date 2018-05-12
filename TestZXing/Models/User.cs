@@ -19,5 +19,9 @@ namespace TestZXing.Models
         public string CreatedByName { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? LastLoggedOn { get; set; }
+        public string FullName { get
+            {
+                return Name + " " + Surname;
+            } }
     }
 }

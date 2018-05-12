@@ -13,7 +13,7 @@ namespace TestZXing.Static
         {
             get
             {
-                return "xyz";
+                return "zyjp7h38DE205BpjzLqWw";
             }
         }
     }
