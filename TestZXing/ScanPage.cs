@@ -10,7 +10,7 @@ namespace TestZXing
 		ZXingScannerPage scanPage;
 		Button buttonScanDefaultOverlay;
 
-		public ScanPage(string s) : base()
+		public ScanPage() : base()
 		{
 			buttonScanDefaultOverlay = new Button
 			{
@@ -22,7 +22,7 @@ namespace TestZXing
             buttonScanDefaultOverlay.Clicked += async (sender, e) =>
             {
                 
-                await DisplayAlert("Wynik skanowania", s, "OK");
+                await DisplayAlert("Wynik skanowania", "blabla", "OK");
             };
 
 			var stack = new StackLayout();

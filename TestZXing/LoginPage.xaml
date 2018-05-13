@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestZXing.LoginPage"
+             Title="Logowanie">
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="Center">
+            <Label Text="Wybierz użytkownika i podaj hasło" HorizontalTextAlignment="Center"/>
+            <Picker x:Name="cmbUsernames" 
+                    HorizontalOptions="Center" 
+                    Title="Wybierz użytkownika"
+                    ItemsSource="{Binding Users}"
+                    ItemDisplayBinding="{Binding FullName}"
+                    SelectedItem="{Binding SelectedUser}"/>
+            <Entry x:Name="txtPassword" Placeholder="Hasło" HorizontalTextAlignment="Center" IsPassword="True"></Entry>
+            <Button x:Name="btnLogin" 
+                    Text="Zaloguj"
+                    Clicked="btnLogin_Clicked"></Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

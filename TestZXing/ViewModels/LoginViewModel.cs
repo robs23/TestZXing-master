@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using TestZXing.Models;
+
+namespace TestZXing.ViewModels
+{
+    public class LoginViewModel: INotifyPropertyChanged
+    {
+        public List<User> Users { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public LoginViewModel(List<User> nUsers)
+        {
+            Users = new List<User>();
+            Users = nUsers;
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        private User _selectedUser { get; set; }
+        public User SelectedUser
+        {
+            get { return _selectedUser; }
+            set
+            {
+                if(_selectedUser != value)
+                {
+                    _selectedUser = value;
+                }
+            }
+        }
+
+        private int _selectedUserId { get; set; }
+    }
+}
