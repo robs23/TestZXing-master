@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestZXing.ScanPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label x:Name="lblUser" HorizontalTextAlignment="Center"/>
+            <Button x:Name="btnScan" 
+                    Text="Skanuj"
+                    AutomationId="scanWithDefaultOverlay"
+                    Clicked="btnScan_Clicked"/>
+            <Label x:Name="lblScanResult" HorizontalTextAlignment="Center"/>
+            <Label Text="Wybierz z listy istniejące zgłoszenie lub dodaj nowe"
+                   HorizontalTextAlignment="Center"/>
+            <Picker x:Name="cmbReportsForLine"
+                    HorizontalOptions="Center"
+                    Title="Wybierz zgłoszenie"/>
+            <Button x:Name="btnReportDetails"
+                    Text="Dalej"
+                    Clicked="btnReportDetails_Clicked"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

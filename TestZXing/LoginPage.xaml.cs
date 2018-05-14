@@ -32,6 +32,8 @@ namespace TestZXing
             base.OnAppearing();
             try
             {
+                Looper.IsVisible = true;
+                Looper.IsRunning = true;
                 output = await ds.ReloadUsers();
                 keeper.Users = JsonConvert.DeserializeObject<List<User>>(output);
                 if (keeper.Users.Any())
@@ -53,6 +55,12 @@ namespace TestZXing
                 string error = ex.Message;
                 await DisplayAlert("Błąd", error, "OK");
             }
+            finally
+            {
+                Looper.IsVisible = false;
+                Looper.IsRunning = false;
+            }
+
 
         }
 

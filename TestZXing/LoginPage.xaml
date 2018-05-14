@@ -16,6 +16,10 @@
             <Button x:Name="btnLogin" 
                     Text="Zaloguj"
                     Clicked="btnLogin_Clicked"></Button>
+            <ActivityIndicator x:Name="Looper"
+                               IsEnabled="True"
+                               IsRunning="False"
+                               IsVisible="True"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
