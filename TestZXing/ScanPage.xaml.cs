@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using TestZXing.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing.Net.Mobile.Forms;
@@ -14,30 +14,43 @@ namespace TestZXing
     public partial class ScanPage : ContentPage
     {
         ZXingScannerPage scanPage;
+        Place Place;
+        PlacesKeeper Keeper;
 
         public ScanPage()
         {
             InitializeComponent();
+            lblScanResult.IsVisible = false;
+            lblGetOrder.IsVisible = false;
+            btnOrders.IsVisible = false;
+            Keeper = new PlacesKeeper();
+            Place = new Place();
         }
 
         private async void btnScan_Clicked(object sender, EventArgs e)
         {
             scanPage = new ZXingScannerPage();
-            scanPage.OnScanResult += (result) => {
+            
+            scanPage.OnScanResult += (result) =>
+            {
                 scanPage.IsScanning = false;
 
-                Device.BeginInvokeOnMainThread(() => {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
                     Navigation.PopAsync();
-                    DisplayAlert("Scanned Barcode", result.Text, "OK");
+                    Place = await Keeper.GetPlace(result.Text);
+                    lblScanResult.Text = "Zeskanowano: " + Place.Name;
+                    lblScanResult.IsVisible = true;
+                    lblGetOrder.IsVisible = true;
+                    btnOrders.IsVisible = true;
                 });
             };
-
             await Navigation.PushAsync(scanPage);
         }
 
-        private async void btnReportDetails_Clicked(object sender, EventArgs e)
+        private void btnOrders_Clicked(object sender, EventArgs e)
         {
-            await DisplayAlert("Wynik skanowania", "blabla", "OK");
+            DisplayAlert("Uuups", "Teraz powinna wyświetlić się lista otwartych operacji dla tego zasobu..ale póki co nie działa!", "OK");
         }
     }
 }

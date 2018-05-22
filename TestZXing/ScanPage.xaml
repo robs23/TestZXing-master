@@ -10,14 +10,10 @@
                     AutomationId="scanWithDefaultOverlay"
                     Clicked="btnScan_Clicked"/>
             <Label x:Name="lblScanResult" HorizontalTextAlignment="Center"/>
-            <Label Text="Wybierz z listy istniejące zgłoszenie lub dodaj nowe"
-                   HorizontalTextAlignment="Center"/>
-            <Picker x:Name="cmbReportsForLine"
-                    HorizontalOptions="Center"
-                    Title="Wybierz zgłoszenie"/>
-            <Button x:Name="btnReportDetails"
-                    Text="Dalej"
-                    Clicked="btnReportDetails_Clicked"/>
+            <Label x:Name="lblGetOrder" HorizontalTextAlignment="Center" Text="Kliknij przycisk poniżej by wybrać otwarte zlecenie lub dodać nowe"/>
+            <Button x:Name="btnOrders"
+                    Text="Wybierz zlecenie"
+                    Clicked="btnOrders_Clicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -34,6 +34,8 @@
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\Place.cs" />
+    <Compile Include="Models\PlacesKeeper.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UsersKeeper.cs" />

@@ -37,7 +37,7 @@ namespace TestZXing.Classes
             }
         }
 
-        async Task<String> readStream(HttpResponseMessage response)
+        public async Task<String> readStream(HttpResponseMessage response)
         {
             if (response.IsSuccessStatusCode)
             {
