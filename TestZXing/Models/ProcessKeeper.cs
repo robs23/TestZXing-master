@@ -12,18 +12,18 @@ using TestZXing.Static;
 
 namespace TestZXing.Models
 {
-    public class PlacesKeeper
+    public class ProcessKeeper
     {
-        public List<Place> Items { get; set; }
+        public List<Process> Items { get; set; }
 
-        public PlacesKeeper()
+        public ProcessKeeper()
         {
-            Items = new List<Place>();
+            Items = new List<Process>();
         }
 
         public async Task Reload()
         {
-            string url = RuntimeSettings.ApiAddress + "GetPlaces?token=" + RuntimeSettings.TenantToken;
+            string url = RuntimeSettings.ApiAddress + "GetProcesses?token=" + RuntimeSettings.TenantToken;
             DataService ds = new DataService();
 
             try
@@ -31,7 +31,7 @@ namespace TestZXing.Models
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
                 string output = await ds.readStream(await httpClient.SendAsync(request));
-                Items = JsonConvert.DeserializeObject<List<Place>>(output);
+                Items = JsonConvert.DeserializeObject<List<Process>>(output);
             }
             catch (Exception ex)
             {
@@ -40,9 +40,9 @@ namespace TestZXing.Models
             }
         }
 
-        public async Task<Place> GetPlace(string placeToken)
+        public async Task<Process> GetProcess(int id)
         {
-            string url = RuntimeSettings.ApiAddress + "GetPlace?token=" + RuntimeSettings.TenantToken + "&placeToken=" + placeToken;
+            string url = RuntimeSettings.ApiAddress + "GetProcess?token=" + RuntimeSettings.TenantToken + "&id=" + id.ToString();
             DataService ds = new DataService();
 
             try
@@ -50,9 +50,9 @@ namespace TestZXing.Models
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
                 string output = await ds.readStream(await httpClient.SendAsync(request));
-                Place nPlace = new Place();
-                nPlace = JsonConvert.DeserializeObject<Place>(output);
-                return nPlace;
+                Process Item = new Process();
+                Item = JsonConvert.DeserializeObject<Process>(output);
+                return Item;
             }
             catch (Exception ex)
             {

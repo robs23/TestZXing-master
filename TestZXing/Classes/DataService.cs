@@ -20,22 +20,22 @@ namespace TestZXing.Classes
 
         }
 
-        public async Task<string> ReloadUsers()
-        {
-            //string url = "https://jsonplaceholder.typicode.com/posts";
-            string url = "http://jde_api.robs23.webserwer.pl/GetMechanics?token=" + RuntimeSettings.TenantToken;
+        //public async Task<string> ReloadUsers()
+        //{
+        //    //string url = "https://jsonplaceholder.typicode.com/posts";
+        //    string url = "http://jde_api.robs23.webserwer.pl/GetMechanics?token=" + RuntimeSettings.TenantToken;
 
-            try
-            {
-                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                return await readStream(await httpClient.SendAsync(request));
-            }catch(Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                throw;
-            }
-        }
+        //    try
+        //    {
+        //        HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+        //        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        //        return await readStream(await httpClient.SendAsync(request));
+        //    }catch(Exception ex)
+        //    {
+        //        Debug.WriteLine(ex.Message);
+        //        throw;
+        //    }
+        //}
 
         public async Task<String> readStream(HttpResponseMessage response)
         {

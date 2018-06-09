@@ -10,10 +10,37 @@
                     AutomationId="scanWithDefaultOverlay"
                     Clicked="btnScan_Clicked"/>
             <Label x:Name="lblScanResult" HorizontalTextAlignment="Center"/>
-            <Label x:Name="lblGetOrder" HorizontalTextAlignment="Center" Text="Kliknij przycisk poniżej by wybrać otwarte zlecenie lub dodać nowe"/>
-            <Button x:Name="btnOrders"
-                    Text="Wybierz zlecenie"
-                    Clicked="btnOrders_Clicked"/>
+            <Label x:Name="lblGetOrder" HorizontalTextAlignment="Center" Text="Zaznacz istniejące lub nowe zlecenie i kliknij OK"/>
+            <ListView x:Name="lstProcesses"
+                      ItemsSource="{Binding Items}"
+                      VerticalOptions="FillAndExpand"
+                      HasUnevenRows="True"
+                      SeparatorVisibility="Default"
+                      SelectedItem="{Binding SelectedItem}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Label
+                                    Text="{Binding Name}"
+                                    LineBreakMode="NoWrap"
+                                    Style="{DynamicResource ListItemTextStyle}"
+                                    FontSize="16"/>
+                                <Label
+                                    Text="{Binding Description}"
+                                    LineBreakMode="NoWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="13" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button
+                x:Name="btnOpenProcess"
+                Text="OK"
+                Clicked="btnOpenProcess_Clicked"
+                />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

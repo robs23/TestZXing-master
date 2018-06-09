@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
+using TestZXing.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing.Net.Mobile.Forms;
@@ -16,13 +17,14 @@ namespace TestZXing
         ZXingScannerPage scanPage;
         Place Place;
         PlacesKeeper Keeper;
+        ProcessInPlaceViewModel vm;
 
         public ScanPage()
         {
             InitializeComponent();
             lblScanResult.IsVisible = false;
             lblGetOrder.IsVisible = false;
-            btnOrders.IsVisible = false;
+            btnOpenProcess.IsVisible = false;
             Keeper = new PlacesKeeper();
             Place = new Place();
         }
@@ -40,17 +42,20 @@ namespace TestZXing
                     Navigation.PopAsync();
                     Place = await Keeper.GetPlace(result.Text);
                     lblScanResult.Text = "Zeskanowano: " + Place.Name;
+                    List<Process> Pros = await Place.GetProcesses();
+                    vm = new ProcessInPlaceViewModel(Pros);
+                    BindingContext = vm;
                     lblScanResult.IsVisible = true;
                     lblGetOrder.IsVisible = true;
-                    btnOrders.IsVisible = true;
+                    btnOpenProcess.IsVisible = true;
                 });
             };
             await Navigation.PushAsync(scanPage);
         }
 
-        private void btnOrders_Clicked(object sender, EventArgs e)
+        private void btnOpenProcess_Clicked(object sender, EventArgs e)
         {
-            DisplayAlert("Uuups", "Teraz powinna wyświetlić się lista otwartych operacji dla tego zasobu..ale póki co nie działa!", "OK");
+            DisplayAlert("Zaznaczono", vm.SelectedItem.Name, "OK");
         }
     }
 }

@@ -16,5 +16,15 @@ namespace TestZXing.Static
                 return "zyjp7h38DE205BpjzLqWw";
             }
         }
+        public static string ApiAddress
+        {
+            get
+            {
+                return "http://jde_api.robs23.webserwer.pl/";
+            }
+        }
+
+        public static int UserId { get; set; }
+
     }
 }

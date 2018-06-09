@@ -17,7 +17,6 @@ namespace TestZXing
     {
         DataService ds;
         UsersKeeper keeper;
-        string output;
         LoginViewModel vm;
 
         public LoginPage()
@@ -34,11 +33,10 @@ namespace TestZXing
             {
                 Looper.IsVisible = true;
                 Looper.IsRunning = true;
-                output = await ds.ReloadUsers();
-                keeper.Users = JsonConvert.DeserializeObject<List<User>>(output);
-                if (keeper.Users.Any())
+                await keeper.Reload();
+                if (keeper.Items.Any())
                 {
-                    vm = new LoginViewModel(keeper.Users);
+                    vm = new LoginViewModel(keeper.Items);
                     BindingContext = vm;
                     //foreach (User user in keeper.Users)
                     //{

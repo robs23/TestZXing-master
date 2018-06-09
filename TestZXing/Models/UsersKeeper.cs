@@ -8,16 +8,37 @@ using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Static;
 using System.Collections.ObjectModel;
+using TestZXing.Classes;
+using ModernHttpClient;
 
 namespace TestZXing.Models
 {
     public class UsersKeeper
     {
-        public List<User> Users { get; set; }
+        public List<User> Items { get; set; }
 
         public UsersKeeper()
         {
-            Users = new List<User>();
+            Items = new List<User>();
+        }
+
+        public async Task Reload()
+        {
+            string url = RuntimeSettings.ApiAddress + "GetMechanics?token=" + RuntimeSettings.TenantToken;
+            DataService ds = new DataService();
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                string output = await ds.readStream(await httpClient.SendAsync(request));
+                Items = JsonConvert.DeserializeObject<List<User>>(output);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
         }
 
     }

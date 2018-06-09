@@ -1,8 +1,14 @@
-﻿using System;
+﻿using ModernHttpClient;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using TestZXing.Classes;
+using TestZXing.Static;
 
 namespace TestZXing.Models
 {
@@ -25,6 +31,27 @@ namespace TestZXing.Models
         public int TenantId { get; set; }
         public string TenantName { get; set; }
         public string PlaceToken { get; set; }
+
+        public async Task<List<Process>> GetProcesses()
+        {
+            string url = RuntimeSettings.ApiAddress + "GetProcesses?token=" + RuntimeSettings.TenantToken + "&PlaceId=" + PlaceId.ToString();
+            DataService ds = new DataService();
+            List<Process> Items = new List<Process>();
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                string output = await ds.readStream(await httpClient.SendAsync(request));
+                Items = JsonConvert.DeserializeObject<List<Process>>(output);
+                return Items;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+        }
     }
 }
 
