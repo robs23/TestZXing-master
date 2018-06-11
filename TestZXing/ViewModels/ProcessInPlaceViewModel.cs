@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
 
 namespace TestZXing.ViewModels
 {
-    public class ProcessInPlaceViewModel
+    public class ProcessInPlaceViewModel: INotifyPropertyChanged
     {
-        public List<ProcessItem> Items = new List<ProcessItem>();
+        public ObservableCollection<ProcessItem> Items { get; set; }
 
         public ProcessInPlaceViewModel(List<Process> nItems)
         {
+            Items = new ObservableCollection<ProcessItem>();
             ProcessItem pii = new ProcessItem { Id = 0, Name = "Nowy", Description = "Dodaj nowe zlecenie" };
             Items.Add(pii);
             foreach(Process p in nItems)
@@ -24,6 +27,13 @@ namespace TestZXing.ViewModels
                 pi.Description = "Status: " + p.Status + ". Utworzono " + p.CreatedOn.ToString() + " przez " + p.CreatedByName;
                 Items.Add(pi);
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
         private ProcessItem _selectedItem { get; set; }
@@ -38,6 +48,7 @@ namespace TestZXing.ViewModels
                 if(_selectedItem != value)
                 {
                     _selectedItem = value;
+                    OnPropertyChanged();
                 }
             }
         }

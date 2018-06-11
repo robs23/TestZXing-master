@@ -94,5 +94,14 @@ namespace TestZXing.Models
                 }
             }
         }
+        public override string ToString()
+        {
+            string str = "";
+            str += "ProcessId={0}, Description={1}, StartedBy={2}, StartedByName={3}, StartedOn={4}, FinishedBy={5}, FinishedByName={6}, FinishedOn={7}";
+            str += ", ActionTypeId={8}, ActionTypeName={9}, Status={10}, PlaceId={11}, PlaceName={12}, Output={13}, CreatedOn={14}";
+            str += ", CreatedBy={15}, CreatedByName={16}";
+            str = string.Format(str, ProcessId, Description, StartedBy, StartedByName, StartedOn, FinishedBy, FinishedByName, FinishedOn, ActionTypeId, ActionTypeName, Status, PlaceId, PlaceName, Output, CreatedOn, CreatedBy, CreatedByName);
+            return str;
+        }
     }
 }

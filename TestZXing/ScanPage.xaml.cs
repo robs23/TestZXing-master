@@ -18,6 +18,7 @@ namespace TestZXing
         Place Place;
         PlacesKeeper Keeper;
         ProcessInPlaceViewModel vm;
+        List<Process> Pros;
 
         public ScanPage()
         {
@@ -42,7 +43,7 @@ namespace TestZXing
                     Navigation.PopAsync();
                     Place = await Keeper.GetPlace(result.Text);
                     lblScanResult.Text = "Zeskanowano: " + Place.Name;
-                    List<Process> Pros = await Place.GetProcesses();
+                    Pros = await Place.GetProcesses();
                     vm = new ProcessInPlaceViewModel(Pros);
                     BindingContext = vm;
                     lblScanResult.IsVisible = true;
@@ -53,9 +54,19 @@ namespace TestZXing
             await Navigation.PushAsync(scanPage);
         }
 
-        private void btnOpenProcess_Clicked(object sender, EventArgs e)
+        private async void btnOpenProcess_Clicked(object sender, EventArgs e)
         {
-            DisplayAlert("Zaznaczono", vm.SelectedItem.Name, "OK");
+            if (vm.SelectedItem.Id == 0)
+            {
+                //create new
+                await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage());
+            }
+            else
+            {
+                Process process = Pros.Where(p => p.ProcessId == vm.SelectedItem.Id).FirstOrDefault();
+                await DisplayAlert("ProcessDetails", process.ToString(), "OK");
+                //await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(process));
+            }
         }
     }
 }

@@ -23,12 +23,12 @@
                             <StackLayout Padding="10">
                                 <Label
                                     Text="{Binding Name}"
-                                    LineBreakMode="NoWrap"
+                                    LineBreakMode="WordWrap"
                                     Style="{DynamicResource ListItemTextStyle}"
                                     FontSize="16"/>
                                 <Label
                                     Text="{Binding Description}"
-                                    LineBreakMode="NoWrap"
+                                    LineBreakMode="WordWrap"
                                     Style="{DynamicResource ListItemDetailTextStyle}"
                                     FontSize="13" />
                             </StackLayout>
