@@ -43,7 +43,7 @@ namespace TestZXing
                     Navigation.PopAsync();
                     Place = await Keeper.GetPlace(result.Text);
                     lblScanResult.Text = "Zeskanowano: " + Place.Name;
-                    Pros = await Place.GetProcesses();
+                    Pros = await Place.GetProcesses(true);
                     vm = new ProcessInPlaceViewModel(Pros);
                     BindingContext = vm;
                     lblScanResult.IsVisible = true;
@@ -64,8 +64,7 @@ namespace TestZXing
             else
             {
                 Process process = Pros.Where(p => p.ProcessId == vm.SelectedItem.Id).FirstOrDefault();
-                await DisplayAlert("ProcessDetails", process.ToString(), "OK");
-                //await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(process));
+                await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(process));
             }
         }
     }

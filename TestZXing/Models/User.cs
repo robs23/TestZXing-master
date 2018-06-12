@@ -1,8 +1,12 @@
-﻿using System;
+﻿using ModernHttpClient;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using TestZXing.Static;
 
 namespace TestZXing.Models
 {
@@ -23,5 +27,22 @@ namespace TestZXing.Models
             {
                 return Name + " " + Surname;
             } }
+
+        public async void Login()
+        {
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                string url = RuntimeSettings.ApiAddress + "LogIn?token=" + RuntimeSettings.TenantToken + "&id=";
+                var serializedProduct = JsonConvert.SerializeObject(this);
+                var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
+                var result = await httpClient.PutAsync(String.Format("{0}{1}", new Uri(url), this.UserId), content);
+            }catch(Exception ex)
+            {
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Login", Time = DateTime.Now, Message = ex.Message };
+                await Error.Add();
+            }
+            
+        }
     }
 }

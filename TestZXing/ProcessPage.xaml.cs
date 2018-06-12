@@ -29,5 +29,10 @@ namespace TestZXing
             vm = new ProcessPageViewModel(Process);
             BindingContext = vm;
         }
+
+        private async void btnEnd_Clicked(object sender, EventArgs e)
+        {
+            
+        }
     }
 }

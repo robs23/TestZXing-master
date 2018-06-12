@@ -36,6 +36,7 @@
     </Compile>
     <Compile Include="Models\ActionType.cs" />
     <Compile Include="Models\ActionTypesKeeper.cs" />
+    <Compile Include="Models\Error.cs" />
     <Compile Include="Models\Place.cs" />
     <Compile Include="Models\PlacesKeeper.cs" />
     <Compile Include="Models\Post.cs" />

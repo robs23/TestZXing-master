@@ -6,6 +6,7 @@
         <StackLayout VerticalOptions="Center">
             <Label x:Name="lblDescription"
                    Text="{Binding Description}"
+                   HorizontalTextAlignment="Center"
                    />
             <Picker
                 x:Name="cmbActionTypes"
@@ -13,9 +14,15 @@
                 Title="Wybierz typ zgłoszenia"
                 ItemsSource="{Binding ActionTypes}"
                 ItemDisplayBinding="{Binding Name}"
-                SelectedItem="{Binding Type}"/>
+                SelectedItem="{Binding Type}"
+                />
+            <Label x:Name="lblEditor"
+                   Text="Opisz rezultat poniżej"
+                   HorizontalTextAlignment="Center"
+                   />
             <Editor
                 x:Name="txtOutput"
+                HeightRequest="250"
                 Text="{Binding Output}"
                 />
             <Button
@@ -27,6 +34,7 @@
                 x:Name="btnEnd"
                 Text="Zakończ"
                 IsEnabled="{Binding IsOpen}"
+                Clicked="btnEnd_Clicked"
                 />
         </StackLayout>
     </ContentPage.Content>

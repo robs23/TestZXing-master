@@ -32,9 +32,9 @@ namespace TestZXing.Models
         public string TenantName { get; set; }
         public string PlaceToken { get; set; }
 
-        public async Task<List<Process>> GetProcesses()
+        public async Task<List<Process>> GetProcesses(bool active = false)
         {
-            string url = RuntimeSettings.ApiAddress + "GetProcesses?token=" + RuntimeSettings.TenantToken + "&PlaceId=" + PlaceId.ToString();
+            string url = RuntimeSettings.ApiAddress + "GetProcesses?token=" + RuntimeSettings.TenantToken + "&PlaceId=" + PlaceId.ToString() + "&active=" + active;
             DataService ds = new DataService();
             List<Process> Items = new List<Process>();
 

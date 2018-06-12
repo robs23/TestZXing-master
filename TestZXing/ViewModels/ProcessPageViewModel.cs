@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
+using TestZXing.Static;
 
 namespace TestZXing.ViewModels
 {
@@ -15,6 +16,38 @@ namespace TestZXing.ViewModels
         public ObservableCollection<ActionType> ActionTypes { get; set; }
         public bool IsNew { get; set; }//whether this process is new or from Db
         private Process _this { get; set; }
+
+        public ProcessPageViewModel()
+        {
+            _this = new Process();
+            Initialize();
+        }
+
+        public ProcessPageViewModel(Process Process)
+        {
+            _this = Process;
+            Initialize();
+        }
+
+        private async void Initialize()
+        {
+            try
+            {
+                ActionTypes = new ObservableCollection<ActionType>();
+                ActionTypesKeeper keeper = new ActionTypesKeeper();
+                await keeper.Reload();
+                foreach (ActionType at in keeper.Items)
+                {
+                    ActionTypes.Add(at);
+                }
+            }catch(Exception ex)
+            {
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Initialize", Time = DateTime.Now, Message = ex.Message};
+                await Error.Add();
+                throw;
+            }
+            
+        }
 
         public string Description {
             get
@@ -118,28 +151,6 @@ namespace TestZXing.ViewModels
             }
         }
 
-
-        public ProcessPageViewModel()
-        {
-            _this = new Process();
-            Initialize();
-        }
-
-        public ProcessPageViewModel(Process Process)
-        {
-            _this = Process;
-            Initialize();
-        }
-
-        private async void Initialize()
-        {
-            ActionTypesKeeper keeper = new ActionTypesKeeper();
-            await keeper.Reload();
-            foreach(ActionType at in keeper.Items)
-            {
-                ActionTypes.Add(at);
-            }
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

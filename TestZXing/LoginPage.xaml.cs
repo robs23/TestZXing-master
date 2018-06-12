@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Classes;
 using TestZXing.Models;
+using TestZXing.Static;
 using TestZXing.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -73,6 +74,9 @@ namespace TestZXing
                 if (vm.SelectedUser.Password == txtPassword.Text)
                 {
                     //password matches, let user in
+                    RuntimeSettings.UserId = vm.SelectedUser.UserId;
+                    RuntimeSettings.TenantId = vm.SelectedUser.TenantId;
+                    vm.SelectedUser.Login();
                     await Application.Current.MainPage.Navigation.PushAsync(new ScanPage());
                 }
                 else
