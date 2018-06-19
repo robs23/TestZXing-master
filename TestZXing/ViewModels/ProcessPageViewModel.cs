@@ -14,18 +14,24 @@ namespace TestZXing.ViewModels
     public class ProcessPageViewModel: INotifyPropertyChanged
     {
         public ObservableCollection<ActionType> ActionTypes { get; set; }
-        public bool IsNew { get; set; }//whether this process is new or from Db
+        public bool IsSaved { get; set; }
+        public bool IsNew { get; set; }
+        private bool _IsWorking { get; set; }
         private Process _this { get; set; }
 
-        public ProcessPageViewModel()
+        public ProcessPageViewModel(int PlaceId)
         {
             _this = new Process();
+            _this.PlaceId = PlaceId;
+            IsNew = true;
             Initialize();
         }
 
-        public ProcessPageViewModel(Process Process)
+        public ProcessPageViewModel(int PlaceId, Process Process)
         {
             _this = Process;
+            _this.PlaceId = PlaceId;
+            IsNew = false;
             Initialize();
         }
 
@@ -64,6 +70,22 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public bool IsWorking
+        {
+            get
+            {
+                return _IsWorking;
+            }
+            set
+            {
+                if (_IsWorking != value)
+                {
+                    _IsWorking = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public string Status {
         get
             {
@@ -95,12 +117,30 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public int SelectedIndex { get
+            {
+                return _this.ActionTypeId;
+            }
+            set
+            {
+                if(_this.ActionTypeId != value)
+                {
+                    _this.ActionTypeId = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private ActionType _type { get; set; }
 
         public ActionType Type
         {
             get
             {
+                if(ActionTypes.Where(at => at.ActionTypeId == _this.ActionTypeId).Any())
+                {
+                    _type = ActionTypes.Where(at => at.ActionTypeId == _this.ActionTypeId).FirstOrDefault();
+                }
                 return _type;
             }
             set
@@ -151,6 +191,36 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public async Task Save()
+        {
+            IsWorking = true;
+            try
+            {
+                if (this.IsNew)
+                {
+                    _this.CreatedBy = RuntimeSettings.UserId;
+                    _this.TenantId = RuntimeSettings.TenantId;
+                    _this.StartedBy = RuntimeSettings.UserId;
+                    _this.StartedOn = DateTime.Now;
+                    _this.Status = "Rozpoczęty";
+                    _this.CreatedOn = DateTime.Now;
+                    await _this.Add();
+                }
+                else
+                {
+                    //await _this.Edit();
+                }
+            }catch(Exception ex)
+            {
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Save", Time = DateTime.Now, Message = ex.Message };
+                await Error.Add();
+            }
+            finally
+            {
+                IsWorking = false;
+            }
+            
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

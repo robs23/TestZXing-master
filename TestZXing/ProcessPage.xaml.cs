@@ -14,25 +14,30 @@ namespace TestZXing
     public partial class ProcessPage : ContentPage
     {
         ProcessPageViewModel vm;
-        public ProcessPage()
+        public ProcessPage(int PlaceId)
         {
             //new one
             InitializeComponent();
-            vm = new ProcessPageViewModel();
+            vm = new ProcessPageViewModel(PlaceId);
             BindingContext = vm;
         }
 
-        public ProcessPage(Process Process)
+        public ProcessPage(int PlaceId, Process Process)
         {
             //existing
             InitializeComponent();
-            vm = new ProcessPageViewModel(Process);
+            vm = new ProcessPageViewModel(PlaceId, Process);
             BindingContext = vm;
         }
 
         private async void btnEnd_Clicked(object sender, EventArgs e)
         {
-            
+
+        }
+
+        private async void btnChangeState_Clicked(object sender, EventArgs e)
+        {
+            await vm.Save();
         }
     }
 }

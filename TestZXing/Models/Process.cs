@@ -1,8 +1,12 @@
-﻿using System;
+﻿using ModernHttpClient;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using TestZXing.Static;
 
 namespace TestZXing.Models
 {
@@ -102,6 +106,48 @@ namespace TestZXing.Models
             str += ", CreatedBy={15}, CreatedByName={16}";
             str = string.Format(str, ProcessId, Description, StartedBy, StartedByName, StartedOn, FinishedBy, FinishedByName, FinishedOn, ActionTypeId, ActionTypeName, Status, PlaceId, PlaceName, Output, CreatedOn, CreatedBy, CreatedByName);
             return str;
+        }
+
+        public async Task Add()
+        {
+            string url = RuntimeSettings.ApiAddress + "CreateProcess?token=" + RuntimeSettings.TenantToken;
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var serialized = JsonConvert.SerializeObject(this);
+                var content = new StringContent(serialized, Encoding.UTF8, "application/json");
+                var httpResponse = await httpClient.PostAsync(new Uri(url), content);
+            }
+            catch (Exception ex)
+            {
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Add", Time = DateTime.Now, Message = ex.Message };
+                await Error.Add();
+                throw;
+            }
+            finally
+            {
+
+            }
+        }
+
+        public async Task Edit()
+        {
+            string url = RuntimeSettings.ApiAddress + "EditProcess?token=" + RuntimeSettings.TenantToken + "&id=";
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var serializedProduct = JsonConvert.SerializeObject(this);
+                var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
+                var result = await httpClient.PutAsync(String.Format("{0}{1}", new Uri(url), this.ProcessId), content);
+            }
+            catch (Exception ex)
+            {
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Edit", Time = DateTime.Now, Message = ex.Message };
+                await Error.Add();
+            }
+
         }
     }
 }

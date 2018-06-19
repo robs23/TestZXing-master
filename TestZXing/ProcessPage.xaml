@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TestZXing.ProcessPage">
+             x:Class="TestZXing.ProcessPage"
+             Title="Szczegóły zgłoszenia">
     <ContentPage.Content>
         <StackLayout VerticalOptions="Center">
             <Label x:Name="lblDescription"
@@ -14,8 +15,13 @@
                 Title="Wybierz typ zgłoszenia"
                 ItemsSource="{Binding ActionTypes}"
                 ItemDisplayBinding="{Binding Name}"
-                SelectedItem="{Binding Type}"
+                SelectedItem="{Binding Type, Mode=TwoWay}"
+                SelectedIndex="{Binding SelectedIndex}"
                 />
+            <ActivityIndicator x:Name="Looper"
+                               IsEnabled="True"
+                               IsRunning="{Binding IsWorking}"
+                               IsVisible="{Binding IsWorking}"/>
             <Label x:Name="lblEditor"
                    Text="Opisz rezultat poniżej"
                    HorizontalTextAlignment="Center"
@@ -29,6 +35,7 @@
                 x:Name="btnChangeState"
                 Text="{Binding NextState}"
                 IsEnabled="{Binding IsOpen}"
+                Clicked="btnChangeState_Clicked"
                 />
             <Button
                 x:Name="btnEnd"

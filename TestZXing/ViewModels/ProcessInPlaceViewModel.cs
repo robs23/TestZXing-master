@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
+using TestZXing.Static;
 
 namespace TestZXing.ViewModels
 {
@@ -19,13 +20,23 @@ namespace TestZXing.ViewModels
             Items = new ObservableCollection<ProcessItem>();
             ProcessItem pii = new ProcessItem { Id = 0, Name = "Nowy", Description = "Dodaj nowe zlecenie" };
             Items.Add(pii);
-            foreach(Process p in nItems)
+            if (nItems.Any())
             {
-                ProcessItem pi = new ProcessItem();
-                pi.Id = p.ProcessId;
-                pi.Name = p.ActionTypeName;
-                pi.Description = "Status: " + p.Status + ". Utworzono " + p.CreatedOn.ToString() + " przez " + p.CreatedByName;
-                Items.Add(pi);
+                try
+                {
+                    foreach (Process p in nItems)
+                    {
+                        ProcessItem pi = new ProcessItem();
+                        pi.Id = p.ProcessId;
+                        pi.Name = p.ActionTypeName;
+                        pi.Description = "Status: " + p.Status + ". Utworzono " + p.CreatedOn.ToString() + " przez " + p.CreatedByName;
+                        Items.Add(pi);
+                    }
+                }catch(Exception ex)
+                {
+                    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "ProcessInPlaceViewModel", Time = DateTime.Now, Message = ex.Message };
+                }
+                
             }
         }
 

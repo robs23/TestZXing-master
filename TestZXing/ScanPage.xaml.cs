@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
+using TestZXing.Static;
 using TestZXing.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -25,6 +26,7 @@ namespace TestZXing
             InitializeComponent();
             lblScanResult.IsVisible = false;
             lblGetOrder.IsVisible = false;
+            lstProcesses.IsVisible = false;
             btnOpenProcess.IsVisible = false;
             Keeper = new PlacesKeeper();
             Place = new Place();
@@ -33,22 +35,45 @@ namespace TestZXing
         private async void btnScan_Clicked(object sender, EventArgs e)
         {
             scanPage = new ZXingScannerPage();
-            
+            lblScanResult.IsVisible = false;
+            lblGetOrder.IsVisible = false;
+            lstProcesses.IsVisible = false;
+            btnOpenProcess.IsVisible = false;
+
             scanPage.OnScanResult += (result) =>
             {
                 scanPage.IsScanning = false;
-
+                
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     Navigation.PopAsync();
                     Place = await Keeper.GetPlace(result.Text);
-                    lblScanResult.Text = "Zeskanowano: " + Place.Name;
-                    Pros = await Place.GetProcesses(true);
-                    vm = new ProcessInPlaceViewModel(Pros);
-                    BindingContext = vm;
-                    lblScanResult.IsVisible = true;
-                    lblGetOrder.IsVisible = true;
-                    btnOpenProcess.IsVisible = true;
+                    if (Place == null)
+                    {
+                        await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.",result.Text), "OK");
+                    }
+                    else
+                    {
+                        lblScanResult.Text = "Zeskanowano: " + Place.Name;
+                        Pros = new List<Process>();
+                        try
+                        {
+                            Pros = await Place.GetProcesses(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "btnScan_Clicked", Time = DateTime.Now, Message = ex.Message };
+                        }
+                        finally
+                        {
+                            vm = new ProcessInPlaceViewModel(Pros);
+                        }
+                        BindingContext = vm;
+                        lblScanResult.IsVisible = true;
+                        lblGetOrder.IsVisible = true;
+                        lstProcesses.IsVisible = true;
+                        btnOpenProcess.IsVisible = true;
+                    }
                 });
             };
             await Navigation.PushAsync(scanPage);
@@ -59,13 +84,28 @@ namespace TestZXing
             if (vm.SelectedItem.Id == 0)
             {
                 //create new
-                await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage());
+                await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId));
             }
             else
             {
                 Process process = Pros.Where(p => p.ProcessId == vm.SelectedItem.Id).FirstOrDefault();
-                await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(process));
+                await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId, process));
             }
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            // Begin an asyncronous task on the UI thread because we intend to ask the users permission.
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                if (await DisplayAlert("Koniec pracy?", "Czy chcesz wyjść z aplikacji?", "Tak", "Nie"))
+                {
+                    var closer = DependencyService.Get<ICloseApplication>();
+                    closer?.closeApplication();
+                }
+            });
+
+            return true;
         }
     }
 }
