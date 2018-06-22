@@ -29,24 +29,45 @@ namespace TestZXing.ViewModels
 
         public ProcessPageViewModel(int PlaceId, Process Process)
         {
-            _this = Process;
-            _this.PlaceId = PlaceId;
-            IsNew = false;
-            Initialize();
+            try
+            {
+                _this = Process;
+                _this.PlaceId = PlaceId;
+                IsNew = false;
+                Initialize(_this.ActionTypeId);
+            }catch(Exception ex)
+            {
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "ProcessPageViewModel", Time = DateTime.Now, Message = ex.Message };
+                Error.Add();
+            }
+            
         }
 
-        private async void Initialize()
+        private async void Initialize(int AtId = -1)
         {
             try
             {
+                int index=-1;
+                int i = 0;
+                _selectedIndex = -1;
                 ActionTypes = new ObservableCollection<ActionType>();
                 ActionTypesKeeper keeper = new ActionTypesKeeper();
                 await keeper.Reload();
                 foreach (ActionType at in keeper.Items)
                 {
                     ActionTypes.Add(at);
+                    if (at.ActionTypeId == AtId)
+                    {
+                        index = i;
+                    }
+                    i++;
                 }
-            }catch(Exception ex)
+                if (AtId >= 0 && index >=0)
+                {
+                    SelectedIndex = index;
+                }
+            }
+            catch(Exception ex)
             {
                 Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Initialize", Time = DateTime.Now, Message = ex.Message};
                 await Error.Add();
@@ -117,16 +138,29 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public int SelectedIndex { get
+        private int _selectedIndex { get; set; }
+
+        public int SelectedIndex
+        {
+            get
             {
-                return _this.ActionTypeId;
+                return _selectedIndex;
             }
             set
             {
-                if(_this.ActionTypeId != value)
+                try
                 {
-                    _this.ActionTypeId = value;
-                    OnPropertyChanged();
+                    if (_selectedIndex != value)
+                    {
+                        _selectedIndex = value;
+                        _this.ActionTypeId = ActionTypes[value].ActionTypeId;
+                        Type = ActionTypes[value];
+                        OnPropertyChanged();
+                    }
+                }catch(Exception ex)
+                {
+                    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "SelectedIndex", Time = DateTime.Now, Message =  ex.Message };
+                    Error.Add();
                 }
             }
         }
@@ -137,10 +171,6 @@ namespace TestZXing.ViewModels
         {
             get
             {
-                if(ActionTypes.Where(at => at.ActionTypeId == _this.ActionTypeId).Any())
-                {
-                    _type = ActionTypes.Where(at => at.ActionTypeId == _this.ActionTypeId).FirstOrDefault();
-                }
                 return _type;
             }
             set
@@ -148,8 +178,6 @@ namespace TestZXing.ViewModels
                 if (_type != value)
                 {
                     _type = value;
-                    _this.ActionTypeId = _type.ActionTypeId;
-                    _this.ActionTypeName = _type.Name;
                     OnPropertyChanged();
                 }
             }

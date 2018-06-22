@@ -39,5 +39,10 @@ namespace TestZXing
         {
             await vm.Save();
         }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+        }
     }
 }

@@ -16,5 +16,21 @@ namespace TestZXing.Models
         public string CreatedByName { get; set; }
         public int TenantId { get; set; }
         public string TenantName { get; set; }
+
+        public override string ToString()
+        {
+            string str = "";
+            if (this == null)
+            {
+                str = "ActionType=null";
+            }
+            else
+            {
+                str = "ActionTypeId={0}, Name={1}, Description={2}, CreatedOn={3}, CreatedByName={4}";
+                str = string.Format(str, ActionTypeId, Name, Description, CreatedOn, CreatedByName);
+            }
+            
+            return str;
+        }
     }
 }
