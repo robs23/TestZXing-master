@@ -29,7 +29,7 @@
             <Editor
                 x:Name="txtOutput"
                 HeightRequest="250"
-                Text="{Binding Output}"
+                Text="{Binding Output, Mode=TwoWay}"
                 />
             <Button
                 x:Name="btnChangeState"
@@ -40,7 +40,7 @@
             <Button
                 x:Name="btnEnd"
                 Text="Zakończ"
-                IsEnabled="{Binding IsOpen}"
+                IsEnabled="{Binding IsClosable}"
                 Clicked="btnEnd_Clicked"
                 />
         </StackLayout>

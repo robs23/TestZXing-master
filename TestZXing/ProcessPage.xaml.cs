@@ -32,12 +32,47 @@ namespace TestZXing
 
         private async void btnEnd_Clicked(object sender, EventArgs e)
         {
-
+            bool _IsSuccess = false;
+            if (vm.Validate())
+            {
+                if (await DisplayAlert("Zrealizowano?", "Czy udało się zrealizować zlecenie?", "Tak", "Nie"))
+                {
+                    _IsSuccess = true;
+                }
+                string _Result = await vm.End(_IsSuccess);
+                if (_Result=="OK")
+                {
+                    await DisplayAlert("Powodzenie", "Zgłoszenie zostało zakończone!", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Wystąpił błąd", _Result, "OK");
+                }
+            }
+            else
+            {
+                await DisplayAlert("Brak typu zgłoszenia", "Nie wybrano typu zgłoszenia! Najpierw wybierz typ zgłoszenia z listy rozwijanej", "OK");
+            }
         }
 
         private async void btnChangeState_Clicked(object sender, EventArgs e)
         {
-            await vm.Save();
+            string _Result = await vm.Save();
+            if (vm.Validate())
+            {
+                if (_Result == "OK")
+                {
+                    await DisplayAlert("Powodzenie", "Zapis zakończony powodzeniem!", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Wystąpił błąd", _Result, "OK");
+                }
+            }
+            else
+            {
+                await DisplayAlert("Brak typu zgłoszenia", "Nie wybrano typu zgłoszenia! Najpierw wybierz typ zgłoszenia z listy rozwijanej", "OK");
+            }
         }
 
         protected override void OnAppearing()

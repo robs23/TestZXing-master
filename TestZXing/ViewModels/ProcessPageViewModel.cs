@@ -15,7 +15,7 @@ namespace TestZXing.ViewModels
     {
         public ObservableCollection<ActionType> ActionTypes { get; set; }
         public bool IsSaved { get; set; }
-        public bool IsNew { get; set; }
+        private bool _IsNew { get; set; }
         private bool _IsWorking { get; set; }
         private Process _this { get; set; }
 
@@ -107,8 +107,41 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public bool IsClosable
+        {
+            get
+            {
+                if(!IsNew && IsOpen)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+               
+            }
+        }
+
+        public bool IsNew
+        {
+            get
+            {
+                return _IsNew;
+            }
+            set
+            {
+                if (_IsNew != value)
+                {
+                    _IsNew = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsClosable));
+                }
+            }
+        }
+
         public string Status {
-        get
+            get
             {
                 return _this.Status;
             }
@@ -219,8 +252,10 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public async Task Save()
+        public async Task<string> Save()
         {
+            string _Result = "OK";
+
             IsWorking = true;
             try
             {
@@ -232,22 +267,74 @@ namespace TestZXing.ViewModels
                     _this.StartedOn = DateTime.Now;
                     _this.Status = "Rozpoczęty";
                     _this.CreatedOn = DateTime.Now;
-                    await _this.Add();
+                    _Result = await _this.Add();
+                    IsNew = false;
+                    OnPropertyChanged(nameof(NextState));
                 }
                 else
                 {
-                    //await _this.Edit();
+                    if (_this.Status == "Rozpoczęty")
+                    {
+                        _this.Status = "Wstrzymany";
+                    }else if(_this.Status == "Wstrzymany" || _this.Status == "Nierozpoczęty")
+                    {
+                        _this.Status = "Rozpoczęty";
+                    }
+                    _Result = await _this.Edit();
+                    OnPropertyChanged(nameof(NextState));
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Save", Time = DateTime.Now, Message = ex.Message };
                 await Error.Add();
             }
-            finally
-            {
-                IsWorking = false;
-            }
+            IsWorking = false;
+            return _Result;
             
+        }
+
+        public bool Validate()
+        {
+            bool _bool = false;
+            if (_this.ActionTypeId != 0)
+            {
+                _bool = true;
+            }
+            return _bool;
+        }
+
+        public async Task<string> End(bool isSuccess = false)
+        {
+            string _Result = "OK";
+ 
+            IsWorking = true;
+            try
+            {
+                if (isSuccess)
+                {
+                    _this.Status = "Zrealizowany";
+                }
+                else
+                {
+                    _this.Status = "Zakończony";
+                }
+                _this.FinishedOn = DateTime.Now;
+                _this.FinishedBy = RuntimeSettings.UserId;
+                _Result = await _this.Edit();
+                OnPropertyChanged(nameof(NextState));
+                OnPropertyChanged(nameof(IsOpen));
+                OnPropertyChanged(nameof(IsClosable));
+            }
+            catch (Exception ex)
+            {
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Save", Time = DateTime.Now, Message = ex.Message };
+                await Error.Add();
+            }
+            IsWorking = false;
+            return _Result;
+
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

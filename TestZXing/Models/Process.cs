@@ -108,9 +108,10 @@ namespace TestZXing.Models
             return str;
         }
 
-        public async Task Add()
+        public async Task<string> Add()
         {
-            string url = RuntimeSettings.ApiAddress + "CreateProcess?token=" + RuntimeSettings.TenantToken;
+            string url = RuntimeSettings.ApiAddress + "CreateProcess?token=" + RuntimeSettings.TenantToken + "&UserId="+ RuntimeSettings.UserId;
+            string _Result = "OK";
 
             try
             {
@@ -118,36 +119,43 @@ namespace TestZXing.Models
                 var serialized = JsonConvert.SerializeObject(this);
                 var content = new StringContent(serialized, Encoding.UTF8, "application/json");
                 var httpResponse = await httpClient.PostAsync(new Uri(url), content);
+                if (!httpResponse.IsSuccessStatusCode)
+                {
+                    _Result = httpResponse.ReasonPhrase;
+                }
             }
             catch (Exception ex)
             {
+                _Result = ex.Message;
                 Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Add", Time = DateTime.Now, Message = ex.Message };
                 await Error.Add();
-                throw;
             }
-            finally
-            {
-
-            }
+            return _Result;
         }
 
-        public async Task Edit()
+        public async Task<string> Edit()
         {
-            string url = RuntimeSettings.ApiAddress + "EditProcess?token=" + RuntimeSettings.TenantToken + "&id=";
+            string url = RuntimeSettings.ApiAddress + "EditProcess?token=" + RuntimeSettings.TenantToken + "&id={0}&UserId={1}";
+            string _Result = "OK";
 
             try
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var serializedProduct = JsonConvert.SerializeObject(this);
                 var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
-                var result = await httpClient.PutAsync(String.Format("{0}{1}", new Uri(url), this.ProcessId), content);
+                var result = await httpClient.PutAsync(String.Format(url, this.ProcessId, RuntimeSettings.UserId), content);
+                if (!result.IsSuccessStatusCode)
+                {
+                    _Result = result.ReasonPhrase;
+                }
             }
             catch (Exception ex)
             {
+                _Result = ex.Message;
                 Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Edit", Time = DateTime.Now, Message = ex.Message };
                 await Error.Add();
             }
-
+            return _Result;
         }
     }
 }

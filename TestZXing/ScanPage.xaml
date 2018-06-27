@@ -13,6 +13,8 @@
                     Clicked="btnScan_Clicked"/>
             <Label x:Name="lblScanResult" HorizontalTextAlignment="Center"/>
             <Label x:Name="lblGetOrder" HorizontalTextAlignment="Center" Text="Zaznacz istniejące lub nowe zlecenie i kliknij OK"/>
+            <ActivityIndicator x:Name="Looper"
+                               IsEnabled="True"/>
             <ListView x:Name="lstProcesses"
                       ItemsSource="{Binding Items}"
                       VerticalOptions="FillAndExpand"

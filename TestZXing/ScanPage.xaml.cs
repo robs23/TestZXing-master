@@ -39,18 +39,19 @@ namespace TestZXing
             lblGetOrder.IsVisible = false;
             lstProcesses.IsVisible = false;
             btnOpenProcess.IsVisible = false;
-
             scanPage.OnScanResult += (result) =>
             {
                 scanPage.IsScanning = false;
-                
+
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     Navigation.PopAsync();
+                    Looper.IsVisible = true;
+                    Looper.IsRunning = true;
                     Place = await Keeper.GetPlace(result.Text);
                     if (Place == null)
                     {
-                        await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.",result.Text), "OK");
+                        await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", result.Text), "OK");
                     }
                     else
                     {
@@ -69,6 +70,8 @@ namespace TestZXing
                             vm = new ProcessInPlaceViewModel(Pros);
                         }
                         BindingContext = vm;
+                        Looper.IsVisible = false;
+                        Looper.IsRunning = false;
                         lblScanResult.IsVisible = true;
                         lblGetOrder.IsVisible = true;
                         lstProcesses.IsVisible = true;
@@ -77,20 +80,75 @@ namespace TestZXing
                 });
             };
             await Navigation.PushAsync(scanPage);
+            //Looper.IsVisible = true;
+            //Looper.IsRunning = true;
+            //Place = await Keeper.GetPlace("NasbEYDEGEqDVdxkfhsa9A");
+            //lblScanResult.Text = "Zeskanowano: " + Place.Name;
+            //Pros = new List<Process>();
+            //try
+            //{
+            //    Pros = await Place.GetProcesses(true);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "btnScan_Clicked", Time = DateTime.Now, Message = ex.Message };
+            //}
+            //finally
+            //{
+            //    vm = new ProcessInPlaceViewModel(Pros);
+            //}
+            //BindingContext = vm;
+            //Looper.IsRunning = false;
+            //Looper.IsVisible = false;
+            //lblScanResult.IsVisible = true;
+            //lblGetOrder.IsVisible = true;
+            //lstProcesses.IsVisible = true;
+            //btnOpenProcess.IsVisible = true;
+
+        }
+
+        private async void UpdateList()
+        {
+            Looper.IsVisible = true;
+            Looper.IsRunning = true;
+            Pros = new List<Process>();
+            try
+            {
+                Pros = await Place.GetProcesses(true);
+            }
+            catch (Exception ex)
+            {
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "btnScan_Clicked", Time = DateTime.Now, Message = ex.Message };
+            }
+            finally
+            {
+                vm = new ProcessInPlaceViewModel(Pros);
+            }
+            BindingContext = vm;
+            Looper.IsRunning = false;
+            Looper.IsVisible = false;
         }
 
         private async void btnOpenProcess_Clicked(object sender, EventArgs e)
         {
-            if (vm.SelectedItem.Id == 0)
+            if (vm.SelectedItem != null)
             {
-                //create new
-                await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId));
+                if (vm.SelectedItem.Id == 0)
+                {
+                    //create new
+                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId));
+                }
+                else
+                {
+                    Process process = Pros.Where(p => p.ProcessId == vm.SelectedItem.Id).FirstOrDefault();
+                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId, process));
+                }
             }
             else
             {
-                Process process = Pros.Where(p => p.ProcessId == vm.SelectedItem.Id).FirstOrDefault();
-                await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId, process));
+                await DisplayAlert("Nie zaznaczono elementu", "Najpierw zaznacz nowy lub istniejący element listy!", "OK");
             }
+            
         }
 
         protected override bool OnBackButtonPressed()
@@ -106,6 +164,14 @@ namespace TestZXing
             });
 
             return true;
+        }
+
+        protected override void OnAppearing()
+        {
+            if (Place.PlaceId != 0)
+            {
+                UpdateList();
+            }
         }
     }
 }
