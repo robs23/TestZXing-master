@@ -57,9 +57,9 @@ namespace TestZXing
 
         private async void btnChangeState_Clicked(object sender, EventArgs e)
         {
-            string _Result = await vm.Save();
             if (vm.Validate())
             {
+                string _Result = await vm.Save();
                 if (_Result == "OK")
                 {
                     await DisplayAlert("Powodzenie", "Zapis zakończony powodzeniem!", "OK");

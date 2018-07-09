@@ -34,6 +34,7 @@ namespace TestZXing
 
         private async void btnScan_Clicked(object sender, EventArgs e)
         {
+            btnScan.IsEnabled = false;
             scanPage = new ZXingScannerPage();
             lblScanResult.IsVisible = false;
             lblGetOrder.IsVisible = false;
@@ -80,9 +81,11 @@ namespace TestZXing
                 });
             };
             await Navigation.PushAsync(scanPage);
+            btnScan.IsEnabled = true;
+            //------------Scanning Bypass-------------------
             //Looper.IsVisible = true;
             //Looper.IsRunning = true;
-            //Place = await Keeper.GetPlace("NasbEYDEGEqDVdxkfhsa9A");
+            //Place = await Keeper.GetPlace("0u5TxEpXEGKFuRt3rk0QA");
             //lblScanResult.Text = "Zeskanowano: " + Place.Name;
             //Pros = new List<Process>();
             //try

@@ -118,10 +118,18 @@ namespace TestZXing.Models
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var serialized = JsonConvert.SerializeObject(this);
                 var content = new StringContent(serialized, Encoding.UTF8, "application/json");
+                //var httpResponse = await httpClient.PostAsync(new Uri(url), content);
                 var httpResponse = await httpClient.PostAsync(new Uri(url), content);
                 if (!httpResponse.IsSuccessStatusCode)
                 {
                     _Result = httpResponse.ReasonPhrase;
+                }
+                else
+                {
+                    var rString = await httpResponse.Content.ReadAsStringAsync();
+                    Process rItem = new Process();
+                    rItem = JsonConvert.DeserializeObject<Process>(rString);
+                    this.ProcessId = rItem.ProcessId;
                 }
             }
             catch (Exception ex)
