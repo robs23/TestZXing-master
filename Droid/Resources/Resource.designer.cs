@@ -2199,26 +2199,26 @@ namespace TestZXing.Droid
 			// aapt resource value: 0x7f020053
 			public const int avd_hide_password = 2130837587;
 			
-			// aapt resource value: 0x7f02010e
-			public const int avd_hide_password_1 = 2130837774;
-			
 			// aapt resource value: 0x7f02010f
-			public const int avd_hide_password_2 = 2130837775;
+			public const int avd_hide_password_1 = 2130837775;
 			
 			// aapt resource value: 0x7f020110
-			public const int avd_hide_password_3 = 2130837776;
+			public const int avd_hide_password_2 = 2130837776;
+			
+			// aapt resource value: 0x7f020111
+			public const int avd_hide_password_3 = 2130837777;
 			
 			// aapt resource value: 0x7f020054
 			public const int avd_show_password = 2130837588;
 			
-			// aapt resource value: 0x7f020111
-			public const int avd_show_password_1 = 2130837777;
-			
 			// aapt resource value: 0x7f020112
-			public const int avd_show_password_2 = 2130837778;
+			public const int avd_show_password_1 = 2130837778;
 			
 			// aapt resource value: 0x7f020113
-			public const int avd_show_password_3 = 2130837779;
+			public const int avd_show_password_2 = 2130837779;
+			
+			// aapt resource value: 0x7f020114
+			public const int avd_show_password_3 = 2130837780;
 			
 			// aapt resource value: 0x7f020055
 			public const int design_bottom_navigation_item_background = 2130837589;
@@ -2763,17 +2763,20 @@ namespace TestZXing.Droid
 			// aapt resource value: 0x7f020109
 			public const int notification_icon_background = 2130837769;
 			
-			// aapt resource value: 0x7f02010c
-			public const int notification_template_icon_bg = 2130837772;
-			
 			// aapt resource value: 0x7f02010d
-			public const int notification_template_icon_low_bg = 2130837773;
+			public const int notification_template_icon_bg = 2130837773;
+			
+			// aapt resource value: 0x7f02010e
+			public const int notification_template_icon_low_bg = 2130837774;
 			
 			// aapt resource value: 0x7f02010a
 			public const int notification_tile_bg = 2130837770;
 			
 			// aapt resource value: 0x7f02010b
 			public const int notify_panel_notification_icon_bg = 2130837771;
+			
+			// aapt resource value: 0x7f02010c
+			public const int splashscreen = 2130837772;
 			
 			static Drawable()
 			{
@@ -3858,8 +3861,8 @@ namespace TestZXing.Droid
 			// aapt resource value: 0x7f0b0170
 			public const int Animation_Design_BottomSheetDialog = 2131427696;
 			
-			// aapt resource value: 0x7f0b018b
-			public const int AppCompatDialogStyle = 2131427723;
+			// aapt resource value: 0x7f0b018c
+			public const int AppCompatDialogStyle = 2131427724;
 			
 			// aapt resource value: 0x7f0b00b2
 			public const int Base_AlertDialog_AppCompat = 2131427506;
@@ -4335,11 +4338,11 @@ namespace TestZXing.Droid
 			// aapt resource value: 0x7f0b000e
 			public const int CardView_Light = 2131427342;
 			
-			// aapt resource value: 0x7f0b0189
-			public const int MyTheme = 2131427721;
-			
 			// aapt resource value: 0x7f0b018a
-			public const int MyTheme_Base = 2131427722;
+			public const int MyTheme = 2131427722;
+			
+			// aapt resource value: 0x7f0b018b
+			public const int MyTheme_Base = 2131427723;
 			
 			// aapt resource value: 0x7f0b002d
 			public const int Platform_AppCompat = 2131427373;
@@ -4742,6 +4745,9 @@ namespace TestZXing.Droid
 			
 			// aapt resource value: 0x7f0b0006
 			public const int Theme_MediaRouter_LightControlPanel = 2131427334;
+			
+			// aapt resource value: 0x7f0b0189
+			public const int Theme_Splash = 2131427721;
 			
 			// aapt resource value: 0x7f0b011f
 			public const int ThemeOverlay_AppCompat = 2131427615;
