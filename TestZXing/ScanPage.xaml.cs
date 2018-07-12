@@ -49,35 +49,41 @@ namespace TestZXing
                     Navigation.PopAsync();
                     Looper.IsVisible = true;
                     Looper.IsRunning = true;
-                    Place = await Keeper.GetPlace(result.Text);
-                    if (Place == null)
+                    try
                     {
-                        await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", result.Text), "OK");
+                        Place = await Keeper.GetPlace(result.Text);
+                        if (Place == null)
+                        {
+                            await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", result.Text), "OK");
+                        }
+                        else
+                        {
+                            lblScanResult.Text = "Zeskanowano: " + Place.Name;
+                            Pros = new List<Process>();
+                            try
+                            {
+                                Pros = await Place.GetProcesses(true);
+                                vm = new ProcessInPlaceViewModel(Pros);
+                                BindingContext = vm;
+                                lblScanResult.IsVisible = true;
+                                lblGetOrder.IsVisible = true;
+                                lstProcesses.IsVisible = true;
+                                btnOpenProcess.IsVisible = true;
+                                
+                            }
+                            catch (Exception ex)
+                            {
+                                await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                            }
+                            
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        lblScanResult.Text = "Zeskanowano: " + Place.Name;
-                        Pros = new List<Process>();
-                        try
-                        {
-                            Pros = await Place.GetProcesses(true);
-                        }
-                        catch (Exception ex)
-                        {
-                            Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "btnScan_Clicked", Time = DateTime.Now, Message = ex.Message };
-                        }
-                        finally
-                        {
-                            vm = new ProcessInPlaceViewModel(Pros);
-                        }
-                        BindingContext = vm;
-                        Looper.IsVisible = false;
-                        Looper.IsRunning = false;
-                        lblScanResult.IsVisible = true;
-                        lblGetOrder.IsVisible = true;
-                        lstProcesses.IsVisible = true;
-                        btnOpenProcess.IsVisible = true;
+                        await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
                     }
+                    Looper.IsVisible = false;
+                    Looper.IsRunning = false;
                 });
             };
             await Navigation.PushAsync(scanPage);
@@ -85,29 +91,44 @@ namespace TestZXing
             //------------Scanning Bypass-------------------
             //Looper.IsVisible = true;
             //Looper.IsRunning = true;
-            //Place = await Keeper.GetPlace("0u5TxEpXEGKFuRt3rk0QA");
-            //lblScanResult.Text = "Zeskanowano: " + Place.Name;
-            //Pros = new List<Process>();
             //try
             //{
-            //    Pros = await Place.GetProcesses(true);
+            //    Place = await Keeper.GetPlace("0u5TxEpXEGKFuRt3rk0QA");
+            //    Place = await Keeper.GetPlace("xx");
+            //    if (Place == null)
+            //    {
+            //        await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", "xx"), "OK");
+            //    }
+            //    else
+            //    {
+            //        lblScanResult.Text = "Zeskanowano: " + Place.Name;
+            //        Pros = new List<Process>();
+            //        try
+            //        {
+            //            Pros = await Place.GetProcesses(true);
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "btnScan_Clicked", Time = DateTime.Now, Message = ex.Message };
+            //        }
+            //        finally
+            //        {
+            //            vm = new ProcessInPlaceViewModel(Pros);
+            //        }
+            //        BindingContext = vm;
+            //        Looper.IsRunning = false;
+            //        Looper.IsVisible = false;
+            //        lblScanResult.IsVisible = true;
+            //        lblGetOrder.IsVisible = true;
+            //        lstProcesses.IsVisible = true;
+            //        btnOpenProcess.IsVisible = true;
+            //    }
+
             //}
             //catch (Exception ex)
             //{
-            //    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "btnScan_Clicked", Time = DateTime.Now, Message = ex.Message };
+            //    await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
             //}
-            //finally
-            //{
-            //    vm = new ProcessInPlaceViewModel(Pros);
-            //}
-            //BindingContext = vm;
-            //Looper.IsRunning = false;
-            //Looper.IsVisible = false;
-            //lblScanResult.IsVisible = true;
-            //lblGetOrder.IsVisible = true;
-            //lstProcesses.IsVisible = true;
-            //btnOpenProcess.IsVisible = true;
-
         }
 
         private async void UpdateList()
@@ -118,16 +139,18 @@ namespace TestZXing
             try
             {
                 Pros = await Place.GetProcesses(true);
+                vm = new ProcessInPlaceViewModel(Pros);
+                BindingContext = vm;
             }
             catch (Exception ex)
             {
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "btnScan_Clicked", Time = DateTime.Now, Message = ex.Message };
+                await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
             }
             finally
             {
-                vm = new ProcessInPlaceViewModel(Pros);
+                
             }
-            BindingContext = vm;
+            vm.SelectedItem = null;
             Looper.IsRunning = false;
             Looper.IsVisible = false;
         }
@@ -171,10 +194,13 @@ namespace TestZXing
 
         protected override void OnAppearing()
         {
-            if (Place.PlaceId != 0)
+            if (Place != null)
             {
-                UpdateList();
-            }
+                if (Place.PlaceId != 0)
+                {
+                    UpdateList();
+                }
+            }  
         }
     }
 }

@@ -75,9 +75,28 @@ namespace TestZXing
             }
         }
 
-        protected override void OnAppearing()
+        protected async override void OnAppearing()
         {
             base.OnAppearing();
+            try
+            {
+                if (vm.IsNew)
+                {
+                    await vm.Initialize();
+                }
+                else
+                {
+                    await vm.Initialize(vm._this.ActionTypeId);
+                }
+                BindingContext = vm;
+
+            }
+            catch (Exception ex)
+            {
+                btnChangeState.IsEnabled = false;
+                btnEnd.IsEnabled = false;
+                DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Classes;
@@ -34,20 +35,26 @@ namespace TestZXing
             {
                 Looper.IsVisible = true;
                 Looper.IsRunning = true;
-                await keeper.Reload();
-                if (keeper.Items.Any())
+                string _Result = await keeper.Reload();
+                if (_Result == "OK")
                 {
-                    vm = new LoginViewModel(keeper.Items);
-                    BindingContext = vm;
-                    //foreach (User user in keeper.Users)
-                    //{
-                    //    pick.Items.Add(user.FullName);
-                    //}
+                    if (keeper.Items.Any())
+                    {
+                        vm = new LoginViewModel(keeper.Items);
+                        BindingContext = vm;
+                    }
+                    else
+                    {
+                        await DisplayAlert("Brak użytkowników", "Brak użytkowników na liście!", "OK");
+                    }
                 }
                 else
                 {
-                    await DisplayAlert("Brak użytkowników", "Brak użytkowników na liście!", "OK");
+                    await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                    var closer = DependencyService.Get<ICloseApplication>();
+                    closer?.closeApplication();
                 }
+                
             }
             catch (Exception ex)
             {
@@ -56,10 +63,10 @@ namespace TestZXing
             }
             finally
             {
-                Looper.IsVisible = false;
-                Looper.IsRunning = false;
+                
             }
-
+            Looper.IsVisible = false;
+            Looper.IsRunning = false;
 
         }
 

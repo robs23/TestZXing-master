@@ -18,7 +18,7 @@ namespace TestZXing.ViewModels
         public ProcessInPlaceViewModel(List<Process> nItems)
         {
             Items = new ObservableCollection<ProcessItem>();
-            ProcessItem pii = new ProcessItem { Id = 0, Name = "Nowy", Description = "Dodaj nowe zlecenie" };
+            ProcessItem pii = new ProcessItem { Id = 0, Name = "Nowy", Description = "Dodaj nowe zgłoszenie" };
             Items.Add(pii);
             if (nItems.Any())
             {

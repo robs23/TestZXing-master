@@ -22,23 +22,29 @@ namespace TestZXing.Models
             Items = new List<User>();
         }
 
-        public async Task Reload()
+        public async Task<string> Reload()
         {
             string url = RuntimeSettings.ApiAddress + "GetMechanics?token=" + RuntimeSettings.TenantToken;
             DataService ds = new DataService();
-
+            string _Result = "OK";
             try
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
-                string output = await ds.readStream(await httpClient.SendAsync(request));
+                var responseMsg = await httpClient.SendAsync(request);
+                if (!responseMsg.IsSuccessStatusCode)
+                {
+                    _Result = responseMsg.ReasonPhrase;
+                }
+                string output = await ds.readStream(responseMsg);
                 Items = JsonConvert.DeserializeObject<List<User>>(output);
-            }
-            catch (Exception ex)
+            }catch(Exception ex)
             {
-                Debug.WriteLine(ex.Message);
-                throw;
+                _Result = ex.Message;
             }
+            
+
+            return _Result;
         }
 
     }

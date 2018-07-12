@@ -13,37 +13,42 @@ namespace TestZXing.ViewModels
 {
     public class ProcessPageViewModel: INotifyPropertyChanged
     {
-        public ObservableCollection<ActionType> ActionTypes { get; set; }
+        public ObservableCollection<ActionType> _actionTypes { get; set; }
+        public ObservableCollection<ActionType> ActionTypes { get
+            {
+                return _actionTypes;
+            }
+            set
+            {
+                _actionTypes = value;
+                OnPropertyChanged();
+            }
+        }
         public bool IsSaved { get; set; }
-        private bool _IsNew { get; set; }
+        public bool _IsNew { get; set; }
         private bool _IsWorking { get; set; }
-        private Process _this { get; set; }
+        public Process _this { get; set; }
 
         public ProcessPageViewModel(int PlaceId)
         {
             _this = new Process();
             _this.PlaceId = PlaceId;
             IsNew = true;
-            Initialize();
+            //Initialize();
+
+
         }
 
         public ProcessPageViewModel(int PlaceId, Process Process)
         {
-            try
-            {
-                _this = Process;
-                _this.PlaceId = PlaceId;
-                IsNew = false;
-                Initialize(_this.ActionTypeId);
-            }catch(Exception ex)
-            {
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "ProcessPageViewModel", Time = DateTime.Now, Message = ex.Message };
-                Error.Add();
-            }
-            
+            _this = Process;
+            _this.PlaceId = PlaceId;
+            IsNew = false;
+            //Initialize(_this.ActionTypeId);
+
         }
 
-        private async void Initialize(int AtId = -1)
+        public async Task Initialize(int AtId = -1)
         {
             try
             {
@@ -69,8 +74,6 @@ namespace TestZXing.ViewModels
             }
             catch(Exception ex)
             {
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Initialize", Time = DateTime.Now, Message = ex.Message};
-                await Error.Add();
                 throw;
             }
             

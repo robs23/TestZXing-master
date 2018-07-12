@@ -45,17 +45,28 @@ namespace TestZXing.Models
             string url = RuntimeSettings.ApiAddress + "GetPlace?token=" + RuntimeSettings.TenantToken + "&placeToken=" + placeToken;
             DataService ds = new DataService();
             Place nPlace = new Place();
+
             try
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
-                string output = await ds.readStream(await httpClient.SendAsync(request));
-                nPlace = JsonConvert.DeserializeObject<Place>(output);
+                var responseMsg = await httpClient.SendAsync(request);
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    string output = await ds.readStream(responseMsg);
+                    nPlace = JsonConvert.DeserializeObject<Place>(output);
+                }
+                else
+                {
+                    nPlace = null;
+                }
+                
             }
             catch (Exception ex)
             {
                 nPlace = null;
                 Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "GetPlace", Time = DateTime.Now, Message = ex.Message };
+                throw;
             }
             return nPlace;
         }

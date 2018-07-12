@@ -42,8 +42,12 @@ namespace TestZXing.Models
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
-                string output = await ds.readStream(await httpClient.SendAsync(request));
-                Items = JsonConvert.DeserializeObject<List<Process>>(output);
+                var responseMsg = await httpClient.SendAsync(request);
+                string output = await ds.readStream(responseMsg);
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    Items = JsonConvert.DeserializeObject<List<Process>>(output);
+                }
                 return Items;
             }
             catch (Exception ex)
