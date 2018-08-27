@@ -30,6 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BorderfulEntry.cs" />
+    <Compile Include="BorderfulPicker.cs" />
     <Compile Include="Classes\DataService.cs" />
     <Compile Include="ICloseApplication.cs" />
     <Compile Include="LoginPage.xaml.cs">

@@ -1,22 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:testzxing="clr-namespace:TestZXing"
              x:Class="TestZXing.LoginPage"
              Title="Logowanie">
     <ContentPage.Content>
-        <StackLayout VerticalOptions="Center">
-            <Label Text="Wybierz użytkownika i podaj hasło" HorizontalTextAlignment="Center"/>
-            <Picker x:Name="cmbUsernames" 
-                    HorizontalOptions="Center" 
+        <StackLayout VerticalOptions="Center" Margin="15, 0">
+            <Label Text="Wybierz użytkownika i podaj hasło" 
+                   HorizontalTextAlignment="Center"
+                   TextColor="CadetBlue"
+                   FontSize="Medium"/>
+            <testzxing:BorderfulPicker x:Name="cmbUsernames"
+                    Margin="0,20,0,0"
+                    TextColor="CadetBlue"
                     Title="Wybierz użytkownika"
                     ItemsSource="{Binding Users}"
                     ItemDisplayBinding="{Binding FullName}"
                     SelectedItem="{Binding SelectedUser}"/>
-            <Entry x:Name="txtPassword" Placeholder="Hasło" HorizontalTextAlignment="Center" IsPassword="True"></Entry>
+            <testzxing:BorderfulEntry x:Name="txtPassword" 
+                   PlaceholderColor="DeepSkyBlue"
+                   Placeholder="Hasło" 
+                   HorizontalTextAlignment="Center" 
+                   IsPassword="True"
+                   TextColor="CadetBlue"></testzxing:BorderfulEntry>
             <Button x:Name="btnLogin" 
                     Text="Zaloguj"
+                    BackgroundColor="DeepSkyBlue"
+                    TextColor="White"
                     Clicked="btnLogin_Clicked"></Button>
             <ActivityIndicator x:Name="Looper"
+                               Color="CadetBlue"
                                IsEnabled="True"
                                IsRunning="False"
                                IsVisible="True"/>

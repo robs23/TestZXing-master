@@ -166,6 +166,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BorderfulEntryRendererAndroid.cs" />
+    <Compile Include="BorderfulPickerRendererAndroid.cs" />
     <Compile Include="CloseApplication.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />

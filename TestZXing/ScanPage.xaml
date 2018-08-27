@@ -5,16 +5,27 @@
              x:Class="TestZXing.ScanPage"
              Title="Skanowanie">
     <ContentPage.Content>
-        <StackLayout>
-            <Label x:Name="lblUser" HorizontalTextAlignment="Center"/>
+        <StackLayout Margin="15,0">
+            <Label x:Name="lblUser" 
+                   HorizontalTextAlignment="Center"
+                   TextColor="CadetBlue"/>
             <Button x:Name="btnScan" 
                     Text="Skanuj"
+                    TextColor="White"
+                    BackgroundColor="DeepSkyBlue"
                     AutomationId="scanWithDefaultOverlay"
                     Clicked="btnScan_Clicked"/>
-            <Label x:Name="lblScanResult" HorizontalTextAlignment="Center"/>
-            <Label x:Name="lblGetOrder" HorizontalTextAlignment="Center" Text="Zaznacz istniejące lub nowe zgłoszenie i kliknij OK"/>
+            <Label x:Name="lblScanResult" 
+                   HorizontalTextAlignment="Center"
+                   TextColor="Blue"/>
+            <Label x:Name="lblGetOrder" 
+                   HorizontalTextAlignment="Center" 
+                   Text="Zaznacz istniejące lub nowe zgłoszenie i kliknij OK"
+                   TextColor="Blue"
+                   FontSize="Medium"/>
             <ActivityIndicator x:Name="Looper"
-                               IsEnabled="True"/>
+                               IsEnabled="True"
+                               Color="CadetBlue"/>
             <ListView x:Name="lstProcesses"
                       ItemsSource="{Binding Items}"
                       VerticalOptions="FillAndExpand"
@@ -29,12 +40,12 @@
                                     Text="{Binding Name}"
                                     LineBreakMode="WordWrap"
                                     Style="{DynamicResource ListItemTextStyle}"
-                                    FontSize="16"/>
+                                    FontSize="Medium"/>
                                 <Label
                                     Text="{Binding Description}"
                                     LineBreakMode="WordWrap"
                                     Style="{DynamicResource ListItemDetailTextStyle}"
-                                    FontSize="13" />
+                                    FontSize="Large" />
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
@@ -43,6 +54,8 @@
             <Button
                 x:Name="btnOpenProcess"
                 Text="OK"
+                TextColor="White"
+                BackgroundColor="Blue"
                 Clicked="btnOpenProcess_Clicked"
                 />
         </StackLayout>

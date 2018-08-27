@@ -20,6 +20,7 @@
                 />
             <ActivityIndicator x:Name="Looper"
                                IsEnabled="True"
+                               Color="Blue"
                                IsRunning="{Binding IsWorking}"
                                IsVisible="{Binding IsWorking}"/>
             <Label x:Name="lblEditor"
@@ -33,6 +34,7 @@
                 />
             <Button
                 x:Name="btnChangeState"
+                BackgroundColor="Blue"
                 Text="{Binding NextState}"
                 IsEnabled="{Binding IsOpen}"
                 Clicked="btnChangeState_Clicked"
@@ -40,6 +42,7 @@
             <Button
                 x:Name="btnEnd"
                 Text="Zakończ"
+                BackgroundColor="Red"
                 IsEnabled="{Binding IsClosable}"
                 Clicked="btnEnd_Clicked"
                 />
