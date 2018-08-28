@@ -18,16 +18,10 @@ namespace TestZXing
         ZXingScannerPage scanPage;
         Place Place;
         PlacesKeeper Keeper;
-        ProcessInPlaceViewModel vm;
-        List<Process> Pros;
 
         public ScanPage()
         {
             InitializeComponent();
-            lblScanResult.IsVisible = false;
-            lblGetOrder.IsVisible = false;
-            lstProcesses.IsVisible = false;
-            btnOpenProcess.IsVisible = false;
             Keeper = new PlacesKeeper();
             Place = new Place();
         }
@@ -36,10 +30,6 @@ namespace TestZXing
         {
             btnScan.IsEnabled = false;
             scanPage = new ZXingScannerPage();
-            lblScanResult.IsVisible = false;
-            lblGetOrder.IsVisible = false;
-            lstProcesses.IsVisible = false;
-            btnOpenProcess.IsVisible = false;
             scanPage.OnScanResult += (result) =>
             {
                 scanPage.IsScanning = false;
@@ -58,17 +48,12 @@ namespace TestZXing
                         }
                         else
                         {
-                            lblScanResult.Text = "Zeskanowano: " + Place.Name;
-                            Pros = new List<Process>();
+                            
+                            List<Process> Pros = new List<Process>();
                             try
                             {
                                 Pros = await Place.GetProcesses(true);
-                                vm = new ProcessInPlaceViewModel(Pros);
-                                BindingContext = vm;
-                                lblScanResult.IsVisible = true;
-                                lblGetOrder.IsVisible = true;
-                                lstProcesses.IsVisible = true;
-                                btnOpenProcess.IsVisible = true;
+                                await Navigation.PushAsync(new ScanningResults(Pros,Place));
                                 
                             }
                             catch (Exception ex)
@@ -131,51 +116,9 @@ namespace TestZXing
             //}
         }
 
-        private async void UpdateList()
-        {
-            Looper.IsVisible = true;
-            Looper.IsRunning = true;
-            Pros = new List<Process>();
-            try
-            {
-                Pros = await Place.GetProcesses(true);
-                vm = new ProcessInPlaceViewModel(Pros);
-                BindingContext = vm;
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
-            }
-            finally
-            {
-                
-            }
-            vm.SelectedItem = null;
-            Looper.IsRunning = false;
-            Looper.IsVisible = false;
-        }
+        
 
-        private async void btnOpenProcess_Clicked(object sender, EventArgs e)
-        {
-            if (vm.SelectedItem != null)
-            {
-                if (vm.SelectedItem.Id == 0)
-                {
-                    //create new
-                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId));
-                }
-                else
-                {
-                    Process process = Pros.Where(p => p.ProcessId == vm.SelectedItem.Id).FirstOrDefault();
-                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId, process));
-                }
-            }
-            else
-            {
-                await DisplayAlert("Nie zaznaczono elementu", "Najpierw zaznacz nowy lub istniejący element listy!", "OK");
-            }
-            
-        }
+        
 
         protected override bool OnBackButtonPressed()
         {
@@ -192,15 +135,9 @@ namespace TestZXing
             return true;
         }
 
-        protected override void OnAppearing()
+        private void btnOpenProcesses_Clicked(object sender, EventArgs e)
         {
-            if (Place != null)
-            {
-                if (Place.PlaceId != 0)
-                {
-                    UpdateList();
-                }
-            }  
+
         }
     }
 }

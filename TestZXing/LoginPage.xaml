@@ -23,11 +23,12 @@
                    HorizontalTextAlignment="Center" 
                    IsPassword="True"
                    TextColor="CadetBlue"></testzxing:BorderfulEntry>
-            <Button x:Name="btnLogin" 
+            <testzxing:RoundedButton x:Name="btnLogin"
+                    Margin="0,20,0,0"
                     Text="Zaloguj"
                     BackgroundColor="DeepSkyBlue"
                     TextColor="White"
-                    Clicked="btnLogin_Clicked"></Button>
+                    Clicked="btnLogin_Clicked"></testzxing:RoundedButton>
             <ActivityIndicator x:Name="Looper"
                                Color="CadetBlue"
                                IsEnabled="True"

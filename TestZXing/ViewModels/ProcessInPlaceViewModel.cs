@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
 using TestZXing.Static;
+using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
 {
@@ -29,7 +30,8 @@ namespace TestZXing.ViewModels
                         ProcessItem pi = new ProcessItem();
                         pi.Id = p.ProcessId;
                         pi.Name = p.ActionTypeName;
-                        pi.Description = "Status: " + p.Status + ". Utworzono " + p.CreatedOn.ToString() + " przez " + p.CreatedByName;
+                        pi.Description = "Utworzono " + p.CreatedOn.ToString() + " przez " + p.CreatedByName;
+                        pi.Status = p.Status;
                         Items.Add(pi);
                     }
                 }catch(Exception ex)
@@ -68,7 +70,7 @@ namespace TestZXing.ViewModels
             string str = "";
             foreach(ProcessItem pi in Items)
             {
-                str += "ID: " + pi.Id + ", Name: " + pi.Name + ", Description: " + pi.Description + "\n";
+                str += "ID: " + pi.Id + ", Name: " + pi.Name + ", Description: " + pi.Description + ", Status: " + pi.Status + "\n";
             }
             return str;
         }
@@ -79,5 +81,20 @@ namespace TestZXing.ViewModels
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Status { get; set; }
+        public Color StatusColor { get
+            {
+                if (Status == "Rozpoczęty")
+                {
+                    return Color.Green;
+                }else if (Status == "Wstrzymany")
+                {
+                    return Color.Yellow;
+                }
+                else
+                {
+                    return Color.Transparent;
+                }
+            } }
     }
 }

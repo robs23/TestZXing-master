@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:testzxing="clr-namespace:TestZXing"
+             x:Class="TestZXing.ScanningResults">
+    <ContentPage.Content>
+        <StackLayout Margin="10,20">
+            <Label x:Name="lblScanResult" 
+                   HorizontalTextAlignment="Center"
+                   TextColor="CadetBlue"
+                   FontSize="Large"/>
+            <ActivityIndicator x:Name="Looper"
+                               IsEnabled="True"
+                               Color="CadetBlue"/>
+            <ListView x:Name="lstProcesses"
+                      ItemsSource="{Binding Items}"
+                      VerticalOptions="FillAndExpand"
+                      HasUnevenRows="True"
+                      SeparatorVisibility="Default"
+                      SelectedItem="{Binding SelectedItem}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="7*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label
+                                        Text="{Binding Name}"
+                                        LineBreakMode="WordWrap"
+                                        Style="{DynamicResource ListItemTextStyle}"
+                                        FontSize="Medium"
+                                        Grid.Row="0"
+                                        Grid.Column="0"/>
+                                    <Label
+                                        Text="{Binding Status}"
+                                        BackgroundColor="{Binding StatusColor}"
+                                        FontSize="Small"
+                                        Grid.Row="0"
+                                        Grid.Column="1"/>
+                                    
+                                </Grid>
+                                <Label
+                                    Text="{Binding Description}"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Small"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <testzxing:RoundedButton
+                x:Name="btnOpenProcess"
+                Text="OK"
+                TextColor="White"
+                BackgroundColor="DeepSkyBlue"
+                Clicked="btnOpenProcess_Clicked"
+                />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
