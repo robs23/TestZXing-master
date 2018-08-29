@@ -44,6 +44,7 @@ namespace TestZXing
                         Place = await Keeper.GetPlace(result.Text);
                         if (Place == null)
                         {
+                            
                             await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", result.Text), "OK");
                         }
                         else

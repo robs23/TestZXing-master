@@ -7,6 +7,7 @@
     <item name="android:windowFullscreen">true</item>
   </style>
 	<style name="MyTheme" parent="MyTheme.Base">
+    <item name="android:colorActivatedHighlight">@android:color/holo_blue_light</item>
 	</style>
 	<!-- Base theme applied no matter what API -->
 	<style name="MyTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">

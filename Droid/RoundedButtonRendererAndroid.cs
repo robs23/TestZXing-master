@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -32,15 +33,39 @@ namespace TestZXing.Droid
 
             if(Control != null)
             {
-                var gd = new GradientDrawable();
-                gd.SetCornerRadius(60f);
+                SetColors();
+            }
+        }
+
+        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            base.OnElementPropertyChanged(sender, e);
+            if (e.PropertyName == nameof(Xamarin.Forms.Button.IsEnabled))
+            {
+                SetColors();
+            }
+        }
+
+        private void SetColors()
+        {
+            var gd = new GradientDrawable();
+            gd.SetCornerRadius(60f);
+            if (Element.IsEnabled)
+            {
                 gd.SetColor(this.Element.BackgroundColor.ToAndroid());
                 gd.SetStroke(6, this.Element.BackgroundColor.ToAndroid());
                 var stateList = new StateListDrawable();
                 var rippleItem = new RippleDrawable(ColorStateList.ValueOf(Android.Graphics.Color.White), gd, null);
-                stateList.AddState(new[] { Android.Resource.Attribute.StateEnabled }, rippleItem);  
+                stateList.AddState(new[] { Android.Resource.Attribute.StateEnabled }, rippleItem);
                 Control.SetBackground(stateList);
             }
+            else
+            {
+                gd.SetColor(Android.Graphics.Color.LightGray);
+                gd.SetStroke(6, Android.Graphics.Color.LightGray);
+                Control.SetBackground(gd);
+            }
+            
         }
     }
 }

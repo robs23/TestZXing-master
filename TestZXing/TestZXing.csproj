@@ -33,6 +33,8 @@
     <Compile Include="BorderfulEntry.cs" />
     <Compile Include="BorderfulPicker.cs" />
     <Compile Include="Classes\DataService.cs" />
+    <Compile Include="CustomEditor.cs" />
+    <Compile Include="CustomLabel.cs" />
     <Compile Include="ICloseApplication.cs" />
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>

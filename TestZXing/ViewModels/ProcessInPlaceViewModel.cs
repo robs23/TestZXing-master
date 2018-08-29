@@ -90,6 +90,8 @@ namespace TestZXing.ViewModels
                 }else if (Status == "Wstrzymany")
                 {
                     return Color.Yellow;
+                }else if(Status == "Zakończony" && Status == "Zrealizowany"){
+                    return Color.Red;
                 }
                 else
                 {

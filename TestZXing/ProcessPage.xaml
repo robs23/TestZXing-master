@@ -1,17 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:testzxing="clr-namespace:TestZXing"
              x:Class="TestZXing.ProcessPage"
              Title="Szczegóły zgłoszenia">
     <ContentPage.Content>
-        <StackLayout VerticalOptions="Center">
+        <StackLayout VerticalOptions="Center" Margin="15,5">
             <Label x:Name="lblDescription"
                    Text="{Binding Description}"
+                   FontSize="Medium"
+                   TextColor="CadetBlue"
                    HorizontalTextAlignment="Center"
                    />
-            <Picker
+            <testzxing:BorderfulPicker
                 x:Name="cmbActionTypes"
-                HorizontalOptions="Center" 
+                TextColor="CadetBlue"
                 Title="Wybierz typ zgłoszenia"
                 ItemsSource="{Binding ActionTypes}"
                 ItemDisplayBinding="{Binding Name}"
@@ -20,26 +23,27 @@
                 />
             <ActivityIndicator x:Name="Looper"
                                IsEnabled="True"
-                               Color="Blue"
+                               Color="CadetBlue"
                                IsRunning="{Binding IsWorking}"
                                IsVisible="{Binding IsWorking}"/>
-            <Label x:Name="lblEditor"
-                   Text="Opisz rezultat poniżej"
-                   HorizontalTextAlignment="Center"
-                   />
-            <Editor
+            <testzxing:CustomEditor
+                Margin="0,10,0,0"
                 x:Name="txtOutput"
-                HeightRequest="250"
+                HeightRequest="220"
+                TextColor="CadetBlue"
+                Placeholder="Tutaj wprowadź opis rezultatu.."
                 Text="{Binding Output, Mode=TwoWay}"
                 />
-            <Button
+            <testzxing:RoundedButton
+                Margin="0,10,0,0"
                 x:Name="btnChangeState"
-                BackgroundColor="Blue"
-                Text="{Binding NextState}"
+                BackgroundColor="DeepSkyBlue"
+                Text="{Binding NextState}"  
                 IsEnabled="{Binding IsOpen}"
                 Clicked="btnChangeState_Clicked"
                 />
-            <Button
+            <testzxing:RoundedButton
+                Margin="0,5,0,0"
                 x:Name="btnEnd"
                 Text="Zakończ"
                 BackgroundColor="Red"

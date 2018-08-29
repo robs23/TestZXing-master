@@ -169,6 +169,8 @@
     <Compile Include="BorderfulEntryRendererAndroid.cs" />
     <Compile Include="BorderfulPickerRendererAndroid.cs" />
     <Compile Include="CloseApplication.cs" />
+    <Compile Include="CustomEditorRendererAndroid.cs" />
+    <Compile Include="CustomLabelRendererAndroid.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

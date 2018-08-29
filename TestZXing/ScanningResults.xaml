@@ -35,11 +35,12 @@
                                         LineBreakMode="WordWrap"
                                         Style="{DynamicResource ListItemTextStyle}"
                                         FontSize="Medium"
+                                        FontAttributes="Bold"
                                         Grid.Row="0"
                                         Grid.Column="0"/>
-                                    <Label
+                                    <testzxing:CustomLabel
                                         Text="{Binding Status}"
-                                        BackgroundColor="{Binding StatusColor}"
+                                        BgColor="{Binding StatusColor}"
                                         FontSize="Small"
                                         Grid.Row="0"
                                         Grid.Column="1"/>
