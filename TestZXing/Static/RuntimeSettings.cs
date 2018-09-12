@@ -20,7 +20,7 @@ namespace TestZXing.Static
         {
             get
             {
-                return "http://jde_api.robs23.webserwer.pl/";
+                return "http://jde_api_test.robs23.webserwer.pl/";
             }
         }
 

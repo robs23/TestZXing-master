@@ -28,6 +28,10 @@ namespace TestZXing.Models
         public bool IsSuccessfull { get; set; }
         public int PlaceId { get; set; }
         public string PlaceName { get; set; }
+        public int? SetId { get; set; }
+        public string SetName { get; set; }
+        public int? AreaId { get; set; }
+        public string AreaName { get; set; }
         public string Output { get; set; }
         public DateTime CreatedOn { get; set; }
         public int CreatedBy { get; set; }

@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:testzxing="clr-namespace:TestZXing"
+             x:Class="TestZXing.ActiveProcesses"
+             x:Name="currentPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <ActivityIndicator x:Name="Looper"
+                               IsEnabled="True"
+                               Color="CadetBlue"
+                               IsRunning="{Binding IsWorking}"
+                               IsVisible="{Binding IsWorking}"/>
+            <ListView
+            x:Name="lstPlaces"
+            ItemsSource="{Binding List}"
+            VerticalOptions="FillAndExpand"
+            IsGroupingEnabled="True"
+            RowHeight="80">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="7*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label
+                                        Text="{Binding Name}"
+                                        LineBreakMode="WordWrap"
+                                        Style="{DynamicResource ListItemTextStyle}"
+                                        FontSize="Medium"
+                                        FontAttributes="Bold"
+                                        Grid.Row="0"
+                                        Grid.Column="0"/>
+                                    <testzxing:CustomLabel
+                                        Text="{Binding Status}"
+                                        BgColor="{Binding StatusColor}"
+                                        FontSize="Small"
+                                        Grid.Row="0"
+                                        Grid.Column="1"/>
+
+                                </Grid>
+                                <Label
+                                Text="{Binding Description}"
+                                LineBreakMode="WordWrap"
+                                Style="{DynamicResource ListItemDetailTextStyle}"
+                                FontSize="Small"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <RelativeLayout Padding="16,8,8,16" HorizontalOptions="FillAndExpand">
+                                <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HeightRequest="140">
+                                    <Label Text="{Binding Name}"
+                                   FontSize="Large"
+                                   FontAttributes="Bold"
+                                   RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1}"
+                                   RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=6}"  />
+                                    <Label Text="{Binding Set}"
+                                   FontSize="Medium"
+                                   RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1}"
+                                   RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=60}"  />
+                                </StackLayout>
+                                <Image x:Name="StateImage" PropertyChanged="StateImage_PropertyChanged"
+                               Source="{Binding StateIcon}" 
+                               RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.8}"/>
+                                <RelativeLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={x:Reference currentPage}, Path=BindingContext.HeaderClickCommand}"  NumberOfTapsRequired="1" CommandParameter="{Binding .}"/>
+                                </RelativeLayout.GestureRecognizers>
+                            </RelativeLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.GroupHeaderTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

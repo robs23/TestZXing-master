@@ -136,9 +136,9 @@ namespace TestZXing
             return true;
         }
 
-        private void btnOpenProcesses_Clicked(object sender, EventArgs e)
+        private async void btnOpenProcesses_Clicked(object sender, EventArgs e)
         {
-
+            await Application.Current.MainPage.Navigation.PushAsync(new ActiveProcesses(new ActiveProcessesViewModel()));
         }
     }
 }

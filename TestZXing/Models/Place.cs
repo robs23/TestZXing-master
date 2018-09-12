@@ -31,6 +31,7 @@ namespace TestZXing.Models
         public int TenantId { get; set; }
         public string TenantName { get; set; }
         public string PlaceToken { get; set; }
+        public List<Process> Processes { get; set; } = new List<Process>();
 
         public async Task<List<Process>> GetProcesses(bool active = false)
         {
