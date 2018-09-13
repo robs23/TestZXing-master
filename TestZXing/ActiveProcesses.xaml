@@ -13,11 +13,12 @@
                                IsRunning="{Binding IsWorking}"
                                IsVisible="{Binding IsWorking}"/>
             <ListView
-            x:Name="lstPlaces"
-            ItemsSource="{Binding List}"
-            VerticalOptions="FillAndExpand"
-            IsGroupingEnabled="True"
-            RowHeight="80">
+                x:Name="lstPlaces"
+                ItemsSource="{Binding List}"
+                VerticalOptions="FillAndExpand"
+                IsGroupingEnabled="True"
+                RowHeight="80"
+                SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -58,8 +59,12 @@
                 <ListView.GroupHeaderTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <RelativeLayout Padding="16,8,8,16" HorizontalOptions="FillAndExpand">
-                                <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HeightRequest="140">
+                            <RelativeLayout Padding="16,8,8,16" HorizontalOptions="FillAndExpand" BackgroundColor="GhostWhite">
+                                <Image x:Name="StateImage" PropertyChanged="StateImage_PropertyChanged"
+                                    Source="{Binding StateIcon}" 
+                                    RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.8}"
+                                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.3}"/>
+                                <StackLayout Padding="16,8,8,16" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HeightRequest="140">
                                     <Label Text="{Binding Name}"
                                    FontSize="Large"
                                    FontAttributes="Bold"
@@ -70,9 +75,7 @@
                                    RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1}"
                                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=60}"  />
                                 </StackLayout>
-                                <Image x:Name="StateImage" PropertyChanged="StateImage_PropertyChanged"
-                               Source="{Binding StateIcon}" 
-                               RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.8}"/>
+                                
                                 <RelativeLayout.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Source={x:Reference currentPage}, Path=BindingContext.HeaderClickCommand}"  NumberOfTapsRequired="1" CommandParameter="{Binding .}"/>
                                 </RelativeLayout.GestureRecognizers>
@@ -81,6 +84,14 @@
                     </DataTemplate>
                 </ListView.GroupHeaderTemplate>
             </ListView>
+            <testzxing:RoundedButton
+                x:Name="btnOpenProcess"
+                Text="OK"
+                TextColor="White"
+                Margin="5,15,5,5"
+                BackgroundColor="DeepSkyBlue"
+                Clicked="btnOpenProcess_Clicked"
+                />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

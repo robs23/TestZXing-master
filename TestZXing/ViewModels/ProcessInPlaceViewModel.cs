@@ -16,15 +16,13 @@ namespace TestZXing.ViewModels
     {
         public ObservableCollection<ProcessItem> Items { get; set; }
 
-        public ProcessInPlaceViewModel(List<Process> nItems, bool editable = true)
+        public ProcessInPlaceViewModel(List<Process> nItems)
         {
             Items = new ObservableCollection<ProcessItem>();
-            if (editable)
-            {
-                //Add "New" item only if the list editable
-                ProcessItem pii = new ProcessItem { Id = 0, Name = "Nowy", Description = "Dodaj nowe zgłoszenie" };
-                Items.Add(pii);
-            }
+
+            ProcessItem pii = new ProcessItem { Id = 0, Name = "Nowy", Description = "Dodaj nowe zgłoszenie" };
+            Items.Add(pii);
+
             
             if (nItems.Any())
             {

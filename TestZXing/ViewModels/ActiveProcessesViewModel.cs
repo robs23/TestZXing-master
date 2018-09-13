@@ -17,39 +17,55 @@ using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
 {
-    public class ActiveProcessesViewModel
+    public class ActiveProcessesViewModel : INotifyPropertyChanged
     {
         public ObservableRangeCollection<PlaceViewModel> List { get; private set; }
         = new ObservableRangeCollection<PlaceViewModel>();
 
-        public ICommand LoadDataCommand { get; private set; }
         public ICommand HeaderClickCommand { get; private set; }
         private bool _IsWorking { get; set; }
 
         public ActiveProcessesViewModel()
         {
-            this.LoadDataCommand = new Command(async () => await ExecuteLoadDataCommand());
             this.HeaderClickCommand = new Command<PlaceViewModel>((item) => ExecuteHeaderClickCommand(item));
         }
 
-        private async Task ExecuteLoadDataCommand()
+        public async Task<string> ExecuteLoadDataCommand()
         {
+            string _Result = "OK";
             string url = RuntimeSettings.ApiAddress + "GetProcessesExt?token=" + RuntimeSettings.TenantToken;
             DataService ds = new DataService();
-            List<Process> Items;
+            List<Process> Items = new List<Process>();
             List<Place> Places;
 
             IsWorking = true;
+
+            if (List.Any())
+            {
+                //if there are any existent items, delete them
+                List.Clear();
+            }
 
             try
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
-                string output = await ds.readStream(await httpClient.SendAsync(request));
-                Items = JsonConvert.DeserializeObject<List<Process>>(output);
+                var responseMsg = await httpClient.SendAsync(request);
+                string output = await ds.readStream(responseMsg);
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    Items = JsonConvert.DeserializeObject<List<Process>>(output);
+                }
+                else
+                {
+                    _Result = responseMsg.ReasonPhrase;
+                }
+                
             }
             catch (Exception ex)
             {
+                IsWorking = false;  
+                _Result = "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz";
                 throw;
             }
 
@@ -93,11 +109,16 @@ namespace TestZXing.ViewModels
                 IsWorking = false;
             }
 
+            return _Result;
         }
 
         private void ExecuteHeaderClickCommand(PlaceViewModel item)
         {
             item.Expanded = !item.Expanded;
+            if (!item.Expanded)
+            {
+                SelectedItem = null;
+            }
         }
 
         public bool IsWorking
@@ -111,6 +132,23 @@ namespace TestZXing.ViewModels
                 if (_IsWorking != value)
                 {
                     _IsWorking = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private ProcessViewModel _selectedItem { get; set; }
+        public ProcessViewModel SelectedItem
+        {
+            get
+            {
+                return _selectedItem;
+            }
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
                     OnPropertyChanged();
                 }
             }

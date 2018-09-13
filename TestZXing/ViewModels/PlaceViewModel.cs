@@ -18,7 +18,7 @@ namespace TestZXing.ViewModels
         private ObservableRangeCollection<ProcessViewModel> Processes =
             new ObservableRangeCollection<ProcessViewModel>();
 
-        public PlaceViewModel(Place place, bool expanded = true)
+        public PlaceViewModel(Place place, bool expanded = false)
         {
             this._place = place;
             this._expanded = expanded;
