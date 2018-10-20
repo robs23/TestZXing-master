@@ -32,8 +32,10 @@ namespace TestZXing.Models
         {
             try
             {
+                //App.Current.Properties.Add("UserId", UserId);
+                //App.Current.Properties.Add("UserExpirationTime")
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
-                string url = RuntimeSettings.ApiAddress + "LogIn?token=" + RuntimeSettings.TenantToken + "&id=";
+                string url = Secrets.ApiAddress + "LogIn?token=" + Secrets.TenantToken + "&id=";
                 var serializedProduct = JsonConvert.SerializeObject(this);
                 var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
                 var result = await httpClient.PutAsync(String.Format("{0}{1}", new Uri(url), this.UserId), content);

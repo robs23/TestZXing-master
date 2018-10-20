@@ -26,7 +26,7 @@ namespace TestZXing.Models
 
         public async Task Add()
         {
-            string url = RuntimeSettings.ApiAddress + "CreateError?token=" + RuntimeSettings.TenantToken;
+            string url = Secrets.ApiAddress + "CreateError?token=" + Secrets.TenantToken;
 
             try
             {

@@ -16,7 +16,7 @@ namespace TestZXing.Models
 
         public async Task Save()
         {
-            string url = RuntimeSettings.ApiAddress + "CreateError?token=" + RuntimeSettings.TenantToken;
+            string url = Secrets.ApiAddress + "CreateError?token=" + Secrets.TenantToken;
             Error NewError = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Save", Time = DateTime.Now };
 
             var ItemsSerialized = JsonConvert.SerializeObject(Items);

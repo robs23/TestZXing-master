@@ -23,7 +23,7 @@ namespace TestZXing.Models
 
         public async Task Reload()
         {
-            string url = RuntimeSettings.ApiAddress + "GetPlaces?token=" + RuntimeSettings.TenantToken;
+            string url = Secrets.ApiAddress + "GetPlaces?token=" + Secrets.TenantToken;
             DataService ds = new DataService();
 
             try
@@ -42,7 +42,7 @@ namespace TestZXing.Models
 
         public async Task<Place> GetPlace(string placeToken)
         {
-            string url = RuntimeSettings.ApiAddress + "GetPlace?token=" + RuntimeSettings.TenantToken + "&placeToken=" + placeToken;
+            string url = Secrets.ApiAddress + "GetPlace?token=" + Secrets.TenantToken + "&placeToken=" + placeToken;
             DataService ds = new DataService();
             Place nPlace = new Place();
 
@@ -69,6 +69,38 @@ namespace TestZXing.Models
                 throw;
             }
             return nPlace;
+        }
+
+        public async Task<List<Place>> GetPlacesBySetName(string name)
+        {
+            string url = Secrets.ApiAddress + "GetPlacesBySetName?token=" + Secrets.TenantToken + "&name=" + name + "&UserId=" + RuntimeSettings.UserId;
+            DataService ds = new DataService();
+            List<Place> Places = new List<Place>();
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var responseMsg = await httpClient.SendAsync(request);
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    string output = await ds.readStream(responseMsg);
+                    Places = JsonConvert.DeserializeObject<List<Place>>(output);
+                }
+                else
+                {
+                    Places = null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Places = null;
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "GetPlacesBySetName", Time = DateTime.Now, Message = ex.Message };
+                throw;
+            }
+
+            return Places;
         }
     }
 }

@@ -4,7 +4,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:testzxing="clr-namespace:TestZXing"
              x:Class="TestZXing.ActiveProcesses"
-             x:Name="currentPage">
+             x:Name="currentPage"
+             Title="Otwarte zgłoszenia">
     <ContentPage.Content>
         <StackLayout>
             <ActivityIndicator x:Name="Looper"

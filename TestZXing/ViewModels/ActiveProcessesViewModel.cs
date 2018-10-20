@@ -33,7 +33,7 @@ namespace TestZXing.ViewModels
         public async Task<string> ExecuteLoadDataCommand()
         {
             string _Result = "OK";
-            string url = RuntimeSettings.ApiAddress + "GetProcessesExt?token=" + RuntimeSettings.TenantToken;
+            string url = Secrets.ApiAddress + "GetProcessesExt?token=" + Secrets.TenantToken;
             DataService ds = new DataService();
             List<Process> Items = new List<Process>();
             List<Place> Places;

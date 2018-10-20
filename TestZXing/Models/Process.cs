@@ -114,7 +114,7 @@ namespace TestZXing.Models
 
         public async Task<string> Add()
         {
-            string url = RuntimeSettings.ApiAddress + "CreateProcess?token=" + RuntimeSettings.TenantToken + "&UserId="+ RuntimeSettings.UserId;
+            string url = Secrets.ApiAddress + "CreateProcess?token=" + Secrets.TenantToken + "&UserId="+ RuntimeSettings.UserId;
             string _Result = "OK";
 
             try
@@ -147,7 +147,7 @@ namespace TestZXing.Models
 
         public async Task<string> Edit()
         {
-            string url = RuntimeSettings.ApiAddress + "EditProcess?token=" + RuntimeSettings.TenantToken + "&id={0}&UserId={1}";
+            string url = Secrets.ApiAddress + "EditProcess?token=" + Secrets.TenantToken + "&id={0}&UserId={1}";
             string _Result = "OK";
 
             try

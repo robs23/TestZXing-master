@@ -30,6 +30,14 @@ namespace TestZXing
             BindingContext = vm;
         }
 
+        public ProcessPage(List<Place> Places, MesString ms)
+        {
+            //From MES
+            InitializeComponent();
+            vm = new ProcessPageViewModel(Places, ms);
+            BindingContext = vm;
+        }
+
         private async void btnEnd_Clicked(object sender, EventArgs e)
         {
             bool _IsSuccess = false;

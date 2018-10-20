@@ -4,7 +4,7 @@
              xmlns:testzxing="clr-namespace:TestZXing"
              NavigationPage.HasBackButton="False"
              x:Class="TestZXing.ScanPage"
-             Title="Skanowanie">
+             Title="Menu">
     <ContentPage.Content>
         <StackLayout Margin="15,20">
             <testzxing:RoundedButton x:Name="btnScan" 

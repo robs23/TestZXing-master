@@ -23,7 +23,7 @@ namespace TestZXing.Models
 
         public async Task Reload()
         {
-            string url = RuntimeSettings.ApiAddress + "GetActionTypes?token=" + RuntimeSettings.TenantToken;
+            string url = Secrets.ApiAddress + "GetActionTypes?token=" + Secrets.TenantToken;
             DataService ds = new DataService();
 
             try
@@ -42,7 +42,28 @@ namespace TestZXing.Models
 
         public async Task<ActionType> GetActionType(int id)
         {
-            string url = RuntimeSettings.ApiAddress + "GetActionType?token=" + RuntimeSettings.TenantToken + "&id=" + id.ToString();
+            string url = Secrets.ApiAddress + "GetActionType?token=" + Secrets.TenantToken + "&id=" + id.ToString();
+            DataService ds = new DataService();
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                string output = await ds.readStream(await httpClient.SendAsync(request));
+                ActionType Item = new ActionType();
+                Item = JsonConvert.DeserializeObject<ActionType>(output);
+                return Item;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<ActionType> GetActionTypeByName(string name)
+        {
+            string url = Secrets.ApiAddress + "GetActionTypeByName?token=" + Secrets.TenantToken + "&name=" + name + "&UserId=" + RuntimeSettings.UserId;
             DataService ds = new DataService();
 
             try

@@ -48,6 +48,11 @@ namespace TestZXing.ViewModels
 
         }
 
+        public ProcessPageViewModel(List<Place> places, MesString ms)
+        {
+            IsNew = true;
+        }
+
         public async Task Initialize(int AtId = -1)
         {
             try

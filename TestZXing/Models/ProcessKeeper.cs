@@ -23,7 +23,7 @@ namespace TestZXing.Models
 
         public async Task Reload()
         {
-            string url = RuntimeSettings.ApiAddress + "GetProcesses?token=" + RuntimeSettings.TenantToken;
+            string url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken;
             DataService ds = new DataService();
 
             try
@@ -42,7 +42,7 @@ namespace TestZXing.Models
 
         public async Task<Process> GetProcess(int id)
         {
-            string url = RuntimeSettings.ApiAddress + "GetProcess?token=" + RuntimeSettings.TenantToken + "&id=" + id.ToString();
+            string url = Secrets.ApiAddress + "GetProcess?token=" + Secrets.TenantToken + "&id=" + id.ToString();
             DataService ds = new DataService();
 
             try

@@ -24,7 +24,7 @@ namespace TestZXing.Models
 
         public async Task<string> Reload()
         {
-            string url = RuntimeSettings.ApiAddress + "GetMechanics?token=" + RuntimeSettings.TenantToken;
+            string url = Secrets.ApiAddress + "GetMechanics?token=" + Secrets.TenantToken;
             DataService ds = new DataService();
             string _Result = "OK";
             try
