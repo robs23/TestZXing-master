@@ -41,7 +41,8 @@ namespace TestZXing
         private async void btnEnd_Clicked(object sender, EventArgs e)
         {
             bool _IsSuccess = false;
-            if (vm.Validate())
+            string _Res = vm.Validate(true);
+            if (_Res=="OK")
             {
                 if (await DisplayAlert("Zrealizowano?", "Czy udało się zrealizować zlecenie?", "Tak", "Nie"))
                 {
@@ -59,13 +60,15 @@ namespace TestZXing
             }
             else
             {
-                await DisplayAlert("Brak typu zgłoszenia", "Nie wybrano typu zgłoszenia! Najpierw wybierz typ zgłoszenia z listy rozwijanej", "OK");
+
+                await DisplayAlert("Dane niepełne", _Res , "OK");
             }
         }
 
         private async void btnChangeState_Clicked(object sender, EventArgs e)
         {
-            if (vm.Validate())
+            string _Res = vm.Validate();
+            if (_Res == "OK")
             {
                 string _Result = await vm.Save();
                 if (_Result == "OK")
@@ -79,7 +82,7 @@ namespace TestZXing
             }
             else
             {
-                await DisplayAlert("Brak typu zgłoszenia", "Nie wybrano typu zgłoszenia! Najpierw wybierz typ zgłoszenia z listy rozwijanej", "OK");
+                await DisplayAlert("Dane niepełne", _Res, "OK");
             }
         }
 

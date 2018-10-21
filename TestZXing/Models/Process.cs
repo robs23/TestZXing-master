@@ -38,6 +38,8 @@ namespace TestZXing.Models
         public string CreatedByName { get; set; }
         public int TenantId { get; set; }
         public string TenantName { get; set; }
+        public string InitialDiagnosis { get; set; }
+        public string RepairActions { get; set; }
         public string Status
         {
             get

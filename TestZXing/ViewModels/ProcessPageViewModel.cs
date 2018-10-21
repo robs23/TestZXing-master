@@ -27,6 +27,7 @@ namespace TestZXing.ViewModels
         public bool IsSaved { get; set; }
         public bool _IsNew { get; set; }
         private bool _IsWorking { get; set; }
+        private bool _IsMesRelated { get; set; }
         public Process _this { get; set; }
 
         public ProcessPageViewModel(int PlaceId)
@@ -115,6 +116,31 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public bool IsMesRelated
+        {
+            get
+            {
+                return _IsMesRelated;
+            }
+            set
+            {
+                if(_IsMesRelated != value)
+                {
+                    _IsMesRelated = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsNotMesRelated
+        {
+            get
+            {
+                return !IsMesRelated;
+            }
+        }
+
+
         public bool IsClosable
         {
             get
@@ -174,6 +200,38 @@ namespace TestZXing.ViewModels
                 if(_this.Output != value)
                 {
                     _this.Output = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string InitialDiagnosis
+        {
+            get
+            {
+                return _this.InitialDiagnosis;
+            }
+            set
+            {
+                if(_this.InitialDiagnosis != value)
+                {
+                    _this.InitialDiagnosis = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string RepairActions
+        {
+            get
+            {
+                return _this.RepairActions;
+            }
+            set
+            {
+                if (_this.RepairActions != value)
+                {
+                    _this.RepairActions = value;
                     OnPropertyChanged();
                 }
             }
@@ -302,14 +360,33 @@ namespace TestZXing.ViewModels
             
         }
 
-        public bool Validate()
+        public string Validate(bool EndValidation = false)
         {
-            bool _bool = false;
+            string _res = "OK";
             if (_this.ActionTypeId != 0)
             {
-                _bool = true;
+                if (EndValidation)
+                {
+                    if (IsMesRelated)
+                    {
+                        if(_this.RepairActions.Length == 0)
+                        {
+                            _res = "Pole Czynności naprawcze nie może być puste. Uzupełnij opis czynności naprawczych!";
+                        }else if (_this.InitialDiagnosis.Length == 0)
+                        {
+                            _res = "Pole Wstępna diagnoza nie może być puste. Uzupełnij opis wstępnej diagnozy!";
+                        }else if(_this.PlaceId == 0)
+                        {
+                            _res = "Nie wybrano zasobu! Wybierz zasób z listy rozwijanej!";
+                        }
+                    }
+                }
+                else
+                {
+                    _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
+                }
             }
-            return _bool;
+            return _res;
         }
 
         public async Task<string> End(bool isSuccess = false)
