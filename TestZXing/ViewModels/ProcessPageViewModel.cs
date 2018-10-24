@@ -24,10 +24,24 @@ namespace TestZXing.ViewModels
                 OnPropertyChanged();
             }
         }
+        public ObservableCollection<Place> _places { get; set; }
+        public ObservableCollection<Place> Places
+        {
+            get
+            {
+                return _places;
+            }
+            set
+            {
+                _places = value;
+                OnPropertyChanged();
+            }
+        }
         public bool IsSaved { get; set; }
         public bool _IsNew { get; set; }
         private bool _IsWorking { get; set; }
         private bool _IsMesRelated { get; set; }
+        public MesString MesString { get; set; }
         public Process _this { get; set; }
 
         public ProcessPageViewModel(int PlaceId)
@@ -49,15 +63,22 @@ namespace TestZXing.ViewModels
 
         }
 
-        public ProcessPageViewModel(List<Place> places, MesString ms)
+        public ProcessPageViewModel(MesString ms)
         {
+            _this = new Process();
+            _this.Reason = ms.Reason;
+            _this.MesDate = ms.MesDate;
+            _this.MesId = ms.MesId;
             IsNew = true;
+            IsMesRelated = true;
+            MesString = ms;
         }
 
-        public async Task Initialize(int AtId = -1)
+        public async Task Initialize(int AtId = -1, int PlId = -1)
         {
             try
             {
+                //load action types to combobox
                 int index=-1;
                 int i = 0;
                 _selectedIndex = -1;
@@ -76,6 +97,27 @@ namespace TestZXing.ViewModels
                 if (AtId >= 0 && index >=0)
                 {
                     SelectedIndex = index;
+                }
+
+                //load places to combobox
+                if (_IsMesRelated)
+                {
+                    index = -1;
+                    i = 0;
+                    _selectedPlaceIndex = -1;
+                    Places = new ObservableCollection<Place>();
+                    PlacesKeeper pKeeper = new PlacesKeeper();
+                    List<Place> _p = new List<Place>();
+                    _p = await pKeeper.GetPlacesBySetName(MesString.SetName);
+                    foreach(Place p in _p)
+                    {
+                        Places.Add(p);
+                        if(p.PlaceId == PlId)
+                        {
+                            index = i;
+                        }
+                        i++;
+                    }
                 }
             }
             catch(Exception ex)
@@ -264,6 +306,33 @@ namespace TestZXing.ViewModels
             }
         }
 
+        private int _selectedPlaceIndex { get; set; }
+
+        public int SelectedPlaceIndex
+        {
+            get
+            {
+                return _selectedPlaceIndex;
+            }
+            set
+            {
+                try
+                {
+                    if(_selectedPlaceIndex != value)
+                    {
+                        _selectedPlaceIndex = value;
+                        _this.PlaceId = Places[value].PlaceId;
+                        Place = Places[value];
+                        OnPropertyChanged();
+                    }
+                }catch(Exception ex)
+                {
+                    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "SelectedIndex", Time = DateTime.Now, Message = ex.Message };
+                    Error.Add();
+                }
+            }
+        }
+
         private ActionType _type { get; set; }
 
         public ActionType Type
@@ -277,6 +346,24 @@ namespace TestZXing.ViewModels
                 if (_type != value)
                 {
                     _type = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Place _place { get; set; }
+
+        public Place Place
+        {
+            get
+            {
+                return _place;
+            }
+            set
+            {
+                if(_place != value)
+                {
+                    _place = value;
                     OnPropertyChanged();
                 }
             }
@@ -363,7 +450,7 @@ namespace TestZXing.ViewModels
         public string Validate(bool EndValidation = false)
         {
             string _res = "OK";
-            if (_this.ActionTypeId != 0)
+            if (_this.ActionTypeId == 0)
             {
                 if (EndValidation)
                 {
@@ -385,6 +472,10 @@ namespace TestZXing.ViewModels
                 {
                     _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
                 }
+            }
+            if (_this.PlaceId == 0)
+            {
+                _res = "Nie wybrano zasobu! Wybierz zasób z listy rozwijanej!";
             }
             return _res;
         }

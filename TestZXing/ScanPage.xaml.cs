@@ -59,20 +59,10 @@ namespace TestZXing
                                     ms.ActionTypeName = mesStr[3];
                                     ms.Reason = mesStr[6];
 
-                                    // you'got all you need, try to get list of places for scanned Set
-                                    List<Place> Places = new List<Place>();
-                                    Places = await Keeper.GetPlacesBySetName(ms.SetName);
-                                    if (Places == null)
-                                    {
-                                        await DisplayAlert("Nie znaleziono zasobu", string.Format("Nie udało się znaleźć zasobu dla instalacji {0}", ms.SetName), "OK");
-                                    }
-                                    else
-                                    {
-                                        //first 'get' scanned action type just to make sure she'll be added to the list if missing
-                                        ActionType at = await new ActionTypesKeeper().GetActionTypeByName(ms.ActionTypeName);
-                                        //pass everything to ProcessPage.xaml
-                                        await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Places,ms));
-                                    }
+                                    //first 'get' scanned action type just to make sure she'll be added to the list if missing
+                                    ActionType at = await new ActionTypesKeeper().GetActionTypeByName(ms.ActionTypeName);
+                                    //pass everything to ProcessPage.xaml
+                                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms));
                                 }
                                 catch(Exception ex)
                                 {

@@ -19,7 +19,7 @@
                 ItemsSource="{Binding Places}"
                 ItemDisplayBinding="{Binding Name}"
                 SelectedItem="{Binding Place, Mode=TwoWay}"
-                SelectedIndex="{Binding SelectedPlace}"
+                SelectedIndex="{Binding SelectedPlaceIndex}"
                 IsEnabled="{Binding IsMesRelated}"
                 IsVisible="{Binding IsMesRelated}"
                 />
