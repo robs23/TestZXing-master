@@ -16,6 +16,9 @@ namespace TestZXing.Models
         public string CreatedByName { get; set; }
         public int TenantId { get; set; }
         public string TenantName { get; set; }
+        public bool? ShowInPlanning { get; set; }
+        public bool? MesSync { get; set; }
+        public bool? RequireInitialDiagnosis { get; set; }
 
         public override string ToString()
         {

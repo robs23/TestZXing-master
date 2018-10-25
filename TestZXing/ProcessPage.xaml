@@ -44,8 +44,8 @@
                 TextColor="CadetBlue"
                 Placeholder="Tutaj wprowadź opis rezultatu.."
                 Text="{Binding Output, Mode=TwoWay}"
-                IsEnabled="{Binding IsNotMesRelated}"
-                IsVisible="{Binding IsNotMesRelated}"
+                IsEnabled="{Binding DoesntRequireInitialDiagnosis}"
+                IsVisible="{Binding DoesntRequireInitialDiagnosis}"
                 />
             <testzxing:CustomEditor
                 Margin="0,10,0,0"
@@ -54,8 +54,8 @@
                 TextColor="CadetBlue"
                 Placeholder="Tutaj wprowadź wstępne rozpoznanie.."
                 Text="{Binding InitialDiagnosis, Mode=TwoWay}"
-                IsEnabled="{Binding IsMesRelated}"
-                IsVisible="{Binding IsMesRelated}"
+                IsEnabled="{Binding RequireInitialDiagnosis}"
+                IsVisible="{Binding RequireInitialDiagnosis}"
                 />
             <testzxing:CustomEditor
                 Margin="0,10,0,0"
@@ -64,8 +64,8 @@
                 TextColor="CadetBlue"
                 Placeholder="Tutaj wprowadź czynności naprawcze.."
                 Text="{Binding RepairActions, Mode=TwoWay}"
-                IsEnabled="{Binding IsMesRelated}"
-                IsVisible="{Binding IsMesRelated}"
+                IsEnabled="{Binding RequireInitialDiagnosis}"
+                IsVisible="{Binding RequireInitialDiagnosis}"
                 />
             <testzxing:RoundedButton
                 Margin="0,10,0,0"

@@ -59,8 +59,6 @@ namespace TestZXing
                                     ms.ActionTypeName = mesStr[3];
                                     ms.Reason = mesStr[6];
 
-                                    //first 'get' scanned action type just to make sure she'll be added to the list if missing
-                                    ActionType at = await new ActionTypesKeeper().GetActionTypeByName(ms.ActionTypeName);
                                     //pass everything to ProcessPage.xaml
                                     await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms));
                                 }

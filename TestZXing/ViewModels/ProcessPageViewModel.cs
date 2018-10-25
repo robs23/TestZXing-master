@@ -41,6 +41,7 @@ namespace TestZXing.ViewModels
         public bool _IsNew { get; set; }
         private bool _IsWorking { get; set; }
         private bool _IsMesRelated { get; set; }
+        private bool _RequireInitialDiagnosis { get; set; }
         public MesString MesString { get; set; }
         public Process _this { get; set; }
 
@@ -78,6 +79,13 @@ namespace TestZXing.ViewModels
         {
             try
             {
+                //if IsMesRelated then first 'get' scanned action type just to make sure she'll be added to the list if missing
+                ActionType nAt = new ActionType();
+                if (IsMesRelated)
+                {
+                    nAt = await new ActionTypesKeeper().GetActionTypeByName(MesString.ActionTypeName);
+                }
+                
                 //load action types to combobox
                 int index=-1;
                 int i = 0;
@@ -91,10 +99,16 @@ namespace TestZXing.ViewModels
                     if (at.ActionTypeId == AtId)
                     {
                         index = i;
+                    }else if (IsMesRelated)
+                    {
+                        if (at.ActionTypeId == nAt.ActionTypeId)
+                        {
+                            index = i;
+                        }
                     }
                     i++;
                 }
-                if (AtId >= 0 && index >=0)
+                if ((AtId >= 0 && index >=0) || (IsMesRelated && index >=0))
                 {
                     SelectedIndex = index;
                 }
@@ -174,14 +188,30 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public bool IsNotMesRelated
+        public bool RequireInitialDiagnosis
         {
             get
             {
-                return !IsMesRelated;
+                return _RequireInitialDiagnosis;
+            }
+            set
+            {
+                if (_RequireInitialDiagnosis != value)
+                {
+                    _RequireInitialDiagnosis = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(DoesntRequireInitialDiagnosis));
+                }
             }
         }
 
+        public bool DoesntRequireInitialDiagnosis
+        {
+            get
+            {
+                return !RequireInitialDiagnosis;
+            }
+        }
 
         public bool IsClosable
         {
@@ -296,6 +326,15 @@ namespace TestZXing.ViewModels
                         _selectedIndex = value;
                         _this.ActionTypeId = ActionTypes[value].ActionTypeId;
                         Type = ActionTypes[value];
+                        if ((bool)ActionTypes[value].RequireInitialDiagnosis)
+                        {
+                            //if chosen action type has RequireInitialDiagnosis=true, change the property so the bound view is changed
+                            RequireInitialDiagnosis = true;
+                        }
+                        else
+                        {
+                            RequireInitialDiagnosis = false;
+                        }
                         OnPropertyChanged();
                     }
                 }catch(Exception ex)
@@ -450,33 +489,54 @@ namespace TestZXing.ViewModels
         public string Validate(bool EndValidation = false)
         {
             string _res = "OK";
-            if (_this.ActionTypeId == 0)
+            if (EndValidation)
             {
-                if (EndValidation)
+                if (RequireInitialDiagnosis)
                 {
-                    if (IsMesRelated)
+                    if (string.IsNullOrEmpty(_this.InitialDiagnosis))
                     {
-                        if(_this.RepairActions.Length == 0)
-                        {
-                            _res = "Pole Czynności naprawcze nie może być puste. Uzupełnij opis czynności naprawczych!";
-                        }else if (_this.InitialDiagnosis.Length == 0)
-                        {
-                            _res = "Pole Wstępna diagnoza nie może być puste. Uzupełnij opis wstępnej diagnozy!";
-                        }else if(_this.PlaceId == 0)
-                        {
-                            _res = "Nie wybrano zasobu! Wybierz zasób z listy rozwijanej!";
-                        }
+                        _res = "Pole Wstępne rozpoznanie nie może być puste. Uzupełnij wstępne rozpoznanie!";
+                    }
+                    else if (string.IsNullOrEmpty(_this.RepairActions))
+                    {
+                        _res = "Pole Czynności naprawcze nie może być puste. Uzupełnij opis czynności naprawczych!";
                     }
                 }
-                else
+                if (IsMesRelated)
+                {
+                    if (_this.PlaceId == 0)
+                    {
+                        _res = "Nie wybrano zasobu! Wybierz zasób z listy rozwijanej!";
+                    }
+                }
+                if (_this.ActionTypeId == 0)
                 {
                     _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
                 }
             }
-            if (_this.PlaceId == 0)
+            else
             {
-                _res = "Nie wybrano zasobu! Wybierz zasób z listy rozwijanej!";
+                if (RequireInitialDiagnosis)
+                {
+                    if (string.IsNullOrEmpty(_this.InitialDiagnosis))
+                    {
+                        _res = "Pole Wstępne rozpoznanie nie może być puste. Uzupełnij wstępne rozpoznanie!";
+                    }
+                }
+                if (IsMesRelated)
+                {
+                    if (_this.PlaceId == 0)
+                    {
+                        _res = "Nie wybrano zasobu! Wybierz zasób z listy rozwijanej!";
+                    }
+                }
+                if (_this.ActionTypeId == 0)
+                {
+                    _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
+                }
             }
+            
+            
             return _res;
         }
 
