@@ -60,6 +60,11 @@ namespace TestZXing.ViewModels
             _this = Process;
             _this.PlaceId = PlaceId;
             IsNew = false;
+            if (!string.IsNullOrEmpty(_this.MesId))
+            {
+                IsMesRelated = true;
+                MesString = new MesString { SetName = _this.SetName, ActionTypeName = _this.ActionTypeName, MesId = _this.MesId, MesDate = _this.MesDate, Reason = _this.Reason };
+            }
             //Initialize(_this.ActionTypeId);
 
         }
@@ -75,7 +80,17 @@ namespace TestZXing.ViewModels
             MesString = ms;
         }
 
-        public async Task Initialize(int AtId = -1, int PlId = -1)
+        public ProcessPageViewModel(MesString ms, Process process)
+        {
+            _this = process;
+            _this.Reason = ms.Reason;
+            _this.MesDate = ms.MesDate;
+            IsNew = false;
+            IsMesRelated = true;
+            MesString = ms;
+        }
+
+        public async Task Initialize(int AtId = -1)
         {
             try
             {
@@ -126,12 +141,16 @@ namespace TestZXing.ViewModels
                     foreach(Place p in _p)
                     {
                         Places.Add(p);
-                        if(p.PlaceId == PlId)
+                        if(p.PlaceId == _this.PlaceId)
                         {
                             index = i;
                         }
                         i++;
                     }
+                }
+                if (IsMesRelated && index >= 0)
+                {
+                    SelectedPlaceIndex = index;
                 }
             }
             catch(Exception ex)

@@ -32,11 +32,22 @@ namespace TestZXing
 
         public ProcessPage(MesString ms)
         {
-            //From MES
+            //From MES, new one
             InitializeComponent();
             vm = new ProcessPageViewModel(ms);
             BindingContext = vm;
         }
+
+        public ProcessPage(MesString ms, Process Process)
+        {
+            //From MES, existing
+            InitializeComponent();
+            vm = new ProcessPageViewModel(ms, Process);
+            BindingContext = vm;
+        }
+
+
+
 
         private async void btnEnd_Clicked(object sender, EventArgs e)
         {
@@ -97,14 +108,8 @@ namespace TestZXing
                 }
                 else
                 {
-                    if (vm.IsMesRelated)
-                    {
-                        await vm.Initialize(vm._this.ActionTypeId, vm._this.PlaceId);
-                    }
-                    else
-                    {
-                        await vm.Initialize(vm._this.ActionTypeId);
-                    }
+
+                    await vm.Initialize(vm._this.ActionTypeId);
                 }
                 BindingContext = vm;
 

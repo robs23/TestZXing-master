@@ -57,10 +57,21 @@ namespace TestZXing
                                     ms.MesDate = DateTime.Parse(mesStr[1]);
                                     ms.SetName = mesStr[2];
                                     ms.ActionTypeName = mesStr[3];
-                                    ms.Reason = mesStr[6];
+                                    ms.Reason = mesStr[5];
+
+                                    //check if such a mesId exists before creating new one
+                                    ProcessKeeper pKeeper = new ProcessKeeper();
+                                    Process nProcess = await pKeeper.GetProcess(ms.MesId);
 
                                     //pass everything to ProcessPage.xaml
-                                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms));
+                                    if (nProcess == null)
+                                    {
+                                        await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms));
+                                    }
+                                    else
+                                    {
+                                        await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms, nProcess));
+                                    } 
                                 }
                                 catch(Exception ex)
                                 {

@@ -60,5 +60,36 @@ namespace TestZXing.Models
                 throw;
             }
         }
+
+        public async Task<Process> GetProcess(string mesId)
+        {
+            string url = Secrets.ApiAddress + "GetProcess?token=" + Secrets.TenantToken + "&mesId=" + mesId;
+            DataService ds = new DataService();
+            Process nProcess = new Process();
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var responseMsg = await httpClient.SendAsync(request);
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    string output = await ds.readStream(responseMsg);
+                    nProcess = JsonConvert.DeserializeObject<Process>(output);
+                }
+                else
+                {
+                    nProcess = null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                nProcess = null;
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "GetProcess", Time = DateTime.Now, Message = ex.Message };
+                throw;
+            }
+            return nProcess;
+        }
     }
 }
