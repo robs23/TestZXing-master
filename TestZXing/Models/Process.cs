@@ -154,23 +154,79 @@ namespace TestZXing.Models
         {
             string url = Secrets.ApiAddress + "EditProcess?token=" + Secrets.TenantToken + "&id={0}&UserId={1}";
             string _Result = "OK";
-
-            try
+            if (!string.IsNullOrEmpty(this.MesId))
             {
-                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
-                var serializedProduct = JsonConvert.SerializeObject(this);
-                var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
-                var result = await httpClient.PutAsync(String.Format(url, this.ProcessId, RuntimeSettings.UserId), content);
-                if (!result.IsSuccessStatusCode)
+                //try to update MES only if it has MesId!
+                _Result = await CreateTpmEntry();
+            }
+            
+            if (_Result == "OK")
+            {
+                try
                 {
-                    _Result = result.ReasonPhrase;
+                    HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                    var serializedProduct = JsonConvert.SerializeObject(this);
+                    var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
+                    var result = await httpClient.PutAsync(String.Format(url, this.ProcessId, RuntimeSettings.UserId), content);
+                    if (!result.IsSuccessStatusCode)
+                    {
+                        _Result = result.ReasonPhrase;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _Result = ex.Message;
+                    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Edit", Time = DateTime.Now, Message = ex.Message };
+                    await Error.Add();
                 }
             }
-            catch (Exception ex)
+            
+            return _Result;
+        }
+
+        private async Task<string> CreateTpmEntry()
+        {
+            string url = Secrets.MesApiAddress + "CreateTpmEntry";
+            string _Result = "OK";
+
+            UsersKeeper uKeeper = new UsersKeeper();
+            User myUser = await uKeeper.GetUser(RuntimeSettings.UserId);
+            User manager = await uKeeper.GetUser((int)this.StartedBy);
+
+            if(myUser != null && manager != null)
             {
-                _Result = ex.Message;
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Edit", Time = DateTime.Now, Message = ex.Message };
-                await Error.Add();
+                TpmEntry tpm = new TpmEntry()
+                {
+                    Number = this.MesId,
+                    Manager = manager.MesLogin,
+                    FinishedBy = myUser.MesLogin,
+                    StartDate = (DateTime)this.StartedOn,
+                    EndDate = (DateTime)this.FinishedOn,
+                    InitialDiagnosis = this.InitialDiagnosis,
+                    RepairActions = this.RepairActions,
+                    Status = "AC"
+                };
+                try
+                {
+                    HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                    var serializedProduct = JsonConvert.SerializeObject(tpm);
+                    var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
+                    var result = await httpClient.PutAsync(url, content);
+                    if (!result.IsSuccessStatusCode)
+                    {
+                        _Result = result.ReasonPhrase;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _Result = ex.Message;
+                    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Edit", Time = DateTime.Now, Message = ex.Message };
+                    await Error.Add();
+                }
+            }
+            else
+            {
+                _Result = "Nie można połączyć się z bazą danych by pobrać loginy użytkowników! Sprawdź swoje połączenie internetowe i spóbuj jeszcze raz";     
             }
             return _Result;
         }

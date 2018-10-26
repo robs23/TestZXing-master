@@ -54,6 +54,7 @@
     <Compile Include="Models\ProcessKeeper.cs" />
     <Compile Include="Models\Set.cs" />
     <Compile Include="Models\SetKeeper.cs" />
+    <Compile Include="Models\TpmEntry.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UsersKeeper.cs" />
     <Compile Include="ProcessPage.xaml.cs">
