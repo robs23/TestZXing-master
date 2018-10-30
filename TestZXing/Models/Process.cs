@@ -119,7 +119,7 @@ namespace TestZXing.Models
 
         public async Task<string> Add()
         {
-            string url = Secrets.ApiAddress + "CreateProcess?token=" + Secrets.TenantToken + "&UserId="+ RuntimeSettings.UserId;
+            string url = Secrets.ApiAddress + "CreateProcess?token=" + Secrets.TenantToken + "&UserId=" + RuntimeSettings.UserId;
             string _Result = "OK";
 
             try
@@ -159,7 +159,7 @@ namespace TestZXing.Models
                 //try to update MES only if it has MesId!
                 _Result = await CreateTpmEntry();
             }
-            
+
             if (_Result == "OK")
             {
                 try
@@ -180,7 +180,7 @@ namespace TestZXing.Models
                     await Error.Add();
                 }
             }
-            
+
             return _Result;
         }
 
@@ -193,36 +193,44 @@ namespace TestZXing.Models
             User myUser = await uKeeper.GetUser(RuntimeSettings.UserId);
             User manager = await uKeeper.GetUser((int)this.StartedBy);
 
-            if(myUser != null && manager != null)
+            if (myUser != null && manager != null)
             {
-                TpmEntry tpm = new TpmEntry()
+                if (!string.IsNullOrEmpty(myUser.MesLogin) && !string.IsNullOrEmpty(manager.MesLogin))
                 {
-                    Number = this.MesId,
-                    Manager = manager.MesLogin,
-                    FinishedBy = myUser.MesLogin,
-                    StartDate = (DateTime)this.StartedOn,
-                    EndDate = (DateTime)this.FinishedOn,
-                    InitialDiagnosis = this.InitialDiagnosis,
-                    RepairActions = this.RepairActions,
-                    Status = "AC"
-                };
-                try
-                {
-                    HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 5), EnableUntrustedCertificates = true, DisableCaching = true });
-                    var serializedProduct = JsonConvert.SerializeObject(tpm);
-                    var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
-                    var result = await httpClient.PostAsync(url, content);
-                    if (!result.IsSuccessStatusCode)
+                    TpmEntry tpm = new TpmEntry()
                     {
-                        _Result = result.ReasonPhrase;
+                        Number = this.MesId,
+                        Manager = manager.MesLogin,
+                        FinishedBy = myUser.MesLogin,
+                        StartDate = (DateTime)this.StartedOn,
+                        EndDate = (DateTime)this.FinishedOn,
+                        InitialDiagnosis = this.InitialDiagnosis,
+                        RepairActions = this.RepairActions,
+                        Status = "AC"
+                    };
+                    try
+                    {
+                        HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 5), EnableUntrustedCertificates = true, DisableCaching = true });
+                        var serializedProduct = JsonConvert.SerializeObject(tpm);
+                        var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
+                        var result = await httpClient.PostAsync(url, content);
+                        if (!result.IsSuccessStatusCode)
+                        {
+                            _Result = result.ReasonPhrase;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _Result = "Nie udało się połączyć z serwerem MES. Upewnij się, że masz połączenie Wi-fi z siecią lokalną, inne sieci nie mają dostęu do serwera MES.";
+                        Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "CreateTpmEntry", Time = DateTime.Now, Message = ex.Message };
+                        await Error.Add();
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    _Result = "Nie udało się połączyć z serwerem MES. Upewnij się, że masz połączenie Wi-fi z siecią lokalną, inne sieci nie mają dostęu do serwera MES.";
-                    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "CreateTpmEntry", Time = DateTime.Now, Message = ex.Message };
-                    await Error.Add();
+                    _Result = "Użytkownik rozpoczynający lub użytkownik kończący nie ma przypisanego loginu MES! Oba loginy muszą być przypisane by kontynuować!";
                 }
+                
             }
             else
             {

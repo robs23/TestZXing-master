@@ -163,14 +163,13 @@ namespace TestZXing.ViewModels
         public string Description {
             get
             {
-                return _this.Description;
-            }
-            set
-            {
-                if (_this.Description != value)
+                if (IsMesRelated)
                 {
-                    _this.Description = value;
-                    OnPropertyChanged();
+                    return _this.MesId;
+                }
+                else
+                {
+                    return _this.PlaceName;
                 }
             }
         }
