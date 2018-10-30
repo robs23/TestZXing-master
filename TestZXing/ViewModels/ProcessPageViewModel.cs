@@ -187,7 +187,18 @@ namespace TestZXing.ViewModels
                 {
                     _IsWorking = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsIdle));
+                    OnPropertyChanged(nameof(IsOpen));
+                    OnPropertyChanged(nameof(IsClosable));
                 }
+            }
+        }
+
+        public bool IsIdle
+        {
+            get
+            {
+                return !_IsWorking;
             }
         }
 
@@ -236,7 +247,7 @@ namespace TestZXing.ViewModels
         {
             get
             {
-                if(!IsNew && IsOpen)
+                if(!IsNew && IsOpen && IsIdle)
                 {
                     return true;
                 }
@@ -452,7 +463,7 @@ namespace TestZXing.ViewModels
         {
             get
             {
-                if(_this.IsCompleted || _this.IsSuccessfull)
+                if(_this.IsCompleted || _this.IsSuccessfull || IsWorking)
                 {
                     return false;
                 }
@@ -566,6 +577,7 @@ namespace TestZXing.ViewModels
             IsWorking = true;
             try
             {
+                string prevStatus = _this.Status;
                 if (isSuccess)
                 {
                     _this.Status = "Zrealizowany";
@@ -577,6 +589,10 @@ namespace TestZXing.ViewModels
                 _this.FinishedOn = DateTime.Now;
                 _this.FinishedBy = RuntimeSettings.UserId;
                 _Result = await _this.Edit();
+                if (!_Result.Equals("OK"))
+                {
+                    _this.Status = prevStatus;
+                }
                 OnPropertyChanged(nameof(NextState));
                 OnPropertyChanged(nameof(IsOpen));
                 OnPropertyChanged(nameof(IsClosable));

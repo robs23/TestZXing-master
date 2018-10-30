@@ -208,10 +208,10 @@ namespace TestZXing.Models
                 };
                 try
                 {
-                    HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                    HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 5), EnableUntrustedCertificates = true, DisableCaching = true });
                     var serializedProduct = JsonConvert.SerializeObject(tpm);
                     var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
-                    var result = await httpClient.PutAsync(url, content);
+                    var result = await httpClient.PostAsync(url, content);
                     if (!result.IsSuccessStatusCode)
                     {
                         _Result = result.ReasonPhrase;
@@ -219,8 +219,8 @@ namespace TestZXing.Models
                 }
                 catch (Exception ex)
                 {
-                    _Result = ex.Message;
-                    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Edit", Time = DateTime.Now, Message = ex.Message };
+                    _Result = "Nie udało się połączyć z serwerem MES. Upewnij się, że masz połączenie Wi-fi z siecią lokalną, inne sieci nie mają dostęu do serwera MES.";
+                    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "CreateTpmEntry", Time = DateTime.Now, Message = ex.Message };
                     await Error.Add();
                 }
             }

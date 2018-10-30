@@ -20,7 +20,7 @@
                 ItemDisplayBinding="{Binding Name}"
                 SelectedItem="{Binding Place, Mode=TwoWay}"
                 SelectedIndex="{Binding SelectedPlaceIndex}"
-                IsEnabled="{Binding IsMesRelated}"
+                IsEnabled="{Binding IsIdle}"
                 IsVisible="{Binding IsMesRelated}"
                 />
             <testzxing:BorderfulPicker
@@ -31,6 +31,7 @@
                 ItemDisplayBinding="{Binding Name}"
                 SelectedItem="{Binding Type, Mode=TwoWay}"
                 SelectedIndex="{Binding SelectedIndex}"
+                IsEnabled="{Binding IsIdle}"
                 />
             <ActivityIndicator x:Name="Looper"
                                IsEnabled="True"
@@ -44,7 +45,7 @@
                 TextColor="CadetBlue"
                 Placeholder="Tutaj wprowadź opis rezultatu.."
                 Text="{Binding Output, Mode=TwoWay}"
-                IsEnabled="{Binding DoesntRequireInitialDiagnosis}"
+                IsEnabled="{Binding IsIdle}"
                 IsVisible="{Binding DoesntRequireInitialDiagnosis}"
                 />
             <testzxing:CustomEditor
@@ -54,7 +55,7 @@
                 TextColor="CadetBlue"
                 Placeholder="Tutaj wprowadź wstępne rozpoznanie.."
                 Text="{Binding InitialDiagnosis, Mode=TwoWay}"
-                IsEnabled="{Binding RequireInitialDiagnosis}"
+                IsEnabled="{Binding IsIdle}"
                 IsVisible="{Binding RequireInitialDiagnosis}"
                 />
             <testzxing:CustomEditor
@@ -64,7 +65,7 @@
                 TextColor="CadetBlue"
                 Placeholder="Tutaj wprowadź czynności naprawcze.."
                 Text="{Binding RepairActions, Mode=TwoWay}"
-                IsEnabled="{Binding RequireInitialDiagnosis}"
+                IsEnabled="{Binding IsIdle}"
                 IsVisible="{Binding RequireInitialDiagnosis}"
                 />
             <testzxing:RoundedButton
