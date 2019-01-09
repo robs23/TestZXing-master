@@ -94,7 +94,7 @@ namespace TestZXing.Models
 
         public async Task<Process> GetOpenProcessesOfTypeAndResource(int actionType, int resource)
         {
-            string url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "query=" + "PlaceId=" + + resource + " and(IsActive=true or IsFrozen=true) and ActionTypeId=" + actionType + " and IsCompleted=false";
+            string url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "&query=" + "PlaceId=" + + resource + " and(IsActive=true or IsFrozen=true) and ActionTypeId=" + actionType + " and IsCompleted=false";
             DataService ds = new DataService();
             Process nProcess = new Process();
 
@@ -113,6 +113,10 @@ namespace TestZXing.Models
                         //there are already some open processes of this type, let's continue one them
                         //by adding new handling to it
                         nProcess = nProcesses.FirstOrDefault();
+                    }
+                    else
+                    {
+                        nProcess = null;
                     }
                 }
                 else

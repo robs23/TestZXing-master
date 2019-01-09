@@ -356,16 +356,21 @@ namespace TestZXing.ViewModels
                         _selectedIndex = value;
                         _this.ActionTypeId = ActionTypes[value].ActionTypeId;
                         Type = ActionTypes[value];
-                        Process nProcess = Processes.GetOpenProcessesOfTypeAndResource(_this.ActionTypeId, _this.PlaceId).Result;
-                        if (nProcess == null)
+                        Process nProcess = null;
+                        Task.Run(async () =>
                         {
-                            //there's no open process of this type on the resource
-                            Output = "Nowe!";
-                        }
-                        else
-                        {
-                            Output = "Kontynuacja!";
-                        }
+                            nProcess = await Processes.GetOpenProcessesOfTypeAndResource(_this.ActionTypeId, _this.PlaceId);
+                            if (nProcess == null)
+                            {
+                                //there's no open process of this type on the resource
+                                Output = "Nowe!";
+                            }
+                            else
+                            {
+                                Output = "Kontynuacja!";
+                            }
+                        });
+                        
                         //if ((bool)ActionTypes[value].RequireInitialDiagnosis)
                         //{
                         //    //if chosen action type has RequireInitialDiagnosis=true, change the property so the bound view is changed
