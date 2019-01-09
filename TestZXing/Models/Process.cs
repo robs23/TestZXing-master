@@ -65,7 +65,7 @@ namespace TestZXing.Models
                 }
                 else
                 {
-                    return "Nierozpoczęty";
+                    return "Planowany";
                 }
             }
             set

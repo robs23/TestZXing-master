@@ -91,5 +91,43 @@ namespace TestZXing.Models
             }
             return nProcess;
         }
+
+        public async Task<Process> GetOpenProcessesOfTypeAndResource(int actionType, int resource)
+        {
+            string url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "query=" + "PlaceId=" + + resource + " and(IsActive=true or IsFrozen=true) and ActionTypeId=" + actionType + " and IsCompleted=false";
+            DataService ds = new DataService();
+            Process nProcess = new Process();
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var responseMsg = await httpClient.SendAsync(request);
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    string output = await ds.readStream(responseMsg);
+                    List<Process> nProcesses = new List<Process>();
+                    nProcesses = JsonConvert.DeserializeObject<List<Process>>(output);
+                    if (nProcesses.Any())
+                    {
+                        //there are already some open processes of this type, let's continue one them
+                        //by adding new handling to it
+                        nProcess = nProcesses.FirstOrDefault();
+                    }
+                }
+                else
+                {
+                    nProcess = null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                nProcess = null;
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "GetProcess", Time = DateTime.Now, Message = ex.Message };
+                throw;
+            }
+            return nProcess;
+        }
     }
 }

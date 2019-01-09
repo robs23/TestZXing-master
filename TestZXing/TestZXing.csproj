@@ -46,6 +46,8 @@
     <Compile Include="Models\ActionTypesKeeper.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\ErrorsKeeper.cs" />
+    <Compile Include="Models\Handling.cs" />
+    <Compile Include="Models\HandlingKeeper.cs" />
     <Compile Include="Models\MesString.cs" />
     <Compile Include="Models\Place.cs" />
     <Compile Include="Models\PlacesKeeper.cs" />

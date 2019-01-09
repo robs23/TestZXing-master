@@ -44,6 +44,7 @@ namespace TestZXing.ViewModels
         private bool _RequireInitialDiagnosis { get; set; }
         public MesString MesString { get; set; }
         public Process _this { get; set; }
+        public ProcessKeeper Processes = new ProcessKeeper();
 
         public ProcessPageViewModel(int PlaceId)
         {
@@ -355,15 +356,25 @@ namespace TestZXing.ViewModels
                         _selectedIndex = value;
                         _this.ActionTypeId = ActionTypes[value].ActionTypeId;
                         Type = ActionTypes[value];
-                        if ((bool)ActionTypes[value].RequireInitialDiagnosis)
+                        Process nProcess = Processes.GetOpenProcessesOfTypeAndResource(_this.ActionTypeId, _this.PlaceId).Result;
+                        if (nProcess == null)
                         {
-                            //if chosen action type has RequireInitialDiagnosis=true, change the property so the bound view is changed
-                            RequireInitialDiagnosis = true;
+                            //there's no open process of this type on the resource
+                            Output = "Nowe!";
                         }
                         else
                         {
-                            RequireInitialDiagnosis = false;
+                            Output = "Kontynuacja!";
                         }
+                        //if ((bool)ActionTypes[value].RequireInitialDiagnosis)
+                        //{
+                        //    //if chosen action type has RequireInitialDiagnosis=true, change the property so the bound view is changed
+                        //    RequireInitialDiagnosis = true;
+                        //}
+                        //else
+                        //{
+                        //    RequireInitialDiagnosis = false;
+                        //}
                         OnPropertyChanged();
                     }
                 }catch(Exception ex)
