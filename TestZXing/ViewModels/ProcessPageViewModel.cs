@@ -41,16 +41,19 @@ namespace TestZXing.ViewModels
         public bool _IsNew { get; set; }
         private bool _IsWorking { get; set; }
         private bool _IsMesRelated { get; set; }
+        private bool _IsProcessOpen { get; set; } //there must be other open handligns for the process to be open
         private bool _RequireInitialDiagnosis { get; set; }
         public MesString MesString { get; set; }
-        public Process _this { get; set; }
+        public Process _thisProcess { get; set; }
+        public Handling _this { get; set; }
         public ProcessKeeper Processes = new ProcessKeeper();
 
         public ProcessPageViewModel(int PlaceId)
         {
-            _this = new Process();
-            _this.PlaceId = PlaceId;
+            _thisProcess = new Process();
+            _thisProcess.PlaceId = PlaceId;
             IsNew = true;
+            IsProcessOpen = false; //not known till we have it checked
             //Initialize();
 
 
@@ -58,13 +61,14 @@ namespace TestZXing.ViewModels
 
         public ProcessPageViewModel(int PlaceId, Process Process)
         {
-            _this = Process;
-            _this.PlaceId = PlaceId;
+            _thisProcess = Process;
+            _thisProcess.PlaceId = PlaceId;
             IsNew = false;
-            if (!string.IsNullOrEmpty(_this.MesId))
+            IsProcessOpen = true;
+            if (!string.IsNullOrEmpty(_thisProcess.MesId))
             {
                 IsMesRelated = true;
-                MesString = new MesString { SetName = _this.SetName, ActionTypeName = _this.ActionTypeName, MesId = _this.MesId, MesDate = _this.MesDate, Reason = _this.Reason };
+                MesString = new MesString { SetName = _thisProcess.SetName, ActionTypeName = _thisProcess.ActionTypeName, MesId = _thisProcess.MesId, MesDate = _thisProcess.MesDate, Reason = _thisProcess.Reason };
             }
             //Initialize(_this.ActionTypeId);
 
@@ -72,21 +76,23 @@ namespace TestZXing.ViewModels
 
         public ProcessPageViewModel(MesString ms)
         {
-            _this = new Process();
-            _this.Reason = ms.Reason;
-            _this.MesDate = ms.MesDate;
-            _this.MesId = ms.MesId;
+            _thisProcess = new Process();
+            _thisProcess.Reason = ms.Reason;
+            _thisProcess.MesDate = ms.MesDate;
+            _thisProcess.MesId = ms.MesId;
             IsNew = true;
+            IsProcessOpen = false;
             IsMesRelated = true;
             MesString = ms;
         }
 
         public ProcessPageViewModel(MesString ms, Process process)
         {
-            _this = process;
-            _this.Reason = ms.Reason;
-            _this.MesDate = ms.MesDate;
+            _thisProcess = process;
+            _thisProcess.Reason = ms.Reason;
+            _thisProcess.MesDate = ms.MesDate;
             IsNew = false;
+            IsProcessOpen = true;
             IsMesRelated = true;
             MesString = ms;
         }
@@ -142,7 +148,7 @@ namespace TestZXing.ViewModels
                     foreach(Place p in _p)
                     {
                         Places.Add(p);
-                        if(p.PlaceId == _this.PlaceId)
+                        if(p.PlaceId == _thisProcess.PlaceId)
                         {
                             index = i;
                         }
@@ -153,6 +159,21 @@ namespace TestZXing.ViewModels
                 {
                     SelectedPlaceIndex = index;
                 }
+                HandlingKeeper Handlings = new HandlingKeeper();
+                Handling nHandling = await Handlings.GetUsersOpenHandling(_thisProcess.ProcessId);
+                if (nHandling == null)
+                {
+                    //User has no open handlings in this Process, we're creating new one (not editing)
+                    IsNew = true;
+                    //Let's make sure User don't have any other open handligs elsewhere. If he does, let's complete them first
+                    await Handlings.CompleteUsersHandlings();
+                }
+                else
+                {
+                    _this = nHandling;
+                    IsNew = false;
+                }
+                
             }
             catch(Exception ex)
             {
@@ -166,11 +187,11 @@ namespace TestZXing.ViewModels
             {
                 if (IsMesRelated)
                 {
-                    return _this.MesId;
+                    return _thisProcess.MesId;
                 }
                 else
                 {
-                    return _this.PlaceName;
+                    return _thisProcess.PlaceName;
                 }
             }
         }
@@ -213,6 +234,22 @@ namespace TestZXing.ViewModels
                 if(_IsMesRelated != value)
                 {
                     _IsMesRelated = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsProcessOpen
+        {
+            get
+            {
+                return _IsProcessOpen;
+            }
+            set
+            {
+                if(_IsProcessOpen != value)
+                {
+                    _IsProcessOpen = value;
                     OnPropertyChanged();
                 }
             }
@@ -279,13 +316,13 @@ namespace TestZXing.ViewModels
         public string Status {
             get
             {
-                return _this.Status;
+                return _thisProcess.Status;
             }
             set
             {
-                if(_this.Status != value)
+                if(_thisProcess.Status != value)
                 {
-                    _this.Status = value;
+                    _thisProcess.Status = value;
                     OnPropertyChanged();
                 }
             }
@@ -295,13 +332,13 @@ namespace TestZXing.ViewModels
         public string Output {
             get
             {
-                return _this.Output;
+                return _thisProcess.Output;
             }
             set
             {
-                if(_this.Output != value)
+                if(_thisProcess.Output != value)
                 {
-                    _this.Output = value;
+                    _thisProcess.Output = value;
                     OnPropertyChanged();
                 }
             }
@@ -311,13 +348,13 @@ namespace TestZXing.ViewModels
         {
             get
             {
-                return _this.InitialDiagnosis;
+                return _thisProcess.InitialDiagnosis;
             }
             set
             {
-                if(_this.InitialDiagnosis != value)
+                if(_thisProcess.InitialDiagnosis != value)
                 {
-                    _this.InitialDiagnosis = value;
+                    _thisProcess.InitialDiagnosis = value;
                     OnPropertyChanged();
                 }
             }
@@ -327,13 +364,13 @@ namespace TestZXing.ViewModels
         {
             get
             {
-                return _this.RepairActions;
+                return _thisProcess.RepairActions;
             }
             set
             {
-                if (_this.RepairActions != value)
+                if (_thisProcess.RepairActions != value)
                 {
-                    _this.RepairActions = value;
+                    _thisProcess.RepairActions = value;
                     OnPropertyChanged();
                 }
             }
@@ -354,12 +391,12 @@ namespace TestZXing.ViewModels
                     if (_selectedIndex != value)
                     {
                         _selectedIndex = value;
-                        _this.ActionTypeId = ActionTypes[value].ActionTypeId;
+                        _thisProcess.ActionTypeId = ActionTypes[value].ActionTypeId;
                         Type = ActionTypes[value];
                         Process nProcess = null;
                         Task.Run(async () =>
                         {
-                            nProcess = await Processes.GetOpenProcessesOfTypeAndResource(_this.ActionTypeId, _this.PlaceId);
+                            nProcess = await Processes.GetOpenProcessesOfTypeAndResource(_thisProcess.ActionTypeId, _thisProcess.PlaceId);
                             if (nProcess == null)
                             {
                                 //there's no open process of this type on the resource
@@ -405,7 +442,7 @@ namespace TestZXing.ViewModels
                     if(_selectedPlaceIndex != value)
                     {
                         _selectedPlaceIndex = value;
-                        _this.PlaceId = Places[value].PlaceId;
+                        _thisProcess.PlaceId = Places[value].PlaceId;
                         Place = Places[value];
                         OnPropertyChanged();
                     }
@@ -457,13 +494,13 @@ namespace TestZXing.ViewModels
         {
             get
             {
-                if (_this.Status == "Nierozpoczęty")
+                if (_thisProcess.Status == "Nierozpoczęty")
                 {
                     return "Rozpocznij";
-                }else if(_this.Status == "Rozpoczęty")
+                }else if(_thisProcess.Status == "Rozpoczęty")
                 {
                     return "Wstrzymaj";
-                }else if(_this.Status == "Wstrzymany")
+                }else if(_thisProcess.Status == "Wstrzymany")
                 {
                     return "Wznów";
                 }else
@@ -478,7 +515,7 @@ namespace TestZXing.ViewModels
         {
             get
             {
-                if(_this.IsCompleted || _this.IsSuccessfull || IsWorking)
+                if(_thisProcess.IsCompleted || _thisProcess.IsSuccessfull || IsWorking)
                 {
                     return false;
                 }
@@ -498,26 +535,26 @@ namespace TestZXing.ViewModels
             {
                 if (this.IsNew)
                 {
-                    _this.CreatedBy = RuntimeSettings.UserId;
-                    _this.TenantId = RuntimeSettings.TenantId;
-                    _this.StartedBy = RuntimeSettings.UserId;
-                    _this.StartedOn = DateTime.Now;
-                    _this.Status = "Rozpoczęty";
-                    _this.CreatedOn = DateTime.Now;
-                    _Result = await _this.Add();
+                    _thisProcess.CreatedBy = RuntimeSettings.UserId;
+                    _thisProcess.TenantId = RuntimeSettings.TenantId;
+                    _thisProcess.StartedBy = RuntimeSettings.UserId;
+                    _thisProcess.StartedOn = DateTime.Now;
+                    _thisProcess.Status = "Rozpoczęty";
+                    _thisProcess.CreatedOn = DateTime.Now;
+                    _Result = await _thisProcess.Add();
                     IsNew = false;
                     OnPropertyChanged(nameof(NextState));
                 }
                 else
                 {
-                    if (_this.Status == "Rozpoczęty")
+                    if (_thisProcess.Status == "Rozpoczęty")
                     {
-                        _this.Status = "Wstrzymany";
-                    }else if(_this.Status == "Wstrzymany" || _this.Status == "Nierozpoczęty")
+                        _thisProcess.Status = "Wstrzymany";
+                    }else if(_thisProcess.Status == "Wstrzymany" || _thisProcess.Status == "Nierozpoczęty")
                     {
-                        _this.Status = "Rozpoczęty";
+                        _thisProcess.Status = "Rozpoczęty";
                     }
-                    _Result = await _this.Edit();
+                    _Result = await _thisProcess.Edit();
                     OnPropertyChanged(nameof(NextState));
                 }
             }
@@ -538,23 +575,23 @@ namespace TestZXing.ViewModels
             {
                 if (RequireInitialDiagnosis)
                 {
-                    if (string.IsNullOrEmpty(_this.InitialDiagnosis))
+                    if (string.IsNullOrEmpty(_thisProcess.InitialDiagnosis))
                     {
                         _res = "Pole Wstępne rozpoznanie nie może być puste. Uzupełnij wstępne rozpoznanie!";
                     }
-                    else if (string.IsNullOrEmpty(_this.RepairActions))
+                    else if (string.IsNullOrEmpty(_thisProcess.RepairActions))
                     {
                         _res = "Pole Czynności naprawcze nie może być puste. Uzupełnij opis czynności naprawczych!";
                     }
                 }
                 if (IsMesRelated)
                 {
-                    if (_this.PlaceId == 0)
+                    if (_thisProcess.PlaceId == 0)
                     {
                         _res = "Nie wybrano zasobu! Wybierz zasób z listy rozwijanej!";
                     }
                 }
-                if (_this.ActionTypeId == 0)
+                if (_thisProcess.ActionTypeId == 0)
                 {
                     _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
                 }
@@ -563,19 +600,19 @@ namespace TestZXing.ViewModels
             {
                 if (RequireInitialDiagnosis)
                 {
-                    if (string.IsNullOrEmpty(_this.InitialDiagnosis))
+                    if (string.IsNullOrEmpty(_thisProcess.InitialDiagnosis))
                     {
                         _res = "Pole Wstępne rozpoznanie nie może być puste. Uzupełnij wstępne rozpoznanie!";
                     }
                 }
                 if (IsMesRelated)
                 {
-                    if (_this.PlaceId == 0)
+                    if (_thisProcess.PlaceId == 0)
                     {
                         _res = "Nie wybrano zasobu! Wybierz zasób z listy rozwijanej!";
                     }
                 }
-                if (_this.ActionTypeId == 0)
+                if (_thisProcess.ActionTypeId == 0)
                 {
                     _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
                 }
@@ -592,21 +629,21 @@ namespace TestZXing.ViewModels
             IsWorking = true;
             try
             {
-                string prevStatus = _this.Status;
+                string prevStatus = _thisProcess.Status;
                 if (isSuccess)
                 {
-                    _this.Status = "Zrealizowany";
+                    _thisProcess.Status = "Zrealizowany";
                 }
                 else
                 {
-                    _this.Status = "Zakończony";
+                    _thisProcess.Status = "Zakończony";
                 }
-                _this.FinishedOn = DateTime.Now;
-                _this.FinishedBy = RuntimeSettings.UserId;
-                _Result = await _this.Edit();
+                _thisProcess.FinishedOn = DateTime.Now;
+                _thisProcess.FinishedBy = RuntimeSettings.UserId;
+                _Result = await _thisProcess.Edit();
                 if (!_Result.Equals("OK"))
                 {
-                    _this.Status = prevStatus;
+                    _thisProcess.Status = prevStatus;
                 }
                 OnPropertyChanged(nameof(NextState));
                 OnPropertyChanged(nameof(IsOpen));

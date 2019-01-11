@@ -109,7 +109,7 @@ namespace TestZXing
                 else
                 {
 
-                    await vm.Initialize(vm._this.ActionTypeId);
+                    await vm.Initialize(vm._thisProcess.ActionTypeId);
                 }
                 BindingContext = vm;
 

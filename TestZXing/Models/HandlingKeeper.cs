@@ -39,5 +39,67 @@ namespace TestZXing.Models
                 throw;
             }
         }
+
+        public async Task<Handling> GetUsersOpenHandling(int? ProcessId=null)
+        {
+            string url = Secrets.ApiAddress + "GetHandlings?token=" + Secrets.TenantToken;
+            if (ProcessId == null)
+            {
+                url += "&query=" + $"UserId={RuntimeSettings.UserId} and IsCompleted=false"; // User's open handlings
+            }
+            else
+            {
+                url += "&query=" + $"ProcessId={ProcessId} and UserId={RuntimeSettings.UserId} and IsCompleted=false";
+            }
+            
+            DataService ds = new DataService();
+            Handling nHandling = null;
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var responseMsg = await httpClient.SendAsync(request);
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    string output = await ds.readStream(responseMsg);
+                    List<Handling> nHandlings = new List<Handling>();
+                    nHandlings = JsonConvert.DeserializeObject<List<Handling>>(output);
+                    if (nHandlings.Any())
+                    {
+                        nHandling = nHandlings.FirstOrDefault();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "GetOpenHandlings", Time = DateTime.Now, Message = ex.Message };
+                throw;
+            }
+            return nHandling;
+        }
+
+        public async Task CompleteUsersHandlings()
+        {
+            string url = Secrets.ApiAddress + "CompleteUsersHandlings?token=" + Secrets.TenantToken + $"&UserId={RuntimeSettings.UserId}";
+
+            DataService ds = new DataService();
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var responseMsg = await httpClient.SendAsync(request);
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    string output = await ds.readStream(responseMsg);
+                }
+            }
+            catch (Exception ex)
+            {
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "CompleteUsersHandlings", Time = DateTime.Now, Message = ex.Message };
+                throw;
+            }
+        }
     }
 }
