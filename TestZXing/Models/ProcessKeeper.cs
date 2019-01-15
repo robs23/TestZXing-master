@@ -110,7 +110,7 @@ namespace TestZXing.Models
                     nProcesses = JsonConvert.DeserializeObject<List<Process>>(output);
                     if (nProcesses.Any())
                     {
-                        //there are already some open processes of this type, let's continue one them
+                        //there are already some open processes of this type, let's continue one of them
                         //by adding new handling to it
                         nProcess = nProcesses.FirstOrDefault();
                     }

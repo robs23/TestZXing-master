@@ -52,6 +52,7 @@ namespace TestZXing.ViewModels
         {
             _thisProcess = new Process();
             _thisProcess.PlaceId = PlaceId;
+            _this = new Handling();
             IsNew = true;
             IsProcessOpen = false; //not known till we have it checked
             //Initialize();
@@ -63,6 +64,7 @@ namespace TestZXing.ViewModels
         {
             _thisProcess = Process;
             _thisProcess.PlaceId = PlaceId;
+            _this = new Handling();
             IsNew = false;
             IsProcessOpen = true;
             if (!string.IsNullOrEmpty(_thisProcess.MesId))
@@ -80,6 +82,7 @@ namespace TestZXing.ViewModels
             _thisProcess.Reason = ms.Reason;
             _thisProcess.MesDate = ms.MesDate;
             _thisProcess.MesId = ms.MesId;
+            _this = new Handling();
             IsNew = true;
             IsProcessOpen = false;
             IsMesRelated = true;
@@ -91,6 +94,7 @@ namespace TestZXing.ViewModels
             _thisProcess = process;
             _thisProcess.Reason = ms.Reason;
             _thisProcess.MesDate = ms.MesDate;
+            _this = new Handling();
             IsNew = false;
             IsProcessOpen = true;
             IsMesRelated = true;
@@ -159,20 +163,7 @@ namespace TestZXing.ViewModels
                 {
                     SelectedPlaceIndex = index;
                 }
-                HandlingKeeper Handlings = new HandlingKeeper();
-                Handling nHandling = await Handlings.GetUsersOpenHandling(_thisProcess.ProcessId);
-                if (nHandling == null)
-                {
-                    //User has no open handlings in this Process, we're creating new one (not editing)
-                    IsNew = true;
-                    //Let's make sure User don't have any other open handligs elsewhere. If he does, let's complete them first
-                    await Handlings.CompleteUsersHandlings();
-                }
-                else
-                {
-                    _this = nHandling;
-                    IsNew = false;
-                }
+                
                 
             }
             catch(Exception ex)
@@ -393,30 +384,58 @@ namespace TestZXing.ViewModels
                         _selectedIndex = value;
                         _thisProcess.ActionTypeId = ActionTypes[value].ActionTypeId;
                         Type = ActionTypes[value];
-                        Process nProcess = null;
-                        Task.Run(async () =>
+                        if ((bool)!Type.AllowDuplicates) //check if there's open process of this type ONLY if AllowDuplicates property = false
                         {
-                            nProcess = await Processes.GetOpenProcessesOfTypeAndResource(_thisProcess.ActionTypeId, _thisProcess.PlaceId);
-                            if (nProcess == null)
+                            Process nProcess = null;
+                            Task.Run(async () =>
                             {
-                                //there's no open process of this type on the resource
-                                Output = "Nowe!";
-                            }
-                            else
+                                nProcess = await Processes.GetOpenProcessesOfTypeAndResource(_thisProcess.ActionTypeId, _thisProcess.PlaceId);
+                                if (nProcess != null)
+                                {
+                                    //there's open process of this type on the resource, let's use it!
+                                    _thisProcess = nProcess;
+                                    HandlingKeeper Handlings = new HandlingKeeper();
+                                    Handling nHandling = await Handlings.GetUsersOpenHandling(_thisProcess.ProcessId);
+                                    if (nHandling == null)
+                                    {
+                                        //User has no open handlings in this Process, we're creating new one (not editing)
+                                        IsNew = true;
+                                        _this = new Handling()
+                                        {
+                                            PlaceId = _thisProcess.PlaceId
+                                        };
+                                        ////Let's make sure User don't have any other open handligs elsewhere. If he does, let's complete them first
+                                        //await Handlings.CompleteUsersHandlings();
+                                    }
+                                    else
+                                    {
+                                        _this = nHandling;
+                                        IsProcessOpen = true;
+                                        IsNew = false;
+                                        OnPropertyChanged(nameof(NextState));
+                                    }
+                                }
+                            });
+                        }
+                        else
+                        {
+                            IsNew = true;
+                            _this = new Handling()
                             {
-                                Output = "Kontynuacja!";
-                            }
-                        });
-                        
-                        //if ((bool)ActionTypes[value].RequireInitialDiagnosis)
-                        //{
-                        //    //if chosen action type has RequireInitialDiagnosis=true, change the property so the bound view is changed
-                        //    RequireInitialDiagnosis = true;
-                        //}
-                        //else
-                        //{
-                        //    RequireInitialDiagnosis = false;
-                        //}
+                                PlaceId = _thisProcess.PlaceId
+                            };
+                            OnPropertyChanged(nameof(NextState));
+                        }
+
+                        if ((bool)ActionTypes[value].RequireInitialDiagnosis)
+                        {
+                            //if chosen action type has RequireInitialDiagnosis=true, change the property so the bound view is changed
+                            RequireInitialDiagnosis = true;
+                        }
+                        else
+                        {
+                            RequireInitialDiagnosis = false;
+                        }
                         OnPropertyChanged();
                     }
                 }catch(Exception ex)
@@ -494,13 +513,13 @@ namespace TestZXing.ViewModels
         {
             get
             {
-                if (_thisProcess.Status == "Nierozpoczęty")
+                if (_this.Status == "Planowany")
                 {
                     return "Rozpocznij";
-                }else if(_thisProcess.Status == "Rozpoczęty")
+                }else if(_this.Status == "Rozpoczęty")
                 {
                     return "Wstrzymaj";
-                }else if(_thisProcess.Status == "Wstrzymany")
+                }else if(_this.Status == "Wstrzymany")
                 {
                     return "Wznów";
                 }else
@@ -515,7 +534,7 @@ namespace TestZXing.ViewModels
         {
             get
             {
-                if(_thisProcess.IsCompleted || _thisProcess.IsSuccessfull || IsWorking)
+                if(_this.IsCompleted || IsWorking)
                 {
                     return false;
                 }
@@ -533,8 +552,11 @@ namespace TestZXing.ViewModels
             IsWorking = true;
             try
             {
-                if (this.IsNew)
+                // Taking care of process
+                
+                if (!this.IsProcessOpen)
                 {
+                    //if the process doesn't exist yet, open it now
                     _thisProcess.CreatedBy = RuntimeSettings.UserId;
                     _thisProcess.TenantId = RuntimeSettings.TenantId;
                     _thisProcess.StartedBy = RuntimeSettings.UserId;
@@ -542,19 +564,46 @@ namespace TestZXing.ViewModels
                     _thisProcess.Status = "Rozpoczęty";
                     _thisProcess.CreatedOn = DateTime.Now;
                     _Result = await _thisProcess.Add();
+                    IsProcessOpen = true;
+                }
+                else
+                {
+                    // There must be new process edit logic...
+
+                    //if (_thisProcess.Status == "Rozpoczęty")
+                    //{
+                    //    _thisProcess.Status = "Wstrzymany";
+                    //}else if(_thisProcess.Status == "Wstrzymany" || _thisProcess.Status == "Planowany")
+                    //{
+                    //    _thisProcess.Status = "Rozpoczęty";
+                    //}
+                    //_Result = await _thisProcess.Edit();
+                }
+
+                // Taking care of handling
+                if (this.IsNew)
+                {
+                    //this handling is completely new, create it
+                    _this.StartedOn = DateTime.Now;
+                    _this.UserId = RuntimeSettings.UserId;
+                    _this.TenantId = RuntimeSettings.TenantId;
+                    _this.Status = "Rozpoczęty";
+                    _this.ProcessId = _thisProcess.ProcessId;
+                    _Result = await _this.Add();
                     IsNew = false;
                     OnPropertyChanged(nameof(NextState));
                 }
                 else
                 {
-                    if (_thisProcess.Status == "Rozpoczęty")
+                    if(_this.Status == "Rozpoczęty")
                     {
-                        _thisProcess.Status = "Wstrzymany";
-                    }else if(_thisProcess.Status == "Wstrzymany" || _thisProcess.Status == "Nierozpoczęty")
-                    {
-                        _thisProcess.Status = "Rozpoczęty";
+                        _this.Status = "Wstrzymany";
                     }
-                    _Result = await _thisProcess.Edit();
+                    else if (_this.Status == "Wstrzymany" || _this.Status == "Planowany")
+                    {
+                        _this.Status = "Rozpoczęty";
+                    }
+                    _Result = await _this.Edit();
                     OnPropertyChanged(nameof(NextState));
                 }
             }

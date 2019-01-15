@@ -19,6 +19,7 @@ namespace TestZXing.Models
         public bool? ShowInPlanning { get; set; }
         public bool? MesSync { get; set; }
         public bool? RequireInitialDiagnosis { get; set; }
+        public bool? AllowDuplicates { get; set; }
 
         public override string ToString()
         {
