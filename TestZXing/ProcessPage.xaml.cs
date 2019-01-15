@@ -51,16 +51,20 @@ namespace TestZXing
 
         private async void btnEnd_Clicked(object sender, EventArgs e)
         {
-            bool _IsSuccess = false;
+            bool _ToClose = false;
             string _Res = vm.Validate(true);
             if (_Res=="OK")
             {
-                if (await DisplayAlert("Zrealizowano?", "Czy udało się zrealizować zlecenie?", "Tak", "Nie"))
+                if(await vm.AreThereOpenHandlingsLeft() == "No")
                 {
-                    _IsSuccess = true;
+                    //prompt user if to close the process
+                    if (await DisplayAlert("Zamknąć zgłoszenie?", "Jesteś ostatnią osobą obsługującą to zgłoszenie. Możesz pozostawić to zgłoszenie otwarte lub zamknąć je. Co mam zrobić?", "Zamknij", "Pozostaw"))
+                    {
+                        _ToClose = true;
+                    }
                 }
-                string _Result = await vm.End(_IsSuccess);
-                if (_Result=="OK")
+                string _Result = await vm.End(_ToClose);
+                if (_Result == "OK")
                 {
                     await DisplayAlert("Powodzenie", "Zgłoszenie zostało zakończone!", "OK");
                 }
@@ -68,6 +72,7 @@ namespace TestZXing
                 {
                     await DisplayAlert("Wystąpił błąd", _Result, "OK");
                 }
+
             }
             else
             {

@@ -394,6 +394,7 @@ namespace TestZXing.ViewModels
                                 {
                                     //there's open process of this type on the resource, let's use it!
                                     _thisProcess = nProcess;
+                                    IsProcessOpen = true;
                                     HandlingKeeper Handlings = new HandlingKeeper();
                                     Handling nHandling = await Handlings.GetUsersOpenHandling(_thisProcess.ProcessId);
                                     if (nHandling == null)
@@ -410,7 +411,6 @@ namespace TestZXing.ViewModels
                                     else
                                     {
                                         _this = nHandling;
-                                        IsProcessOpen = true;
                                         IsNew = false;
                                         OnPropertyChanged(nameof(NextState));
                                     }
@@ -644,6 +644,10 @@ namespace TestZXing.ViewModels
                 {
                     _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
                 }
+                if (string.IsNullOrEmpty(this.Output))
+                {
+                    _res = "Pole Rezultat nie może być puste! Opisz co udało się zrobić.";
+                }
             }
             else
             {
@@ -671,7 +675,7 @@ namespace TestZXing.ViewModels
             return _res;
         }
 
-        public async Task<string> End(bool isSuccess = false)
+        public async Task<string> End(bool toClose = false)
         {
             string _Result = "OK";
  
@@ -679,21 +683,29 @@ namespace TestZXing.ViewModels
             try
             {
                 string prevStatus = _thisProcess.Status;
-                if (isSuccess)
+                if (toClose)
                 {
-                    _thisProcess.Status = "Zrealizowany";
-                }
-                else
-                {
+                    _thisProcess.FinishedOn = DateTime.Now;
+                    _thisProcess.FinishedBy = RuntimeSettings.UserId;
                     _thisProcess.Status = "Zakończony";
+                    _Result = await _thisProcess.Edit();
+                    if (!_Result.Equals("OK"))
+                    {
+                        _thisProcess.Status = prevStatus;
+                    }
                 }
-                _thisProcess.FinishedOn = DateTime.Now;
-                _thisProcess.FinishedBy = RuntimeSettings.UserId;
-                _Result = await _thisProcess.Edit();
+
+                // Close handling now
+                prevStatus = _this.Status;
+
+                _this.FinishedOn = DateTime.Now;
+                _this.Status = "Zakończony";
+                _Result = await _this.Edit();
                 if (!_Result.Equals("OK"))
                 {
-                    _thisProcess.Status = prevStatus;
+                    _this.Status = prevStatus;
                 }
+
                 OnPropertyChanged(nameof(NextState));
                 OnPropertyChanged(nameof(IsOpen));
                 OnPropertyChanged(nameof(IsClosable));
@@ -707,6 +719,34 @@ namespace TestZXing.ViewModels
             return _Result;
 
 
+        }
+
+        public async Task<string> AreThereOpenHandlingsLeft()
+        {
+            string _Result = "No";
+            IsWorking = true;
+
+            try
+            {
+                List<Handling> OpenHandligs = null;
+                OpenHandligs = await _thisProcess.GetOpenHandlings();
+                if(OpenHandligs.Any())
+                {
+                    if(OpenHandligs.Count > 1)
+                    {
+                        //there are some open handlings left apart from the current one. Closing this handling won't impact the process then
+                        _Result = "Yes";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _Result = ex.Message;
+                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Save", Time = DateTime.Now, Message = ex.Message };
+                await Error.Add();
+            }
+            IsWorking = false;
+            return _Result;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
