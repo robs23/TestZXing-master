@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestZXing.Models;
 
 namespace TestZXing.Static
 {
@@ -10,6 +11,6 @@ namespace TestZXing.Static
     {
         public static int TenantId { get; set; }
         public static int UserId { get; set; }
-
+        public static User CurrentUser { get; set; }
     }
 }

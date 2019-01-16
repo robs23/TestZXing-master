@@ -52,6 +52,7 @@ namespace TestZXing
         private async void btnEnd_Clicked(object sender, EventArgs e)
         {
             bool _ToClose = false;
+            bool _toPause = false;
             string _Res = vm.Validate(true);
             if (_Res=="OK")
             {
@@ -62,8 +63,12 @@ namespace TestZXing
                     {
                         _ToClose = true;
                     }
+                    else
+                    {
+                        _toPause = true;
+                    }
                 }
-                string _Result = await vm.End(_ToClose);
+                string _Result = await vm.End(_ToClose, _toPause);
                 if (_Result == "OK")
                 {
                     await DisplayAlert("Powodzenie", "Zgłoszenie zostało zakończone!", "OK");

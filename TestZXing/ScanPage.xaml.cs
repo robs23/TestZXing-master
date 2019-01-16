@@ -19,12 +19,15 @@ namespace TestZXing
         ZXingScannerPage scanPage;
         Place Place;
         PlacesKeeper Keeper;
+        UserSettingsViewModel vm;
 
         public ScanPage()
         {
             InitializeComponent();
             Keeper = new PlacesKeeper();
             Place = new Place();
+            vm = new UserSettingsViewModel();
+            BindingContext = vm;
         }
 
         private async void btnScan_Clicked(object sender, EventArgs e)
@@ -176,6 +179,15 @@ namespace TestZXing
         private async void btnOpenProcesses_Clicked(object sender, EventArgs e)
         {
             await Application.Current.MainPage.Navigation.PushAsync(new ActiveProcesses(new ActiveProcessesViewModel()));
+        }
+
+        private void btnLogout_Clicked(object sender, EventArgs e)
+        {
+            RuntimeSettings.UserId = 0;
+            RuntimeSettings.CurrentUser = null;
+            LoginPage page = new LoginPage();
+            NavigationPage.SetHasBackButton(page, false);
+            Navigation.PushAsync(page);
         }
     }
 }

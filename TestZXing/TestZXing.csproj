@@ -80,6 +80,7 @@
     <Compile Include="ViewModels\ProcessViewModel.cs" />
     <Compile Include="ViewModels\ProcessInPlaceViewModel.cs" />
     <Compile Include="ViewModels\ProcessPageViewModel.cs" />
+    <Compile Include="ViewModels\UserSettingsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ModernHttpClient, Version=1.0.6603.17849, Culture=neutral, processorArchitecture=MSIL">

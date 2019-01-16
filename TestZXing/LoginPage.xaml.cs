@@ -82,6 +82,7 @@ namespace TestZXing
                 {
                     //password matches, let user in
                     RuntimeSettings.UserId = vm.SelectedUser.UserId;
+                    RuntimeSettings.CurrentUser = vm.SelectedUser;
                     RuntimeSettings.TenantId = vm.SelectedUser.TenantId;
                     vm.SelectedUser.Login();
                     await Application.Current.MainPage.Navigation.PushAsync(new ScanPage());
@@ -92,6 +93,21 @@ namespace TestZXing
                 }
             }
             
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            // Begin an asyncronous task on the UI thread because we intend to ask the users permission.
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                if (await DisplayAlert("Koniec pracy?", "Czy chcesz wyjść z aplikacji?", "Tak", "Nie"))
+                {
+                    var closer = DependencyService.Get<ICloseApplication>();
+                    closer?.closeApplication();
+                }
+            });
+
+            return true;
         }
     }
 }

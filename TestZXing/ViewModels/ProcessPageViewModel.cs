@@ -633,6 +633,13 @@ namespace TestZXing.ViewModels
                         _res = "Pole Czynności naprawcze nie może być puste. Uzupełnij opis czynności naprawczych!";
                     }
                 }
+                else
+                {
+                    if (string.IsNullOrEmpty(this.Output))
+                    {
+                        _res = "Pole Rezultat nie może być puste! Opisz co udało się zrobić.";
+                    }
+                }
                 if (IsMesRelated)
                 {
                     if (_thisProcess.PlaceId == 0)
@@ -643,10 +650,6 @@ namespace TestZXing.ViewModels
                 if (_thisProcess.ActionTypeId == 0)
                 {
                     _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
-                }
-                if (string.IsNullOrEmpty(this.Output))
-                {
-                    _res = "Pole Rezultat nie może być puste! Opisz co udało się zrobić.";
                 }
             }
             else
@@ -675,7 +678,7 @@ namespace TestZXing.ViewModels
             return _res;
         }
 
-        public async Task<string> End(bool toClose = false)
+        public async Task<string> End(bool toClose = false, bool toPause = false)
         {
             string _Result = "OK";
  
@@ -692,6 +695,18 @@ namespace TestZXing.ViewModels
                     if (!_Result.Equals("OK"))
                     {
                         _thisProcess.Status = prevStatus;
+                    }
+                }
+                else
+                {
+                    if (toPause)
+                    {
+                        _thisProcess.Status = "Wstrzymany";
+                        _Result = await _thisProcess.Edit();
+                        if (!_Result.Equals("OK"))
+                        {
+                            _thisProcess.Status = prevStatus;
+                        }
                     }
                 }
 

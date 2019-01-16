@@ -5,6 +5,18 @@
              NavigationPage.HasBackButton="False"
              x:Class="TestZXing.ScanPage"
              Title="Menu">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Name="lblUser"
+                     Text="{Binding UserSurname}"
+                     Priority="0"
+                     Order="Default"
+                     />
+        <ToolbarItem Name="btnLogout"
+                     Text="Wyloguj"
+                     Priority="0"
+                     Order="Secondary"
+                     Clicked="btnLogout_Clicked"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="15,20">
             <testzxing:RoundedButton x:Name="btnScan" 
