@@ -405,8 +405,6 @@ namespace TestZXing.ViewModels
                                         {
                                             PlaceId = _thisProcess.PlaceId
                                         };
-                                        ////Let's make sure User don't have any other open handligs elsewhere. If he does, let's complete them first
-                                        //await Handlings.CompleteUsersHandlings();
                                     }
                                     else
                                     {
@@ -568,43 +566,48 @@ namespace TestZXing.ViewModels
                 }
                 else
                 {
-                    // There must be new process edit logic...
-
-                    //if (_thisProcess.Status == "Rozpoczęty")
-                    //{
-                    //    _thisProcess.Status = "Wstrzymany";
-                    //}else if(_thisProcess.Status == "Wstrzymany" || _thisProcess.Status == "Planowany")
-                    //{
-                    //    _thisProcess.Status = "Rozpoczęty";
-                    //}
-                    //_Result = await _thisProcess.Edit();
+                    // There must be new process edit logic..
+                    if (_thisProcess.Status == "Wstrzymany" || _thisProcess.Status == "Planowany")
+                    {
+                        _thisProcess.Status = "Rozpoczęty";
+                    }
+                    _Result = await _thisProcess.Edit();
                 }
 
                 // Taking care of handling
-                if (this.IsNew)
+                if (_Result == "OK")
                 {
-                    //this handling is completely new, create it
-                    _this.StartedOn = DateTime.Now;
-                    _this.UserId = RuntimeSettings.UserId;
-                    _this.TenantId = RuntimeSettings.TenantId;
-                    _this.Status = "Rozpoczęty";
-                    _this.ProcessId = _thisProcess.ProcessId;
-                    _Result = await _this.Add();
-                    IsNew = false;
-                    OnPropertyChanged(nameof(NextState));
-                }
-                else
-                {
-                    if(_this.Status == "Rozpoczęty")
+                    if (this.IsNew)
                     {
-                        _this.Status = "Wstrzymany";
+                        //this handling is completely new, create it
+                        //But first, let's make sure User don't have any other open handligs elsewhere. If he does, let's complete them first
+                        HandlingKeeper Handlings = new HandlingKeeper();
+                        _Result = await Handlings.CompleteUsersHandlings();
+                        if (_Result == "OK")
+                        {
+                            _this.StartedOn = DateTime.Now;
+                            _this.UserId = RuntimeSettings.UserId;
+                            _this.TenantId = RuntimeSettings.TenantId;
+                            _this.Status = "Rozpoczęty";
+                            _this.ProcessId = _thisProcess.ProcessId;
+                            _Result = await _this.Add();
+                            IsNew = false;
+                            OnPropertyChanged(nameof(NextState));
+                        }
                     }
-                    else if (_this.Status == "Wstrzymany" || _this.Status == "Planowany")
+                    else
                     {
-                        _this.Status = "Rozpoczęty";
+                        if (_this.Status == "Rozpoczęty")
+                        {
+                            _this.Status = "Wstrzymany";
+                        }
+                        else if (_this.Status == "Wstrzymany" || _this.Status == "Planowany")
+                        {
+                            _this.Status = "Rozpoczęty";
+                        }
+                        _Result = await _this.Edit();
+                        OnPropertyChanged(nameof(NextState));
                     }
-                    _Result = await _this.Edit();
-                    OnPropertyChanged(nameof(NextState));
                 }
             }
             catch (Exception ex)

@@ -79,10 +79,10 @@ namespace TestZXing.Models
             return nHandling;
         }
 
-        public async Task CompleteUsersHandlings()
+        public async Task<string> CompleteUsersHandlings()
         {
             string url = Secrets.ApiAddress + "CompleteUsersHandlings?token=" + Secrets.TenantToken + $"&UserId={RuntimeSettings.UserId}";
-
+            string _Result = "OK";
             DataService ds = new DataService();
 
             try
@@ -94,12 +94,18 @@ namespace TestZXing.Models
                 {
                     string output = await ds.readStream(responseMsg);
                 }
+                else
+                {
+                    _Result = responseMsg.ReasonPhrase;
+                }
             }
             catch (Exception ex)
             {
+                _Result = ex.Message;
                 Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "CompleteUsersHandlings", Time = DateTime.Now, Message = ex.Message };
                 throw;
             }
+            return _Result;
         }
     }
 }
