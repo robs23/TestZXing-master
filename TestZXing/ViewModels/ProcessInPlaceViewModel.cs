@@ -33,7 +33,15 @@ namespace TestZXing.ViewModels
                         ProcessItem pi = new ProcessItem();
                         pi.Id = p.ProcessId;
                         pi.Name = p.ActionTypeName;
-                        pi.Description = "Utworzono " + p.CreatedOn.ToString() + " przez " + p.CreatedByName;
+                        if (p.LastStatus != null)
+                        {
+                            //try to show last status if available
+                            pi.Description = p.LastStatus.ToString() + " " + p.LastStatusOn + " przez " + p.LastStatusByName;
+                        }
+                        else
+                        {
+                            pi.Description = "Utworzono " + p.CreatedOn.ToString() + " przez " + p.CreatedByName;
+                        }
                         pi.Status = p.Status;
                         Items.Add(pi);
                     }
@@ -95,6 +103,9 @@ namespace TestZXing.ViewModels
                     return Color.Yellow;
                 }else if(Status == "Zakończony" && Status == "Zrealizowany"){
                     return Color.Red;
+                }else if(Status == "Planowany")
+                {
+                    return Color.LightBlue;
                 }
                 else
                 {

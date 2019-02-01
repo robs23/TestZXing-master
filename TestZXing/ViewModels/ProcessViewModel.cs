@@ -19,7 +19,18 @@ namespace TestZXing.ViewModels
 
         public int Id { get { return _process.ProcessId; } }
         public string Name { get { return _process.ActionTypeName; } }
-        public string Description { get { return "Utworzono " + _process.CreatedOn + " przez " + _process.CreatedByName; } }
+        public string Description {
+            get {
+                if (_process.LastStatus != null)
+                {
+                    return _process.LastStatus.ToString() + " " + _process.LastStatusOn + " przez " + _process.LastStatusByName;
+                }
+                else
+                {
+                    return "Utworzono " + _process.CreatedOn + " przez " + _process.CreatedByName;
+                }
+            }
+        }
         public string Status { get { return _process.Status; } }
         public Color StatusColor
         {
@@ -36,6 +47,9 @@ namespace TestZXing.ViewModels
                 else if (Status == "Zakończony" && Status == "Zrealizowany")
                 {
                     return Color.Red;
+                }else if (Status == "Planowany")
+                {
+                    return Color.LightBlue;
                 }
                 else
                 {

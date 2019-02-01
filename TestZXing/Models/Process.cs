@@ -108,6 +108,11 @@ namespace TestZXing.Models
                 }
             }
         }
+        public ProcessStatus? LastStatus { get; set; }
+        public int? LastStatusBy { get; set; }
+        public string LastStatusByName { get; set; }
+        public DateTime? LastStatusOn { get; set; }
+
         public override string ToString()
         {
             string str = "";
@@ -265,5 +270,15 @@ namespace TestZXing.Models
             }
             return nHandlings;
         }
+    }
+
+    public enum ProcessStatus
+    {
+        Brak,
+        Planowany,
+        Rozpoczęty,
+        Wstrzymany,
+        Wznowiony,
+        Zakończony
     }
 }
