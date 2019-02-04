@@ -65,7 +65,6 @@ namespace TestZXing.ViewModels
             _thisProcess = Process;
             _thisProcess.PlaceId = PlaceId;
             _this = new Handling();
-            IsNew = false;
             IsProcessOpen = true;
             if (!string.IsNullOrEmpty(_thisProcess.MesId))
             {
@@ -395,34 +394,18 @@ namespace TestZXing.ViewModels
                                     //there's open process of this type on the resource, let's use it!
                                     _thisProcess = nProcess;
                                     IsProcessOpen = true;
-                                    HandlingKeeper Handlings = new HandlingKeeper();
-                                    Handling nHandling = await Handlings.GetUsersOpenHandling(_thisProcess.ProcessId);
-                                    if (nHandling == null)
-                                    {
-                                        //User has no open handlings in this Process, we're creating new one (not editing)
-                                        IsNew = true;
-                                        _this = new Handling()
-                                        {
-                                            PlaceId = _thisProcess.PlaceId
-                                        };
-                                    }
-                                    else
-                                    {
-                                        _this = nHandling;
-                                        IsNew = false;
-                                        OnPropertyChanged(nameof(NextState));
-                                    }
+                                    _this = await GetHandling();
+                                    OnPropertyChanged(nameof(NextState));
                                 }
                             });
                         }
                         else
                         {
-                            IsNew = true;
-                            _this = new Handling()
+                            Task.Run(async () =>
                             {
-                                PlaceId = _thisProcess.PlaceId
-                            };
-                            OnPropertyChanged(nameof(NextState));
+                                _this = await GetHandling();
+                                OnPropertyChanged(nameof(NextState));
+                            });
                         }
 
                         if ((bool)ActionTypes[value].RequireInitialDiagnosis)
@@ -435,6 +418,7 @@ namespace TestZXing.ViewModels
                             RequireInitialDiagnosis = false;
                         }
                         OnPropertyChanged();
+                        OnPropertyChanged(nameof(NextState));
                     }
                 }catch(Exception ex)
                 {
@@ -442,6 +426,26 @@ namespace TestZXing.ViewModels
                     Error.Add();
                 }
             }
+        }
+
+        public async Task<Handling> GetHandling()
+        {
+            HandlingKeeper Handlings = new HandlingKeeper();
+            Handling nHandling = await Handlings.GetUsersOpenHandling(_thisProcess.ProcessId);
+            if (nHandling == null)
+            {
+                //User has no open handlings in this Process, we're creating new one (not editing)
+                IsNew = true;
+                nHandling = new Handling()
+                {
+                    PlaceId = _thisProcess.PlaceId
+                };
+            }
+            else
+            {
+                IsNew = false;
+            }
+            return nHandling;
         }
 
         private int _selectedPlaceIndex { get; set; }
