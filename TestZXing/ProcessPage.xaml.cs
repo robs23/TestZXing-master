@@ -131,5 +131,31 @@ namespace TestZXing
                 DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
             }
         }
+
+        private async void btnCloseProcess_Clicked(object sender, EventArgs e)
+        {
+            //allows user to completely close order and all outstanding handlings
+            string _Result = "OK";
+
+            if (await vm.AreThereOpenHandlingsLeft() != "No")
+            {
+                if (!await DisplayAlert("Potwierdź", "Czy na pewno chcesz zamknąć to zgłoszenie? Jeśli tak, wszystkie obsługi tego zgłoszenia zostaną zakończone.", "Zamknij", "Pozostaw"))
+                {
+                    _Result = "No";
+                }
+            }
+            if (_Result == "OK")
+            {
+                _Result = await vm.End(true, false);
+                if (_Result == "OK")
+                {
+                    await DisplayAlert("Powodzenie", "Zgłoszenie zostało zakończone!", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Wystąpił błąd", _Result, "OK");
+                }
+            }
+        }
     }
 }

@@ -4,6 +4,13 @@
              xmlns:testzxing="clr-namespace:TestZXing"
              x:Class="TestZXing.ProcessPage"
              Title="Szczegóły zgłoszenia">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Name="btnCloseProcess"
+                     Text="Zamknij zgłoszenie"
+                     Priority="0"
+                     Order="Secondary"
+                     Clicked="btnCloseProcess_Clicked"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout VerticalOptions="Center" Margin="15,5">
             <Label x:Name="lblDescription"
