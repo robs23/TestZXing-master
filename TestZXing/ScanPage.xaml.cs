@@ -178,7 +178,8 @@ namespace TestZXing
 
         private async void btnOpenProcesses_Clicked(object sender, EventArgs e)
         {
-            await Application.Current.MainPage.Navigation.PushAsync(new ActiveProcesses(new ActiveProcessesViewModel()));
+            await Application.Current.MainPage.Navigation.PushAsync(new ProcessesPage());
+            //await Application.Current.MainPage.Navigation.PushAsync(new ActiveProcesses(new ActiveProcessesViewModel()));
         }
 
         private void btnLogout_Clicked(object sender, EventArgs e)

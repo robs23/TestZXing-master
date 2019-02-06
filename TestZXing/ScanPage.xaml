@@ -29,7 +29,7 @@
                                Color="CadetBlue"/>
             <testzxing:RoundedButton x:Name="btnOpenProcesses"
                     Margin="0,20,0,0"
-                    Text="Otwarte zgłoszenia"
+                    Text="Zgłoszenia"
                     BackgroundColor="DeepSkyBlue"
                     TextColor="White"
                     Clicked="btnOpenProcesses_Clicked"/>
