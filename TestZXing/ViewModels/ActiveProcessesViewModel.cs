@@ -24,16 +24,32 @@ namespace TestZXing.ViewModels
 
         public ICommand HeaderClickCommand { get; private set; }
         private bool _IsWorking { get; set; }
+        private bool UProcesses { get; set; }
+        private string _title { get; set; }
 
-        public ActiveProcessesViewModel()
+        public ActiveProcessesViewModel(bool UsersProcesses = false)
         {
+            UProcesses = UsersProcesses;
+            if (UProcesses)
+            {
+                Title = "MOJE";
+            }
+            else
+            {
+                Title = "OTWARTE";
+            }
             this.HeaderClickCommand = new Command<PlaceViewModel>((item) => ExecuteHeaderClickCommand(item));
         }
 
         public async Task<string> ExecuteLoadDataCommand()
         {
             string _Result = "OK";
-            string url = Secrets.ApiAddress + "GetProcessesExt?token=" + Secrets.TenantToken;
+            string url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "&query=IsCompleted=false and IsSuccessfull=false";
+            if (UProcesses)
+            {
+                url += $" and LastStatusBy={Static.RuntimeSettings.UserId}";
+            }
+            
             DataService ds = new DataService();
             List<Process> Items = new List<Process>();
             List<Place> Places;
@@ -106,9 +122,8 @@ namespace TestZXing.ViewModels
                         List.Add(vm);
                     }
                 }
-                IsWorking = false;
             }
-
+            IsWorking = false;
             return _Result;
         }
 
@@ -132,6 +147,22 @@ namespace TestZXing.ViewModels
                 if (_IsWorking != value)
                 {
                     _IsWorking = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string Title
+        {
+            get
+            {
+                return _title;
+            }
+            set
+            {
+                if(_title != value)
+                {
+                    _title = value;
                     OnPropertyChanged();
                 }
             }

@@ -5,7 +5,7 @@
              xmlns:testzxing="clr-namespace:TestZXing"
              x:Class="TestZXing.ActiveProcesses"
              x:Name="currentPage"
-             Title="OTWARTE">
+             Title="{Binding Title}">
     <ContentPage.Content>
         <StackLayout>
             <ActivityIndicator x:Name="Looper"
