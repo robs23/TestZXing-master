@@ -56,6 +56,23 @@ namespace TestZXing.ViewModels
             OnPropertyChanged(nameof(Places));
         }
 
+        private Place _selectedItem { get; set; }
+        public Place SelectedItem
+        {
+            get
+            {
+                return _selectedItem;
+            }
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)

@@ -18,6 +18,7 @@
                       SeparatorVisibility="Default"
                       ItemsSource="{Binding Places}"
                       ItemTapped="Handle_ItemTapped"
+                      SelectedItem="{Binding SelectedItem}"
                       CachingStrategy="RecycleElement">
                 <ListView.ItemTemplate>
                     <DataTemplate>
