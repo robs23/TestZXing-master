@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:testzxing="clr-namespace:TestZXing"
+             x:Class="TestZXing.LastPlaces"
+             Title="Ostatnie">
+    <ContentPage.Content>
+        <StackLayout>
+            <ActivityIndicator x:Name="Looper"
+                       Color="CadetBlue"
+                       IsEnabled="True"
+                       IsVisible="{Binding IsWorking}"
+                       IsRunning="{Binding IsWorking}"/>
+
+            <ListView x:Name="lstPlaces"
+                      VerticalOptions="FillAndExpand"
+                      HasUnevenRows="True"
+                      SeparatorVisibility="Default"
+                      ItemsSource="{Binding Places}"
+                      ItemTapped="Handle_ItemTapped"
+                      CachingStrategy="RecycleElement">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Padding="10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="7*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label
+                                        Text="{Binding Name}"
+                                        LineBreakMode="WordWrap"
+                                        Style="{DynamicResource ListItemTextStyle}"
+                                        FontSize="Medium"
+                                        FontAttributes="Bold"
+                                        Grid.Row="0"
+                                        Grid.Column="0"/>
+                                    <testzxing:CustomLabel
+                                        Text="{Binding VisitedAtString}"
+                                        BgColor="CadetBlue"
+                                        FontSize="Small"
+                                        Grid.Row="0"
+                                        Grid.Column="1"/>
+                                </Grid>
+                                <Label
+                                    Text="{Binding SetName}"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Small"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>

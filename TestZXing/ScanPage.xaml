@@ -33,6 +33,18 @@
                     BackgroundColor="DeepSkyBlue"
                     TextColor="White"
                     Clicked="btnOpenProcesses_Clicked"/>
+            
+            <testzxing:RoundedButton x:Name="btnLastPlaces"
+                    Margin="0,20,0,0"
+                    Text="Ostatnie"
+                    BackgroundColor="DeepSkyBlue"
+                    TextColor="White"
+                    Clicked="btnLastPlaces_Clicked"/>
+            <Label
+                    Text="{Binding SetName}"
+                    LineBreakMode="WordWrap"
+                    Style="{DynamicResource ListItemDetailTextStyle}"
+                    FontSize="Small"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

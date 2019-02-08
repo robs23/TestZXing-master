@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -101,6 +102,31 @@ namespace TestZXing.Models
             }
 
             return Places;
+        }
+
+        public async Task<ObservableCollection<Place>> GetUsersLastPlaces()
+        {
+            string url = Secrets.ApiAddress + "GetUsersLastPlaces?token=" + Secrets.TenantToken + "&UserId=" + RuntimeSettings.UserId;
+            DataService ds = new DataService();
+            ObservableCollection<Place> Items = new ObservableCollection<Place>();
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var responseMsg = await httpClient.SendAsync(request);
+                string output = await ds.readStream(responseMsg);
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    Items = JsonConvert.DeserializeObject<ObservableCollection<Place>>(output);
+                }
+                return Items;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
         }
     }
 }

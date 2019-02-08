@@ -190,5 +190,10 @@ namespace TestZXing
             NavigationPage.SetHasBackButton(page, false);
             Navigation.PushAsync(page);
         }
+
+        private void btnLastPlaces_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.MainPage.Navigation.PushAsync(new LastPlaces());
+        }
     }
 }
