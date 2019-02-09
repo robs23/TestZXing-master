@@ -29,11 +29,6 @@
                     BackgroundColor="DeepSkyBlue"
                     TextColor="White"
                     Clicked="btnLogin_Clicked"></testzxing:RoundedButton>
-            <ActivityIndicator x:Name="Looper"
-                               Color="CadetBlue"
-                               IsEnabled="True"
-                               IsRunning="False"
-                               IsVisible="True"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

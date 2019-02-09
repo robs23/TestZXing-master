@@ -10,6 +10,7 @@ using System.Windows.Input;
 using ModernHttpClient;
 using MvvmHelpers;
 using Newtonsoft.Json;
+using Rg.Plugins.Popup.Services;
 using TestZXing.Classes;
 using TestZXing.Models;
 using TestZXing.Static;
@@ -146,6 +147,14 @@ namespace TestZXing.ViewModels
             {
                 if (_IsWorking != value)
                 {
+                    if (value == false)
+                    {
+                        PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                    }
+                    else
+                    {
+                        PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
+                    }
                     _IsWorking = value;
                     OnPropertyChanged();
                 }

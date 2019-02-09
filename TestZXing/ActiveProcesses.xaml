@@ -8,11 +8,6 @@
              Title="{Binding Title}">
     <ContentPage.Content>
         <StackLayout>
-            <ActivityIndicator x:Name="Looper"
-                               IsEnabled="True"
-                               Color="CadetBlue"
-                               IsRunning="{Binding IsWorking}"
-                               IsVisible="{Binding IsWorking}"/>
             <ListView
                 x:Name="lstPlaces"
                 ItemsSource="{Binding List}"

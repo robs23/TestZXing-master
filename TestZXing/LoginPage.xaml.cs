@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +34,7 @@ namespace TestZXing
             base.OnAppearing();
             try
             {
-                Looper.IsVisible = true;
-                Looper.IsRunning = true;
+                await PopupNavigation.Instance.PushAsync(new LoadingScreen(),true); // Show loading screen
                 string _Result = await keeper.Reload();
                 if (_Result == "OK")
                 {
@@ -50,6 +50,7 @@ namespace TestZXing
                 }
                 else
                 {
+                    PopupNavigation.Instance.PopAsync(true); // Hide loading screen
                     await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
                     var closer = DependencyService.Get<ICloseApplication>();
                     closer?.closeApplication();
@@ -65,9 +66,7 @@ namespace TestZXing
             {
                 
             }
-            Looper.IsVisible = false;
-            Looper.IsRunning = false;
-
+            PopupNavigation.Instance.PopAsync(true);
         }
 
         private async void btnLogin_Clicked(object sender, EventArgs e)

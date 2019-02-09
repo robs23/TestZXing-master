@@ -66,6 +66,12 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Rg.Plugins.Popup, Version=1.1.5.188, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rg.Plugins.Popup.1.1.5.188\lib\MonoAndroid\Rg.Plugins.Popup.dll</HintPath>
+    </Reference>
+    <Reference Include="Rg.Plugins.Popup.Droid, Version=1.1.5.188, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rg.Plugins.Popup.1.1.5.188\lib\MonoAndroid\Rg.Plugins.Popup.Droid.dll</HintPath>
+    </Reference>
     <Reference Include="Square.OkHttp3, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Square.OkHttp3.3.8.1\lib\MonoAndroid\Square.OkHttp3.dll</HintPath>
     </Reference>

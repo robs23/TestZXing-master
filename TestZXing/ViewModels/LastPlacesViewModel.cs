@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rg.Plugins.Popup.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -24,6 +25,14 @@ namespace TestZXing.ViewModels
             {
                 if (_isWorking != value)
                 {
+                    if (value == false)
+                    {
+                        PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                    }
+                    else
+                    {
+                        PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
+                    }
                     _isWorking = value;
                     OnPropertyChanged();
                 }

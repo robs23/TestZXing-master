@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rg.Plugins.Popup.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,8 +42,7 @@ namespace TestZXing
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     Navigation.PopAsync();
-                    Looper.IsVisible = true;
-                    Looper.IsRunning = true;
+                    PopupNavigation.Instance.PushAsync(new LoadingScreen(), true);
                     try
                     {
                         Place = await Keeper.GetPlace(result.Text);
@@ -99,6 +99,7 @@ namespace TestZXing
                             }
                             catch (Exception ex)
                             {
+                                PopupNavigation.Instance.PopAsync(true); // Hide loading screen
                                 await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
                             }
                             
@@ -108,8 +109,7 @@ namespace TestZXing
                     {
                         await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
                     }
-                    Looper.IsVisible = false;
-                    Looper.IsRunning = false;
+                    PopupNavigation.Instance.PopAsync(true); // Hide loading screen
                 });
             };
             await Navigation.PushAsync(scanPage);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rg.Plugins.Popup.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -104,6 +105,7 @@ namespace TestZXing.ViewModels
         {
             try
             {
+                IsWorking = true;
                 //if IsMesRelated then first 'get' scanned action type just to make sure she'll be added to the list if missing
                 ActionType nAt = new ActionType();
                 if (IsMesRelated)
@@ -162,6 +164,7 @@ namespace TestZXing.ViewModels
                 {
                     SelectedPlaceIndex = index;
                 }
+                IsWorking = false;
                 
                 
             }
@@ -196,6 +199,14 @@ namespace TestZXing.ViewModels
             {
                 if (_IsWorking != value)
                 {
+                    if (value == false)
+                    {
+                        PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                    }
+                    else
+                    {
+                        PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
+                    }
                     _IsWorking = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsIdle));

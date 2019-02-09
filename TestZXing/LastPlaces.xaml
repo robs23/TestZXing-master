@@ -6,12 +6,6 @@
              Title="Ostatnie">
     <ContentPage.Content>
         <StackLayout>
-            <ActivityIndicator x:Name="Looper"
-                       Color="CadetBlue"
-                       IsEnabled="True"
-                       IsVisible="{Binding IsWorking}"
-                       IsRunning="{Binding IsWorking}"/>
-
             <ListView x:Name="lstPlaces"
                       VerticalOptions="FillAndExpand"
                       HasUnevenRows="True"
