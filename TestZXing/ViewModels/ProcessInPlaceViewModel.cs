@@ -36,7 +36,7 @@ namespace TestZXing.ViewModels
                         if (p.LastStatus != null)
                         {
                             //try to show last status if available
-                            pi.Description = p.LastStatus.ToString() + " " + p.LastStatusOn + " przez " + p.LastStatusByName;
+                            pi.Description = p.LastStatus.ToString() + " " + p.LastStatusOn + " przez " + p.LastStatusByName + "Aktualnie obsługujących: " + p.OpenHandlings; 
                         }
                         else
                         {

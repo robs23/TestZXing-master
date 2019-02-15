@@ -112,6 +112,8 @@ namespace TestZXing.Models
         public int? LastStatusBy { get; set; }
         public string LastStatusByName { get; set; }
         public DateTime? LastStatusOn { get; set; }
+        public int? OpenHandlings { get; set; }
+        public int? AllHandlings { get; set; }
 
         public override string ToString()
         {

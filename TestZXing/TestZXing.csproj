@@ -38,6 +38,9 @@
     <Compile Include="Classes\DataService.cs" />
     <Compile Include="CustomEditor.cs" />
     <Compile Include="CustomLabel.cs" />
+    <Compile Include="HandlingsPage.xaml.cs">
+      <DependentUpon>HandlingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ICloseApplication.cs" />
     <Compile Include="LastPlaces.xaml.cs">
       <DependentUpon>LastPlaces.xaml</DependentUpon>
@@ -181,6 +184,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="LoadingScreen.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HandlingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

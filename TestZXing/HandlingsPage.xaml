@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:testzxing="clr-namespace:TestZXing"
+             x:Class="TestZXing.HandlingsPage"
+                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup">
+
+    <StackLayout>
+        <testzxing:CustomLabel
+            Text="Otwarte"
+            BgColor="Green"/>
+         
+        <ListView x:Name="lstOpenHandlings"
+                      ItemsSource="{Binding OpenHandlings}"
+                      VerticalOptions="FillAndExpand"
+                      HasUnevenRows="True"
+                      SeparatorVisibility="Default">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label
+                                        Text="{Binding Name}"
+                                        LineBreakMode="WordWrap"
+                                        Style="{DynamicResource ListItemTextStyle}"
+                                        FontSize="Medium"
+                                        FontAttributes="Bold"
+                                        Grid.Row="0"
+                                        Grid.Column="0"/>
+                            </Grid>
+                            <Label
+                                    Text="{Binding Description}"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Small"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</pages:PopupPage>
