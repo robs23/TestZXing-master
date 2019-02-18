@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -87,6 +88,25 @@ namespace TestZXing.Models
                     IsFrozen = false;
                     IsActive = false;
                 }
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                string result = "Obsługa jeszcze się nie rozpoczęła..";
+
+                if (StartedOn != null)
+                {
+                    result = $"Od {StartedOn}"; 
+                    if(FinishedOn != null)
+                    {
+                        result += $" do {FinishedOn} ({Length} min)";
+                    }
+                }
+
+                return result;
             }
         }
 

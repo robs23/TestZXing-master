@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rg.Plugins.Popup.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -156,6 +157,11 @@ namespace TestZXing
                     await DisplayAlert("Wystąpił błąd", _Result, "OK");
                 }
             }
+        }
+
+        private void btnShowHandlings_Clicked(object sender, EventArgs e)
+        {
+            PopupNavigation.Instance.PushAsync(new HandlingsPage(vm._thisProcess.ProcessId), true);
         }
     }
 }

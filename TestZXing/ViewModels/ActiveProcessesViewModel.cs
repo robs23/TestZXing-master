@@ -45,10 +45,15 @@ namespace TestZXing.ViewModels
         public async Task<string> ExecuteLoadDataCommand()
         {
             string _Result = "OK";
-            string url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "&query=IsCompleted=false and IsSuccessfull=false";
+            string url = "";
+
             if (UProcesses)
             {
-                url += $" and LastStatusBy={Static.RuntimeSettings.UserId}";
+                url = Secrets.ApiAddress + "GetUsersOpenProcesses?token=" + Secrets.TenantToken + $"&UserId={RuntimeSettings.UserId}";
+            }
+            else
+            {
+                url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "&query=IsCompleted=false and IsSuccessfull=false";
             }
             
             DataService ds = new DataService();

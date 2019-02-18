@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -38,6 +39,27 @@ namespace TestZXing.Models
                 Debug.WriteLine(ex.Message);
                 throw;
             }
+        }
+
+        public async Task<ObservableCollection<Handling>> GetHandligngsByProcess(int processId)
+        {
+            string url = Secrets.ApiAddress + "GetHandlings?token=" + Secrets.TenantToken + $"&query=ProcessId={processId}";
+            DataService ds = new DataService();
+            ObservableCollection<Handling> _nHandlings = null;
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                string output = await ds.readStream(await httpClient.SendAsync(request));
+                _nHandlings = JsonConvert.DeserializeObject<ObservableCollection<Handling>>(output);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw;
+            }
+            return _nHandlings;
+
         }
 
         public async Task<Handling> GetUsersOpenHandling(int? ProcessId=null)

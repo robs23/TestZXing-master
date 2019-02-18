@@ -5,9 +5,17 @@
              x:Class="TestZXing.HandlingsPage"
                  xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup">
 
-    <StackLayout>
+    <StackLayout
+        Margin="12"
+                 Padding="18"
+                 Spacing="0"
+                 BackgroundColor="White"
+                 HorizontalOptions="Center"
+                 VerticalOptions="Center">
         <testzxing:CustomLabel
-            Text="Otwarte"
+            FontSize="Large"
+            Text="W toku"
+            TextColor="White"
             BgColor="Green"/>
          
         <ListView x:Name="lstOpenHandlings"
@@ -24,27 +32,75 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="8*"/>
-                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="10*"/>
                                 </Grid.ColumnDefinitions>
                                 <Label
-                                        Text="{Binding Name}"
+                                        Text="{Binding UserName}"
                                         LineBreakMode="WordWrap"
                                         Style="{DynamicResource ListItemTextStyle}"
                                         FontSize="Medium"
                                         FontAttributes="Bold"
                                         Grid.Row="0"
                                         Grid.Column="0"/>
+                                
                             </Grid>
-                            <Label
-                                    Text="{Binding Description}"
-                                    LineBreakMode="WordWrap"
-                                    Style="{DynamicResource ListItemDetailTextStyle}"
-                                    FontSize="Small"/>
+                            <Label Text="{Binding Description}"
+                                       LineBreakMode="WordWrap"
+                                        Style="{DynamicResource ListItemTextStyle}"
+                                        FontSize="Small"
+                                        Grid.Row="0"
+                                        Grid.Column="0"/>
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <testzxing:CustomLabel
+            FontSize="Large"
+            Text="Zakończone"
+            TextColor="White"
+            BgColor="Red"/>
+
+        <ListView x:Name="lstCompletedHandlings"
+                      ItemsSource="{Binding CompletedHandlings}"
+                      VerticalOptions="FillAndExpand"
+                      HasUnevenRows="True"
+                      SeparatorVisibility="Default">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label
+                                        Text="{Binding UserName}"
+                                        LineBreakMode="WordWrap"
+                                        Style="{DynamicResource ListItemTextStyle}"
+                                        FontSize="Medium"
+                                        FontAttributes="Bold"
+                                        Grid.Row="0"
+                                        Grid.Column="0"/>
+
+                            </Grid>
+                            <Label Text="{Binding Description}"
+                                       LineBreakMode="WordWrap"
+                                        Style="{DynamicResource ListItemTextStyle}"
+                                        FontSize="Small"
+                                        Grid.Row="0"
+                                        Grid.Column="0"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <testzxing:RoundedButton Text="Zamknij"
+                                 BackgroundColor="DeepSkyBlue"
+                                 x:Name="btnClose"
+                                 Clicked="btnClose_Clicked"/>
     </StackLayout>
 </pages:PopupPage>

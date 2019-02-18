@@ -10,6 +10,11 @@
                      Priority="0"
                      Order="Secondary"
                      Clicked="btnCloseProcess_Clicked"/>
+        <ToolbarItem Name="btnShowHandlings"
+                     Text="Pokaż obsługujących"
+                     Priority="1"
+                     Order="Secondary"
+                     Clicked="btnShowHandlings_Clicked"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout VerticalOptions="Center" Margin="15,5">

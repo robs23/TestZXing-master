@@ -15,6 +15,12 @@ namespace TestZXing
         public LoadingScreen()
         {
             InitializeComponent();
+            CloseWhenBackgroundIsClicked = false;
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return true; // Disable back button
         }
     }
 }
