@@ -3,7 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:testzxing="clr-namespace:TestZXing"
              x:Class="TestZXing.ScanningResults"
-             Title="Wynik skanowania">
+             Title="Zgłoszenia dla zasobu">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Name="btnShowCompleted"
+                     Text="Historia zasobu"
+                     Priority="0"
+                     Order="Secondary"
+                     Clicked="btnShowCompleted_Clicked"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="10,20">
             <Label x:Name="lblScanResult" 

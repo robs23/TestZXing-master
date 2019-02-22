@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestZXing.CompletedProcessesForPlace"
+                 xmlns:testzxing="clr-namespace:TestZXing"
+             xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup">
+    <StackLayout Margin="12"
+                 Padding="18"
+                 Spacing="0"
+                 BackgroundColor="White"
+                 HorizontalOptions="Center"
+                 VerticalOptions="Center">
+        <ListView x:Name="lstProcesses"
+                      ItemsSource="{Binding Items}"
+                      VerticalOptions="FillAndExpand"
+                      HasUnevenRows="True"
+                      SeparatorVisibility="Default"
+                      ItemTapped="lstProcesses_ItemTapped">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="10">
+                            <testzxing:CustomLabel
+                                        Text="{Binding ActionTypeName}"
+                                        BgColor="DeepSkyBlue"
+                                        FontSize="Large"/>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*"/>
+                                    <ColumnDefinition Width="6*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label
+                                    Text="Zakończenie:"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Medium"
+                                    FontAttributes="Bold"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                />
+                                <Label
+                                    Text="{Binding FinishedOn}"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Medium"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                />
+                                <Label
+                                    Text="Długość:"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Medium"
+                                    FontAttributes="Bold"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                />
+                                <Label
+                                    Text="{Binding Length}"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Medium"
+                                    Grid.Row="1"
+                                    Grid.Column="1"/>
+                                <Label
+                                    Text="Rezultat:"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Medium"
+                                    FontAttributes="Bold"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                />
+                                <Label
+                                    Text="{Binding Output}"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Small"
+                                    Grid.Row="2"
+                                    Grid.Column="1"/>
+                                <Label
+                                    Text="Wstępne rozpoznanie:"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Medium"
+                                    FontAttributes="Bold"
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                />
+                                <Label
+                                    Text="{Binding InitialDiagnosis}"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Small"
+                                    Grid.Row="3"
+                                    Grid.Column="1"/>
+                                <Label
+                                    Text="Czynności naprawcze:"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Medium"
+                                    FontAttributes="Bold"
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                />
+                                <Label
+                                    Text="{Binding RepairActions}"
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Small"
+                                    Grid.Row="4"
+                                    Grid.Column="1"/>
+                            </Grid>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <testzxing:RoundedButton Text="Zamknij"
+                                 BackgroundColor="DeepSkyBlue"
+                                 x:Name="btnClose"
+                                 Clicked="btnClose_Clicked"/>
+    </StackLayout>
+</pages:PopupPage>

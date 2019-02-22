@@ -62,7 +62,7 @@ namespace TestZXing.Models
             }
             else
             {
-                url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + $"&query=PlaceId={PlaceId} and IsCompleted=true or IsSuccessfull=true";
+                url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + $"&query=PlaceId={PlaceId} and (IsCompleted=true or IsSuccessfull=true)";
             }
             //url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "&PlaceId=" + PlaceId.ToString() + "&active=" + active;
             DataService ds = new DataService();

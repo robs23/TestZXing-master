@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rg.Plugins.Popup.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -83,6 +84,11 @@ namespace TestZXing
             {
                 await DisplayAlert("Nie zaznaczono elementu", "Najpierw zaznacz nowy lub istniejący element listy!", "OK");
             }
+        }
+
+        private void btnShowCompleted_Clicked(object sender, EventArgs e)
+        {
+            PopupNavigation.Instance.PushAsync(new CompletedProcessesForPlace(Place), true);
         }
     }
 }

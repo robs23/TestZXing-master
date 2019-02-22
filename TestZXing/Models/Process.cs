@@ -41,6 +41,7 @@ namespace TestZXing.Models
         public string TenantName { get; set; }
         public string InitialDiagnosis { get; set; }
         public string RepairActions { get; set; }
+        public int? Length { get; set; }
         public string Reason { get; set; }
         public string MesId { get; set; }
         public DateTime? MesDate { get; set; }

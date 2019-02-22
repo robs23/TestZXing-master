@@ -36,6 +36,9 @@
     <Compile Include="BorderfulEntry.cs" />
     <Compile Include="BorderfulPicker.cs" />
     <Compile Include="Classes\DataService.cs" />
+    <Compile Include="CompletedProcessesForPlace.xaml.cs">
+      <DependentUpon>CompletedProcessesForPlace.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomEditor.cs" />
     <Compile Include="CustomLabel.cs" />
     <Compile Include="HandlingsPage.xaml.cs">
@@ -87,6 +90,7 @@
     <Compile Include="TestZXing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ActiveProcessesViewModel.cs" />
+    <Compile Include="ViewModels\CompletedProcessesInPlaceViewModel.cs" />
     <Compile Include="ViewModels\HandlingsPageViewModel.cs" />
     <Compile Include="ViewModels\LastPlacesViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
@@ -191,6 +195,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="HandlingsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CompletedProcessesForPlace.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
