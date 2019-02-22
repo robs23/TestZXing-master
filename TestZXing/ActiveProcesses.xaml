@@ -13,7 +13,7 @@
                 ItemsSource="{Binding List}"
                 VerticalOptions="FillAndExpand"
                 IsGroupingEnabled="True"
-                RowHeight="80"
+                RowHeight="90"
                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
