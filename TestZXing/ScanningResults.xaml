@@ -18,6 +18,7 @@
                       VerticalOptions="FillAndExpand"
                       HasUnevenRows="True"
                       SeparatorVisibility="Default"
+                      ItemTapped="lstProcesses_ItemTapped"
                       SelectedItem="{Binding SelectedItem}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -45,7 +46,7 @@
                                         FontSize="Small"
                                         Grid.Row="0"
                                         Grid.Column="1"/>
-                                    
+
                                 </Grid>
                                 <Label
                                     Text="{Binding Description}"
@@ -57,13 +58,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <testzxing:RoundedButton
-                x:Name="btnOpenProcess"
-                Text="OK"
-                TextColor="White"
-                BackgroundColor="DeepSkyBlue"
-                Clicked="btnOpenProcess_Clicked"
-                />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

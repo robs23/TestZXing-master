@@ -29,28 +29,6 @@ namespace TestZXing
             lblScanResult.Text = Place.Name;
         }
 
-        private async void btnOpenProcess_Clicked(object sender, EventArgs e)
-        {
-            if (vm.SelectedItem != null)
-            {
-                if (vm.SelectedItem.Id == 0)
-                {
-                    //create new
-                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId));
-                }
-                else
-                {
-                    Process process = Pros.Where(p => p.ProcessId == vm.SelectedItem.Id).FirstOrDefault();
-                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId, process));
-                }
-            }
-            else
-            {
-                await DisplayAlert("Nie zaznaczono elementu", "Najpierw zaznacz nowy lub istniejący element listy!", "OK");
-            }
-
-        }
-
         private async void UpdateList()
         {
             Looper.IsVisible = true;
@@ -83,6 +61,27 @@ namespace TestZXing
                 {
                     UpdateList();
                 }
+            }
+        }
+
+        private async void lstProcesses_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            if (vm.SelectedItem != null)
+            {
+                if (vm.SelectedItem.Id == 0)
+                {
+                    //create new
+                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId));
+                }
+                else
+                {
+                    Process process = Pros.Where(p => p.ProcessId == vm.SelectedItem.Id).FirstOrDefault();
+                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId, process));
+                }
+            }
+            else
+            {
+                await DisplayAlert("Nie zaznaczono elementu", "Najpierw zaznacz nowy lub istniejący element listy!", "OK");
             }
         }
     }

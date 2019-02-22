@@ -14,7 +14,8 @@
                 VerticalOptions="FillAndExpand"
                 IsGroupingEnabled="True"
                 RowHeight="90"
-                SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+                SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                ItemTapped="lstPlaces_ItemTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -71,7 +72,7 @@
                                    RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1}"
                                    RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=60}"  />
                                 </StackLayout>
-                                
+
                                 <RelativeLayout.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Source={x:Reference currentPage}, Path=BindingContext.HeaderClickCommand}"  NumberOfTapsRequired="1" CommandParameter="{Binding .}"/>
                                 </RelativeLayout.GestureRecognizers>
@@ -80,14 +81,6 @@
                     </DataTemplate>
                 </ListView.GroupHeaderTemplate>
             </ListView>
-            <testzxing:RoundedButton
-                x:Name="btnOpenProcess"
-                Text="OK"
-                TextColor="White"
-                Margin="5,15,5,5"
-                BackgroundColor="DeepSkyBlue"
-                Clicked="btnOpenProcess_Clicked"
-                />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

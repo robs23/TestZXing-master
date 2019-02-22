@@ -52,9 +52,9 @@ namespace TestZXing
             }
         }
 
-        private async void btnOpenProcess_Clicked(object sender, EventArgs e)
+        private async void lstPlaces_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            if(vm.SelectedItem != null)
+            if (vm.SelectedItem != null)
             {
                 Process process = vm.SelectedItem._process;
                 await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(process.PlaceId, process));
