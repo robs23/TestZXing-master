@@ -16,6 +16,11 @@
                      Priority="0"
                      Order="Secondary"
                      Clicked="btnLogout_Clicked"/>
+        <ToolbarItem Name="btnClose"
+                     Text="Zakończ"
+                     Priority="1"
+                     Order="Secondary"
+                     Clicked="btnClose_Clicked"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="15,20">
@@ -26,7 +31,7 @@
                     Clicked="btnScan_Clicked"/>
             <testzxing:RoundedButton x:Name="btnOpenProcesses"
                     Margin="0,20,0,0"
-                    Text="Zgłoszenia"
+                    Text="Otwarte zgłoszenia"
                     BackgroundColor="DeepSkyBlue"
                     TextColor="White"
                     Clicked="btnOpenProcesses_Clicked"/>

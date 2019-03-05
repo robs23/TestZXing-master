@@ -37,7 +37,7 @@ namespace TestZXing.ViewModels
             }
             else
             {
-                Title = "OTWARTE";
+                Title = "WSZYSTKIE";
             }
             this.HeaderClickCommand = new Command<PlaceViewModel>((item) => ExecuteHeaderClickCommand(item));
         }

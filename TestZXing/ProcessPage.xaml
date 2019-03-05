@@ -86,7 +86,7 @@
             <testzxing:RoundedButton
                 Margin="0,5,0,0"
                 x:Name="btnEnd"
-                Text="Zakończ"
+                Text="Zakończ obsługę"
                 BackgroundColor="Red"
                 IsEnabled="{Binding IsClosable}"
                 Clicked="btnEnd_Clicked"

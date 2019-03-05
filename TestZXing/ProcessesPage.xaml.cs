@@ -15,8 +15,8 @@ namespace TestZXing
         public ProcessesPage()
         {
             InitializeComponent();
-            Children.Add(new ActiveProcesses(new ActiveProcessesViewModel()));
             Children.Add(new ActiveProcesses(new ActiveProcessesViewModel(true)));
+            Children.Add(new ActiveProcesses(new ActiveProcessesViewModel()));
         }
     }
 }

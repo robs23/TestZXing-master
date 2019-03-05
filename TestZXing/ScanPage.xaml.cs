@@ -195,5 +195,10 @@ namespace TestZXing
         {
             Application.Current.MainPage.Navigation.PushAsync(new LastPlaces());
         }
+
+        private void btnClose_Clicked(object sender, EventArgs e)
+        {
+            OnBackButtonPressed();
+        }
     }
 }

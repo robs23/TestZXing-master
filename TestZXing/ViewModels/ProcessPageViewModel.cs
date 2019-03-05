@@ -543,13 +543,13 @@ namespace TestZXing.ViewModels
             {
                 if (_this.Status == "Planowany")
                 {
-                    return "Rozpocznij";
+                    return "Rozpocznij obsługę";
                 }else if(_this.Status == "Rozpoczęty")
                 {
-                    return "Wstrzymaj";
+                    return "Wstrzymaj obsługę";
                 }else if(_this.Status == "Wstrzymany")
                 {
-                    return "Wznów";
+                    return "Wznów obsługę";
                 }else
                 {
                     return "Zakończony";

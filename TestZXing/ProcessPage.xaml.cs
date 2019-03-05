@@ -79,7 +79,7 @@ namespace TestZXing
                 string _Result = await vm.End(_ToClose, _toPause);
                 if (_Result == "OK")
                 {
-                    await DisplayAlert("Powodzenie", "Zgłoszenie zostało zakończone!", "OK");
+                    await DisplayAlert("Powodzenie", "Obsługa zgłoszenia została zakończona!", "OK");
                 }
                 else
                 {
