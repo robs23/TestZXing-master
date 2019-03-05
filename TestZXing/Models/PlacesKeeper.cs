@@ -106,7 +106,7 @@ namespace TestZXing.Models
 
         public async Task<ObservableCollection<Place>> GetUsersLastPlaces()
         {
-            string url = Secrets.ApiAddress + "GetUsersLastPlaces?token=" + Secrets.TenantToken + "&UserId=" + RuntimeSettings.UserId;
+            string url = Secrets.ApiAddress + "GetUsersLastPlaces?token=" + Secrets.TenantToken + "&UserId=" + RuntimeSettings.UserId + "&distinct=true";
             DataService ds = new DataService();
             ObservableCollection<Place> Items = new ObservableCollection<Place>();
 

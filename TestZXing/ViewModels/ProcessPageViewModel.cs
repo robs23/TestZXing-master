@@ -72,6 +72,14 @@ namespace TestZXing.ViewModels
                 IsMesRelated = true;
                 MesString = new MesString { SetName = _thisProcess.SetName, ActionTypeName = _thisProcess.ActionTypeName, MesId = _thisProcess.MesId, MesDate = _thisProcess.MesDate, Reason = _thisProcess.Reason };
             }
+            if(_thisProcess.IsCompleted==true || _thisProcess.IsSuccessfull == true)
+            {
+                //process is closed and open from history
+                _this.Status = "Zakończony";
+                OnPropertyChanged(nameof(NextState));
+                OnPropertyChanged(nameof(IsOpen));
+            }
+            
             //Initialize(_this.ActionTypeId);
 
         }
@@ -99,6 +107,13 @@ namespace TestZXing.ViewModels
             IsProcessOpen = true;
             IsMesRelated = true;
             MesString = ms;
+            if (_thisProcess.IsCompleted == true || _thisProcess.IsSuccessfull == true)
+            {
+                //process is closed and open from history
+                _this.Status = "Zakończony";
+                OnPropertyChanged(nameof(NextState));
+                OnPropertyChanged(nameof(IsOpen));
+            }
         }
 
         public async Task Initialize(int AtId = -1)
@@ -733,6 +748,14 @@ namespace TestZXing.ViewModels
 
                 _this.FinishedOn = DateTime.Now;
                 _this.Status = "Zakończony";
+                if (RequireInitialDiagnosis)
+                {
+                    _this.Output = _thisProcess.RepairActions;
+                }
+                else
+                {
+                    _this.Output = _thisProcess.Output;
+                }
                 _Result = await _this.Edit();
                 if (!_Result.Equals("OK"))
                 {

@@ -59,15 +59,22 @@ namespace TestZXing
             {
                 if(await vm.AreThereOpenHandlingsLeft() == "No")
                 {
-                    //prompt user if to close the process
-                    if (await DisplayAlert("Zamknąć zgłoszenie?", "Jesteś ostatnią osobą obsługującą to zgłoszenie. Możesz pozostawić to zgłoszenie otwarte lub zamknąć je. Co mam zrobić?", "Zamknij", "Pozostaw"))
-                    {
-                        _ToClose = true;
-                    }
-                    else
-                    {
-                        _toPause = true;
-                    }
+                    //if (vm.IsMesRelated)
+                    //{
+                        //prompt user if to close the process
+                        if (await DisplayAlert("Zamknąć zgłoszenie?", "Jesteś ostatnią osobą obsługującą to zgłoszenie. Możesz pozostawić to zgłoszenie otwarte lub zamknąć je. Co mam zrobić?", "Zamknij", "Pozostaw"))
+                        {
+                            _ToClose = true;
+                        }
+                        else
+                        {
+                            _toPause = true;
+                        }
+                    //}
+                    //else
+                    //{
+                    //    _ToClose = true;
+                    //}
                 }
                 string _Result = await vm.End(_ToClose, _toPause);
                 if (_Result == "OK")
