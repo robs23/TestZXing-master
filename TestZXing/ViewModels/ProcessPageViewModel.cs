@@ -408,6 +408,7 @@ namespace TestZXing.ViewModels
                     {
                         _selectedIndex = value;
                         _thisProcess.ActionTypeId = ActionTypes[value].ActionTypeId;
+                        _thisProcess.ActionTypeName = ActionTypes[value].Name;
                         Type = ActionTypes[value];
                         if ((bool)!Type.AllowDuplicates) //check if there's open process of this type ONLY if AllowDuplicates property = false
                         {

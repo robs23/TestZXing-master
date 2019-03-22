@@ -16,5 +16,6 @@ namespace TestZXing.Models
         public string InitialDiagnosis { get; set; }
         public string RepairActions { get; set; }
         public string Status { get; set; }
+        public string IsAdjustment { get; set; }
     }
 }

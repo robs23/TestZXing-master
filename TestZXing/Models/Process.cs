@@ -206,6 +206,11 @@ namespace TestZXing.Models
             {
                 if (!string.IsNullOrEmpty(myUser.MesLogin) && !string.IsNullOrEmpty(manager.MesLogin))
                 {
+                    string adjustment = "N";
+                    if (this.ActionTypeName == "Regulacja")
+                    {
+                        adjustment = "T";
+                    }
                     TpmEntry tpm = new TpmEntry()
                     {
                         Number = this.MesId,
@@ -215,7 +220,8 @@ namespace TestZXing.Models
                         EndDate = (DateTime)this.FinishedOn,
                         InitialDiagnosis = this.InitialDiagnosis,
                         RepairActions = this.RepairActions,
-                        Status = "AC"
+                        Status = "AC",
+                        IsAdjustment = adjustment
                     };
                     try
                     {
