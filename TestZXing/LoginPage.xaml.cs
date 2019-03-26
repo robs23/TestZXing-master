@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TestZXing.Classes;
 using TestZXing.Models;
@@ -128,7 +129,43 @@ namespace TestZXing
                         if(res.Substring(0,1)=="[" && res.Substring(res.Length - 1, 1) == "]")
                         {
                             //it's within []
+                            if (res.Substring(1, 3) == "UID")
+                            {
+                                //it's certainly user's qr code
+                                int uid;
+                                string pass = "";
+                                
+                                try
+                                {
+                                    res = res.Substring(1, res.Length - 2); //trim the brackets
+                                    var reses = Regex.Split(res, ";");
+                                    var uids = Regex.Split(reses[0], "UID=");
+                                    var passes = Regex.Split(reses[1], "PASS=");
+                                    bool parsable = Int32.TryParse(uids[1],out uid);
+                                    pass = passes[1];
+                                    if(keeper.Items.Where(i=>i.UserId==uid && i.Password == pass).Any())
+                                    {
+                                        //password matches, let user in
+                                        User theUser = keeper.Items.Where(i => i.UserId == uid && i.Password == pass).FirstOrDefault();
+                                        RuntimeSettings.UserId = theUser.UserId;
+                                        RuntimeSettings.CurrentUser = theUser;
+                                        RuntimeSettings.TenantId = theUser.TenantId;
+                                        theUser.Login();
+                                        PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                                        await Application.Current.MainPage.Navigation.PushAsync(new ScanPage());
+                                    }
+                                    else
+                                    {
+                                        await DisplayAlert("Błędne dane", "Błędny użytkownik lub hasło!", "OK");
+                                    }
+                                }
+                                catch(Exception ex)
+                                {
+                                    Error nError = new Error(ex, "User QR code could not be parsed", nameof(this.btnScanQr_Clicked), this.GetType().Name);
+                                }
 
+                                
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -136,7 +173,6 @@ namespace TestZXing
                         await DisplayAlert("Nieokreślony problem", ex.Message, "OK");
                         Error nError = new Error(ex, "Problem with scanning page", nameof(this.btnScanQr_Clicked), this.GetType().Name);
                     }
-                    PopupNavigation.Instance.PopAsync(true); // Hide loading screen
                 });
             };
             await Navigation.PushAsync(scanPage);
