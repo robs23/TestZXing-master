@@ -1,4 +1,5 @@
-﻿using ModernHttpClient;
+﻿using Microsoft.AppCenter.Crashes;
+using ModernHttpClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,14 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.Reload)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
         }
@@ -66,7 +74,14 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 nPlace = null;
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "GetPlace", Time = DateTime.Now, Message = ex.Message };
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.GetPlace)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
             return nPlace;
@@ -97,7 +112,14 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 Places = null;
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "GetPlacesBySetName", Time = DateTime.Now, Message = ex.Message };
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.GetPlacesBySetName)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
 
@@ -124,7 +146,14 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.GetUsersLastPlaces)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
         }

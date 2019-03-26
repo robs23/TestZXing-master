@@ -7,6 +7,9 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace TestZXing.Droid
 {
@@ -22,6 +25,8 @@ namespace TestZXing.Droid
 
             Rg.Plugins.Popup.Popup.Init(this, bundle);
 
+            AppCenter.Start($"{Static.Secrets.AppCenterSecret}", typeof(Analytics), typeof(Crashes));
+                
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
             LoadApplication(new App());

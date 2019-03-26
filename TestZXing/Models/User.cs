@@ -1,4 +1,5 @@
-﻿using ModernHttpClient;
+﻿using Microsoft.AppCenter.Crashes;
+using ModernHttpClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -42,8 +43,14 @@ namespace TestZXing.Models
                 var result = await httpClient.PutAsync(String.Format("{0}{1}", new Uri(url), this.UserId), content);
             }catch(Exception ex)
             {
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Login", Time = DateTime.Now, Message = ex.Message };
-                await Error.Add();
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.Login)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
             }
             
         }

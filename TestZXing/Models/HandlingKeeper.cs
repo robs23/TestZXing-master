@@ -1,4 +1,5 @@
-﻿using ModernHttpClient;
+﻿using Microsoft.AppCenter.Crashes;
+using ModernHttpClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,14 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.Reload)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
         }
@@ -55,7 +63,14 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.GetHandligngsByProcess)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
             return _nHandlings;
@@ -95,7 +110,14 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "GetOpenHandlings", Time = DateTime.Now, Message = ex.Message };
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.GetUsersOpenHandling)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
             return nHandling;
@@ -124,7 +146,14 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 _Result = ex.Message;
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "CompleteUsersHandlings", Time = DateTime.Now, Message = ex.Message };
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.CompleteUsersHandlings)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
             return _Result;

@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.AppCenter.Crashes;
 using ModernHttpClient;
 using MvvmHelpers;
 using Newtonsoft.Json;
@@ -88,6 +89,14 @@ namespace TestZXing.ViewModels
             {
                 IsWorking = false;  
                 _Result = "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz";
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.ExecuteLoadDataCommand)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
 

@@ -1,4 +1,5 @@
-﻿using ModernHttpClient;
+﻿using Microsoft.AppCenter.Crashes;
+using ModernHttpClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -137,8 +138,14 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 _Result = ex.Message;
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Add", Time = DateTime.Now, Message = ex.Message };
-                await Error.Add();
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.Add)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
             }
             return _Result;
         }
@@ -162,8 +169,14 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 _Result = ex.Message;
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Edit", Time = DateTime.Now, Message = ex.Message };
-                await Error.Add();
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.Edit)},
+                    {"Class", this.GetType().Name},
+                    {"User", RuntimeSettings.CurrentUser.FullName}
+                };
+                Crashes.TrackError(ex, properties);
             }
             
 

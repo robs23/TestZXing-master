@@ -1,4 +1,5 @@
-﻿using ModernHttpClient;
+﻿using Microsoft.AppCenter.Crashes;
+using ModernHttpClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,13 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.Reload)},
+                    {"Class", this.GetType().Name}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
         }
@@ -56,7 +63,13 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.GetActionType)},
+                    {"Class", this.GetType().Name}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
         }
@@ -77,7 +90,13 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.GetActionTypeByName)},
+                    {"Class", this.GetType().Name}
+                };
+                Crashes.TrackError(ex, properties);
                 throw;
             }
         }

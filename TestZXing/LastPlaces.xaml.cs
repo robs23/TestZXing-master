@@ -44,6 +44,7 @@ namespace TestZXing
             }
             catch (Exception ex)
             {
+                PopupNavigation.Instance.PopAsync(true); // Hide loading screen
                 await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
             }
 

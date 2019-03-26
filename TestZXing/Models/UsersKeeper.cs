@@ -10,6 +10,7 @@ using TestZXing.Static;
 using System.Collections.ObjectModel;
 using TestZXing.Classes;
 using ModernHttpClient;
+using Microsoft.AppCenter.Crashes;
 
 namespace TestZXing.Models
 {
@@ -40,6 +41,13 @@ namespace TestZXing.Models
                 Items = JsonConvert.DeserializeObject<List<User>>(output);
             }catch(Exception ex)
             {
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.Reload)},
+                    {"Class", this.GetType().Name}
+                };
+                Crashes.TrackError(ex, properties);
                 _Result = ex.Message;
             }
             
@@ -71,8 +79,14 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
+                var properties = new Dictionary<string, string>
+                {
+                    {"Type", "No connection"},
+                    {"Method",nameof(this.GetUser)},
+                    {"Class", this.GetType().Name}
+                };
+                Crashes.TrackError(ex, properties);
                 nUser = null;
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "GetUser", Time = DateTime.Now, Message = ex.Message };
                 throw;
             }
             return nUser;
