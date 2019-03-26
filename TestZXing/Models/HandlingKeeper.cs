@@ -37,14 +37,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.Reload)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.Reload), this.GetType().Name);
                 throw;
             }
         }
@@ -63,14 +56,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.GetHandligngsByProcess)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.GetHandligngsByProcess), this.GetType().Name);
                 throw;
             }
             return _nHandlings;
@@ -110,14 +96,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.GetUsersOpenHandling)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.GetUsersOpenHandling), this.GetType().Name);
                 throw;
             }
             return nHandling;
@@ -146,14 +125,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 _Result = ex.Message;
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.CompleteUsersHandlings)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.CompleteUsersHandlings), this.GetType().Name);
                 throw;
             }
             return _Result;

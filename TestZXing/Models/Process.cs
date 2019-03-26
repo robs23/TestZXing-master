@@ -154,14 +154,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 _Result = ex.Message;
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.Add)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.Add), this.GetType().Name);
             }
             return _Result;
         }
@@ -192,14 +185,7 @@ namespace TestZXing.Models
                 catch (Exception ex)
                 {
                     _Result = ex.Message;
-                    var properties = new Dictionary<string, string>
-                    {
-                        {"Type", "No connection"},
-                        {"Method",nameof(this.Edit)},
-                        {"Class", this.GetType().Name},
-                        {"User", RuntimeSettings.CurrentUser.FullName}
-                    };
-                    Crashes.TrackError(ex, properties);
+                    Error nError = new Error(ex, "No connection", nameof(this.Edit), this.GetType().Name);
                 }
             }
 
@@ -250,14 +236,7 @@ namespace TestZXing.Models
                     catch (Exception ex)
                     {
                         _Result = "Nie udało się połączyć z serwerem MES. Upewnij się, że masz połączenie Wi-fi z siecią lokalną, inne sieci nie mają dostęu do serwera MES.";
-                        var properties = new Dictionary<string, string>
-                        {
-                            {"Type", "No MES connection"},
-                            {"Method",nameof(this.CreateTpmEntry)},
-                            {"Class", this.GetType().Name},
-                            {"User", RuntimeSettings.CurrentUser.FullName}
-                        };
-                        Crashes.TrackError(ex, properties);
+                        Error nError = new Error(ex, "No MES connection", nameof(this.CreateTpmEntry), this.GetType().Name);
                     }
                 }
                 else
@@ -293,14 +272,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.GetOpenHandlings)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.GetOpenHandlings), this.GetType().Name);
                 throw;
             }
             return nHandlings;

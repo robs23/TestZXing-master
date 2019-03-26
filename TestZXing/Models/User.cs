@@ -43,14 +43,7 @@ namespace TestZXing.Models
                 var result = await httpClient.PutAsync(String.Format("{0}{1}", new Uri(url), this.UserId), content);
             }catch(Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.Login)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.Login), this.GetType().Name);
             }
             
         }

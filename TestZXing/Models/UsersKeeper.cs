@@ -41,13 +41,7 @@ namespace TestZXing.Models
                 Items = JsonConvert.DeserializeObject<List<User>>(output);
             }catch(Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.Reload)},
-                    {"Class", this.GetType().Name}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.Reload), this.GetType().Name);
                 _Result = ex.Message;
             }
             
@@ -79,13 +73,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.GetUser)},
-                    {"Class", this.GetType().Name}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.GetUser), this.GetType().Name);
                 nUser = null;
                 throw;
             }

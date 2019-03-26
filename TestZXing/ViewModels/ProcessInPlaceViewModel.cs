@@ -47,7 +47,7 @@ namespace TestZXing.ViewModels
                     }
                 }catch(Exception ex)
                 {
-                    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "ProcessInPlaceViewModel", Time = DateTime.Now, Message = ex.Message };
+
                 }
                 
             }

@@ -12,6 +12,7 @@ using TestZXing.Static;
 using TestZXing.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using ZXing.Net.Mobile.Forms;
 
 namespace TestZXing
 {
@@ -21,6 +22,7 @@ namespace TestZXing
         DataService ds;
         UsersKeeper keeper;
         LoginViewModel vm;
+        ZXingScannerPage scanPage;
 
         public LoginPage()
         {
@@ -107,6 +109,37 @@ namespace TestZXing
             });
 
             return true;
+        }
+
+        private async void btnScanQr_Clicked(object sender, EventArgs e)
+        {
+            scanPage = new ZXingScannerPage();
+            scanPage.OnScanResult += (result) =>
+            {
+                scanPage.IsScanning = false;
+
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    Navigation.PopAsync();
+                    PopupNavigation.Instance.PushAsync(new LoadingScreen(), true);
+                    try
+                    {
+                        string res = result.Text;
+                        if(res.Substring(0,1)=="[" && res.Substring(res.Length - 1, 1) == "]")
+                        {
+                            //it's within []
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await DisplayAlert("Nieokreślony problem", ex.Message, "OK");
+                        Error nError = new Error(ex, "Problem with scanning page", nameof(this.btnScanQr_Clicked), this.GetType().Name);
+                    }
+                    PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                });
+            };
+            await Navigation.PushAsync(scanPage);
         }
     }
 }

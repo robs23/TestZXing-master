@@ -36,14 +36,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.Reload)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.Reload), this.GetType().Name);
                 throw;
             }
         }
@@ -64,14 +57,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.GetProcess)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.GetProcess), this.GetType().Name);
                 throw;
             }
         }
@@ -101,14 +87,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 nProcess = null;
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.GetProcess)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.GetProcess), this.GetType().Name);
                 throw;
             }
             return nProcess;
@@ -150,14 +129,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 nProcess = null;
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.GetOpenProcessesOfTypeAndResource)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.GetOpenProcessesOfTypeAndResource), this.GetType().Name);
                 throw;
             }
             return nProcess;

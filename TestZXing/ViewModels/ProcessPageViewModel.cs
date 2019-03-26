@@ -450,8 +450,7 @@ namespace TestZXing.ViewModels
                     }
                 }catch(Exception ex)
                 {
-                    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "SelectedIndex", Time = DateTime.Now, Message =  ex.Message };
-                    Error.Add();
+
                 }
             }
         }
@@ -497,8 +496,7 @@ namespace TestZXing.ViewModels
                     }
                 }catch(Exception ex)
                 {
-                    Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "SelectedIndex", Time = DateTime.Now, Message = ex.Message };
-                    Error.Add();
+
                 }
             }
         }
@@ -644,8 +642,7 @@ namespace TestZXing.ViewModels
             }
             catch (Exception ex)
             {
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Save", Time = DateTime.Now, Message = ex.Message };
-                await Error.Add();
+
             }
             IsWorking = false;
             return _Result;
@@ -770,14 +767,7 @@ namespace TestZXing.ViewModels
             }
             catch (Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.End)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.End), this.GetType().Name);
             }
             IsWorking = false;
             return _Result;
@@ -806,8 +796,6 @@ namespace TestZXing.ViewModels
             catch (Exception ex)
             {
                 _Result = ex.Message;
-                Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "Save", Time = DateTime.Now, Message = ex.Message };
-                await Error.Add();
             }
             IsWorking = false;
             return _Result;

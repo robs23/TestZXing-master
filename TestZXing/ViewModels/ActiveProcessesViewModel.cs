@@ -89,14 +89,7 @@ namespace TestZXing.ViewModels
             {
                 IsWorking = false;  
                 _Result = "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz";
-                var properties = new Dictionary<string, string>
-                {
-                    {"Type", "No connection"},
-                    {"Method",nameof(this.ExecuteLoadDataCommand)},
-                    {"Class", this.GetType().Name},
-                    {"User", RuntimeSettings.CurrentUser.FullName}
-                };
-                Crashes.TrackError(ex, properties);
+                Error nError = new Error(ex, "No connection", nameof(this.ExecuteLoadDataCommand), this.GetType().Name);
                 throw;
             }
 
