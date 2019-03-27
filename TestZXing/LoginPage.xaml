@@ -30,11 +30,14 @@
                     TextColor="White"
                     Clicked="btnLogin_Clicked"></testzxing:RoundedButton>
             <testzxing:RoundedButton x:Name="btnScanQr"
-                    Margin="0,20,0,0"
-                    Text="QR"
-                    BackgroundColor="LightGreen"
+                    Margin="0,10,0,0"
+                    Image="qrIcon.png"
+                    Text="Skanuj QR"
+                    HeightRequest="50"                 
+                    BackgroundColor="Green"
                     TextColor="White"
                     Clicked="btnScanQr_Clicked"></testzxing:RoundedButton>
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

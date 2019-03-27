@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AppCenter.Analytics;
+using Newtonsoft.Json;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
@@ -114,6 +115,8 @@ namespace TestZXing
 
         private async void btnScanQr_Clicked(object sender, EventArgs e)
         {
+            btnScanQr.IsEnabled = false;
+            Anal nAnal = new Anal("Próba logowania QR");
             scanPage = new ZXingScannerPage();
             scanPage.OnScanResult += (result) =>
             {
@@ -153,6 +156,7 @@ namespace TestZXing
                                         theUser.Login();
                                         PopupNavigation.Instance.PopAsync(true); // Hide loading screen
                                         await Application.Current.MainPage.Navigation.PushAsync(new ScanPage());
+                                        nAnal = new Anal("Zalogowano kodem QR");
                                     }
                                     else
                                     {
@@ -176,6 +180,7 @@ namespace TestZXing
                 });
             };
             await Navigation.PushAsync(scanPage);
+            btnScanQr.IsEnabled = true;
         }
     }
 }
