@@ -130,7 +130,6 @@ namespace TestZXing
                     await vm.Initialize(vm._thisProcess.ActionTypeId);
                 }
                 BindingContext = vm;
-
             }
             catch (Exception ex)
             {
@@ -138,6 +137,21 @@ namespace TestZXing
                 btnEnd.IsEnabled = false;
                 DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
             }
+        }
+
+        private void Analyze()
+        {
+            Dictionary<string, string> xProps = new Dictionary<string, string>
+                {
+                    {"Przycisk ZAKOŃCZ aktywny", btnEnd.IsEnabled.ToString() },
+                    {"Status zgłoszenia", vm._thisProcess.Status },
+                    {"Status obsługi", vm._this.Status }
+                };
+            if (vm.IsMesRelated)
+            {
+                xProps.Add("MES ID", vm.MesString.MesId);
+            }
+            Anal nAnal = new Anal("Wyświetlenie ProcessPage", xProps);
         }
 
         private async void btnCloseProcess_Clicked(object sender, EventArgs e)

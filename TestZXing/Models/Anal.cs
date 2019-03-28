@@ -10,7 +10,7 @@ namespace TestZXing.Models
 {
     public class Anal
     {
-        public Anal(string title)
+        public Anal(string title, Dictionary<string,string> props = null)
         {
             string UserName = string.Empty;
             if (RuntimeSettings.CurrentUser != null)
@@ -21,6 +21,13 @@ namespace TestZXing.Models
                 {
                     {"User", UserName}
                 };
+            if(props != null)
+            {
+                foreach(KeyValuePair<string,string> prop in props)
+                {
+                    properties.Add(prop.Key, prop.Value);
+                }
+            }
             Analytics.TrackEvent(title, properties);
         }
     }
