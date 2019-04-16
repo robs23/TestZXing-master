@@ -743,22 +743,25 @@ namespace TestZXing.ViewModels
                 }
 
                 // Close handling now
-                prevStatus = _this.Status;
+                if (_Result == "OK")
+                {
+                    prevStatus = _this.Status;
 
-                _this.FinishedOn = DateTime.Now;
-                _this.Status = "Zakończony";
-                if (RequireInitialDiagnosis)
-                {
-                    _this.Output = _thisProcess.RepairActions;
-                }
-                else
-                {
-                    _this.Output = _thisProcess.Output;
-                }
-                _Result = await _this.Edit();
-                if (!_Result.Equals("OK"))
-                {
-                    _this.Status = prevStatus;
+                    _this.FinishedOn = DateTime.Now;
+                    _this.Status = "Zakończony";
+                    if (RequireInitialDiagnosis)
+                    {
+                        _this.Output = _thisProcess.RepairActions;
+                    }
+                    else
+                    {
+                        _this.Output = _thisProcess.Output;
+                    }
+                    _Result = await _this.Edit();
+                    if (!_Result.Equals("OK"))
+                    {
+                        _this.Status = prevStatus;
+                    }
                 }
 
                 OnPropertyChanged(nameof(NextState));

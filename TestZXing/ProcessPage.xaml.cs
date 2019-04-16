@@ -159,15 +159,14 @@ namespace TestZXing
             //allows user to completely close order and all outstanding handlings
             string _Result = "OK";
 
-            if (await vm.AreThereOpenHandlingsLeft() != "No")
+            if (!await DisplayAlert("Potwierdź", "Czy na pewno chcesz zamknąć to zgłoszenie? Jeśli tak, wszystkie obsługi tego zgłoszenia zostaną zakończone.", "Zamknij", "Anuluj"))
             {
-                if (!await DisplayAlert("Potwierdź", "Czy na pewno chcesz zamknąć to zgłoszenie? Jeśli tak, wszystkie obsługi tego zgłoszenia zostaną zakończone.", "Zamknij", "Pozostaw"))
-                {
-                    _Result = "No";
-                }
+                _Result = "No";
             }
+
             if (_Result == "OK")
             {
+                vm.RepairActions = $"Przymusowe zakończenie przez {Static.RuntimeSettings.CurrentUser.FullName}";
                 _Result = await vm.End(true, false);
                 if (_Result == "OK")
                 {

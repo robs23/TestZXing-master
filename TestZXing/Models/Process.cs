@@ -165,8 +165,12 @@ namespace TestZXing.Models
             string _Result = "OK";
             if (!string.IsNullOrEmpty(this.MesId))
             {
-                //try to update MES only if it has MesId!
-                _Result = await CreateTpmEntry();
+                //is it ending request?
+                if(this.Status == "Zakończony")
+                {
+                    //try to update MES only if it has MesId!
+                    _Result = await CreateTpmEntry();
+                }
             }
 
             if (_Result == "OK")
