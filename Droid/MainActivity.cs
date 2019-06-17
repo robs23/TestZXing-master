@@ -22,6 +22,7 @@ namespace TestZXing.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
+            Xamarin.Essentials.Platform.Init(this, bundle);
 
             Rg.Plugins.Popup.Popup.Init(this, bundle);
 
@@ -42,6 +43,13 @@ namespace TestZXing.Droid
             {
                 // Do something if there are not any pages in the `PopupStack`
             }
+        }
+
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        {
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

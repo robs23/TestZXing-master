@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Classes;
 using TestZXing.Static;
+using Xamarin.Essentials;
 
 namespace TestZXing.Models
 {
