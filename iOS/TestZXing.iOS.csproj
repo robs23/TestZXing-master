@@ -90,6 +90,9 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK-1.0" />
+    <Reference Include="Plugin.Permissions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Plugin.Permissions.5.0.0-beta\lib\xamarinios10\Plugin.Permissions.dll</HintPath>
+    </Reference>
     <Reference Include="Rg.Plugins.Popup, Version=1.1.5.188, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Rg.Plugins.Popup.1.1.5.188\lib\Xamarin.IOS\Rg.Plugins.Popup.dll</HintPath>
     </Reference>
