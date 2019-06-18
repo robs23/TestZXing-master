@@ -1,4 +1,6 @@
-﻿using Rg.Plugins.Popup.Services;
+﻿using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
+using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -195,6 +197,13 @@ namespace TestZXing
         private async void btnLastPlaces_Clicked(object sender, EventArgs e)
         {
             //Application.Current.MainPage.Navigation.PushAsync(new LastPlaces());
+
+            PermissionStatus status = await CrossPermissions.Current.CheckPermissionStatusAsync<LocationPermission>();
+
+            if(status != PermissionStatus.Granted)
+            {
+                status = await CrossPermissions.Current.RequestPermissionAsync<LocationPermission>();
+            }
             WiFiInfo wi = DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
             await DisplayAlert("Connection status", string.Format("Sieć: {0}, siła sygnału: {1}", wi.SSID, wi.Signal), "OK");
         }

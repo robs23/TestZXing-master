@@ -10,6 +10,7 @@ using Android.OS;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using Plugin.CurrentActivity;
 
 namespace TestZXing.Droid
 {
@@ -23,6 +24,7 @@ namespace TestZXing.Droid
 
             base.OnCreate(bundle);
             Xamarin.Essentials.Platform.Init(this, bundle);
+            CrossCurrentActivity.Current.Init(this, bundle);
 
             Rg.Plugins.Popup.Popup.Init(this, bundle);
 
@@ -49,8 +51,9 @@ namespace TestZXing.Droid
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
-            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            
             Plugin.Permissions.PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }
