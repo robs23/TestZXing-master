@@ -15,6 +15,7 @@ namespace TestZXing.Models
 {
     public class Error
     {
+        public List<WiFiInfo> AvailableWifi { get; set; }
         public Error(Exception ex, string text, string methodName, string className)
         {
             string UserName = string.Empty;
@@ -67,5 +68,12 @@ namespace TestZXing.Models
                 };
             Crashes.TrackError(ex, properties);
         }
+    }
+
+    public class WiFiInfo
+    {
+        public string SSID { get; set; }
+        public int Signal { get; set; }
+        public bool IsConnected { get; set; }
     }
 }

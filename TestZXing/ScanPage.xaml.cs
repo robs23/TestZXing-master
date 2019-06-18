@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TestZXing.Interfaces;
 using TestZXing.Models;
 using TestZXing.Static;
 using TestZXing.ViewModels;
@@ -191,9 +192,11 @@ namespace TestZXing
             Navigation.PushAsync(page);
         }
 
-        private void btnLastPlaces_Clicked(object sender, EventArgs e)
+        private async void btnLastPlaces_Clicked(object sender, EventArgs e)
         {
-            Application.Current.MainPage.Navigation.PushAsync(new LastPlaces());
+            //Application.Current.MainPage.Navigation.PushAsync(new LastPlaces());
+            WiFiInfo wi = DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
+            await DisplayAlert("Connection status", string.Format("Sieć: {0}, siła sygnału: {1}", wi.SSID, wi.Signal), "OK");
         }
 
         private void btnClose_Clicked(object sender, EventArgs e)
