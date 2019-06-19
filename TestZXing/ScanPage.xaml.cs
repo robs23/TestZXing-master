@@ -198,14 +198,15 @@ namespace TestZXing
         {
             //Application.Current.MainPage.Navigation.PushAsync(new LastPlaces());
 
-            PermissionStatus status = await CrossPermissions.Current.CheckPermissionStatusAsync<LocationPermission>();
-
-            if(status != PermissionStatus.Granted)
+            WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
+            if (wi == null)
             {
-                status = await CrossPermissions.Current.RequestPermissionAsync<LocationPermission>();
+                await DisplayAlert("Odmowa","Nie można pobrać nazwy sieci w wyniku odmowy udzielenia pozwolenia dostępu do lokacji", "OK");
             }
-            WiFiInfo wi = DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
-            await DisplayAlert("Connection status", string.Format("Sieć: {0}, siła sygnału: {1}", wi.SSID, wi.Signal), "OK");
+            else
+            {
+                await DisplayAlert("Connection status", string.Format("Sieć: {0}, siła sygnału: {1}", wi.SSID, wi.Signal), "OK");
+            }
         }
 
         private void btnClose_Clicked(object sender, EventArgs e)

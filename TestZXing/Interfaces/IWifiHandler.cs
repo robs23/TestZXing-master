@@ -9,7 +9,7 @@ namespace TestZXing.Interfaces
 {
     public interface IWifiHandler
     {
-        WiFiInfo GetConnectedWifi(bool? GetSignalStrength = false);
+        Task<WiFiInfo> GetConnectedWifi(bool? GetSignalStrength = false);
 
         List<WiFiInfo> GetAvailableWifis(bool? GetSignalStrenth = false);
     }

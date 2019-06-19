@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TestZXing.Interfaces;
+using TestZXing.Models;
+using Xamarin.Forms;
 
 namespace TestZXing.Static
 {

@@ -8,8 +8,10 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Classes;
+using TestZXing.Interfaces;
 using TestZXing.Static;
 using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace TestZXing.Models
 {
@@ -55,6 +57,9 @@ namespace TestZXing.Models
             {
                 InternetConnectionStatus = "Tego przypadku powinno nie być... Prawdopodobnie przybyło opcji w  Connectivity.NetworkAcces.. Sprawdź Error.cs";
             }
+
+            WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
+
 
             var properties = new Dictionary<string, string>
                 {
