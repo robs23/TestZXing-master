@@ -21,6 +21,11 @@
                      Priority="1"
                      Order="Secondary"
                      Clicked="btnClose_Clicked"/>
+        <ToolbarItem Name="btnWifiStatus"
+                     Text="Status WiFi"
+                     Priority="2"
+                     Order="Secondary"
+                     Clicked="BtnWifiStatus_Clicked"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="15,20">

@@ -196,22 +196,26 @@ namespace TestZXing
 
         private async void btnLastPlaces_Clicked(object sender, EventArgs e)
         {
-            //Application.Current.MainPage.Navigation.PushAsync(new LastPlaces());
+            Application.Current.MainPage.Navigation.PushAsync(new LastPlaces());
 
-            WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
-            if (wi == null)
-            {
-                await DisplayAlert("Odmowa","Nie można pobrać nazwy sieci w wyniku odmowy udzielenia pozwolenia dostępu do lokacji", "OK");
-            }
-            else
-            {
-                await DisplayAlert("Connection status", string.Format("Sieć: {0}, siła sygnału: {1}", wi.SSID, wi.Signal), "OK");
-            }
         }
 
         private void btnClose_Clicked(object sender, EventArgs e)
         {
             OnBackButtonPressed();
+        }
+
+        private async void BtnWifiStatus_Clicked(object sender, EventArgs e)
+        {
+            WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
+            if (wi == null)
+            {
+                await DisplayAlert("Odmowa", "Aby sprawdzić nazwę sieci i moc sygnału, potrzebne jest uprawnienie do lokalizacji. Użytkownik odmówił tego uprawnienia. Spróbuj jeszcze raz i przyznaj odpowiednie uprawnienie", "OK");
+            }
+            else
+            {
+                await DisplayAlert("Connection status", string.Format("Sieć: {0}, siła sygnału: {1}", wi.SSID, wi.Signal), "OK");
+            }
         }
     }
 }
