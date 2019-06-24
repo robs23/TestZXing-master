@@ -37,7 +37,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.Reload), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Reload), this.GetType().Name);
                 throw;
             }
         }
@@ -56,7 +56,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.GetHandligngsByProcess), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetHandligngsByProcess), this.GetType().Name);
                 throw;
             }
             return _nHandlings;
@@ -96,7 +96,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.GetUsersOpenHandling), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetUsersOpenHandling), this.GetType().Name);
                 throw;
             }
             return nHandling;
@@ -125,7 +125,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 _Result = ex.Message;
-                Error nError = new Error(ex, "No connection", nameof(this.CompleteUsersHandlings), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.CompleteUsersHandlings), this.GetType().Name);
                 throw;
             }
             return _Result;

@@ -43,7 +43,7 @@ namespace TestZXing.Models
                 var result = await httpClient.PutAsync(String.Format("{0}{1}", new Uri(url), this.UserId), content);
             }catch(Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.Login), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Login), this.GetType().Name);
             }
             
         }

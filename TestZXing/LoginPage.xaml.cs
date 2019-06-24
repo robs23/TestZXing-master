@@ -165,7 +165,7 @@ namespace TestZXing
                                 }
                                 catch(Exception ex)
                                 {
-                                    Error nError = new Error(ex, "User QR code could not be parsed", nameof(this.btnScanQr_Clicked), this.GetType().Name);
+                                    Static.Functions.CreateError(ex, "User QR code could not be parsed", nameof(this.btnScanQr_Clicked), this.GetType().Name);
                                 }
 
                                 
@@ -175,7 +175,7 @@ namespace TestZXing
                     catch (Exception ex)
                     {
                         await DisplayAlert("Nieokreślony problem", ex.Message, "OK");
-                        Error nError = new Error(ex, "Problem with scanning page", nameof(this.btnScanQr_Clicked), this.GetType().Name);
+                        Static.Functions.CreateError(ex, "Problem with scanning page", nameof(this.btnScanQr_Clicked), this.GetType().Name);
                     }
                 });
             };

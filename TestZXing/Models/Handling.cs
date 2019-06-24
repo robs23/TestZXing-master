@@ -138,7 +138,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 _Result = ex.Message;
-                Error nError = new Error(ex, "No connection", nameof(this.Add), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Add), this.GetType().Name);
             }
             return _Result;
         }
@@ -162,7 +162,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 _Result = ex.Message;
-                Error nError = new Error(ex, "No connection", nameof(this.Edit), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Edit), this.GetType().Name);
             }
             
 

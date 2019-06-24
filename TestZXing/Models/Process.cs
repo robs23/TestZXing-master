@@ -154,7 +154,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 _Result = ex.Message;
-                Error nError = new Error(ex, "No connection", nameof(this.Add), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Add), this.GetType().Name);
             }
             return _Result;
         }
@@ -189,7 +189,7 @@ namespace TestZXing.Models
                 catch (Exception ex)
                 {
                     _Result = ex.Message;
-                    Error nError = new Error(ex, "No connection", nameof(this.Edit), this.GetType().Name);
+                    Static.Functions.CreateError(ex, "No connection", nameof(this.Edit), this.GetType().Name);
                 }
             }
 
@@ -240,7 +240,7 @@ namespace TestZXing.Models
                     catch (Exception ex)
                     {
                         _Result = "Nie udało się połączyć z serwerem MES. Upewnij się, że masz połączenie Wi-fi z siecią lokalną, inne sieci nie mają dostęu do serwera MES.";
-                        Error nError = new Error(ex, "No MES connection", nameof(this.CreateTpmEntry), this.GetType().Name);
+                        Static.Functions.CreateError(ex, "No MES connection", nameof(this.CreateTpmEntry), this.GetType().Name);
                     }
                 }
                 else
@@ -276,7 +276,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.GetOpenHandlings), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetOpenHandlings), this.GetType().Name);
                 throw;
             }
             return nHandlings;

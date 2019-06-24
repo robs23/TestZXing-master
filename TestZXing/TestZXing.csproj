@@ -59,6 +59,7 @@
     <Compile Include="Models\ActionTypesKeeper.cs" />
     <Compile Include="Models\Anal.cs" />
     <Compile Include="Models\Error.cs" />
+    <Compile Include="Models\ErrorKeeper.cs" />
     <Compile Include="Models\Handling.cs" />
     <Compile Include="Models\HandlingKeeper.cs" />
     <Compile Include="Models\MesString.cs" />

@@ -83,7 +83,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.GetProcesses), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetProcesses), this.GetType().Name);
                 throw;
             }
         }

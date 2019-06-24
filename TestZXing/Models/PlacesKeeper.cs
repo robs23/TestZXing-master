@@ -37,7 +37,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.Reload), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Reload), this.GetType().Name);
                 throw;
             }
         }
@@ -67,7 +67,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 nPlace = null;
-                Error nError = new Error(ex, "No connection", nameof(this.GetPlace), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetPlace), this.GetType().Name);
                 throw;
             }
             return nPlace;
@@ -98,7 +98,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 Places = null;
-                Error nError = new Error(ex, "No connection", nameof(this.GetPlacesBySetName), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetPlacesBySetName), this.GetType().Name);
                 throw;
             }
 
@@ -125,7 +125,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.GetUsersLastPlaces), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetUsersLastPlaces), this.GetType().Name);
                 throw;
             }
         }

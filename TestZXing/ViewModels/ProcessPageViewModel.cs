@@ -770,7 +770,7 @@ namespace TestZXing.ViewModels
             }
             catch (Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.End), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.End), this.GetType().Name);
             }
             IsWorking = false;
             return _Result;

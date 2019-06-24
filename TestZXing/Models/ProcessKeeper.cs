@@ -36,7 +36,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.Reload), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Reload), this.GetType().Name);
                 throw;
             }
         }
@@ -57,7 +57,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.GetProcess), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetProcess), this.GetType().Name);
                 throw;
             }
         }
@@ -87,7 +87,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 nProcess = null;
-                Error nError = new Error(ex, "No connection", nameof(this.GetProcess), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetProcess), this.GetType().Name);
                 throw;
             }
             return nProcess;
@@ -129,7 +129,7 @@ namespace TestZXing.Models
             catch (Exception ex)
             {
                 nProcess = null;
-                Error nError = new Error(ex, "No connection", nameof(this.GetOpenProcessesOfTypeAndResource), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetOpenProcessesOfTypeAndResource), this.GetType().Name);
                 throw;
             }
             return nProcess;

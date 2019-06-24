@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AppCenter.Crashes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TestZXing.Interfaces;
 using TestZXing.Models;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace TestZXing.Static
@@ -42,6 +44,74 @@ namespace TestZXing.Static
             {
                 return now.AddHours(1);
             }
+        }
+
+        public static async Task CreateError(Exception ex, string text, string methodName, string className)
+        {
+            string UserName = string.Empty;
+
+            string InternetConnectionStatus = "";
+            string ActiveConnections = "";
+
+            if (Connectivity.ConnectionProfiles.Contains(ConnectionProfile.Cellular))
+            {
+                ActiveConnections += "GSM ";
+            }
+            if (Connectivity.ConnectionProfiles.Contains(ConnectionProfile.WiFi))
+            {
+                ActiveConnections += "WiFi ";
+            }
+
+
+            if (Connectivity.NetworkAccess == NetworkAccess.Internet)
+            {
+                InternetConnectionStatus = "Pełen internet";
+            }
+            else if (Connectivity.NetworkAccess == NetworkAccess.ConstrainedInternet)
+            {
+                InternetConnectionStatus = "Ograniczone";
+            }
+            else if (Connectivity.NetworkAccess == NetworkAccess.Local)
+            {
+                InternetConnectionStatus = "Lokalne";
+            }
+            else if (Connectivity.NetworkAccess == NetworkAccess.None)
+            {
+                InternetConnectionStatus = "Brak";
+            }
+            else if (Connectivity.NetworkAccess == NetworkAccess.Unknown)
+            {
+                InternetConnectionStatus = "Nieznane";
+            }
+            else
+            {
+                InternetConnectionStatus = "Tego przypadku powinno nie być... Prawdopodobnie przybyło opcji w  Connectivity.NetworkAcces.. Sprawdź Error.cs";
+            }
+
+            if (RuntimeSettings.CurrentUser != null)
+            {
+                UserName = RuntimeSettings.CurrentUser.FullName;
+            }
+
+            var properties = new Dictionary<string, string>
+                {
+                    {"Type", text},
+                    {"Method", methodName},
+                    {"Class", className},
+                    {"User", UserName},
+                    {"Połączenie internetowe", InternetConnectionStatus },
+                    {"Aktywne połączenia", ActiveConnections }
+
+                };
+
+            WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
+            if(wi != null)
+            {
+                properties.Add("Sieć Wifi", wi.SSID);
+                properties.Add("Sygnał Wifi", wi.Signal.ToString());
+            }
+
+            Crashes.TrackError(ex, properties);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace TestZXing.Models
                 Items = JsonConvert.DeserializeObject<List<User>>(output);
             }catch(Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.Reload), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Reload), this.GetType().Name);
                 _Result = ex.Message;
             }
             
@@ -73,7 +73,7 @@ namespace TestZXing.Models
             }
             catch (Exception ex)
             {
-                Error nError = new Error(ex, "No connection", nameof(this.GetUser), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetUser), this.GetType().Name);
                 nUser = null;
                 throw;
             }
