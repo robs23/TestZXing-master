@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
@@ -21,9 +22,40 @@ namespace TestZXing.Droid.Services
 {
     public class WifiHandler : IWifiHandler
     {
-        public List<WiFiInfo> GetAvailableWifis(bool? GetSignalStrenth = false)
+        private Context context = null;
+
+        public WifiHandler()
         {
-            throw new NotImplementedException();
+            this.context = Android.App.Application.Context;
+        }
+
+        public async Task<List<WiFiInfo>> GetAvailableWifis(bool? GetSignalStrenth = false)
+        {
+            List<WiFiInfo> Wifis = null;
+
+            PermissionStatus status = await CrossPermissions.Current.CheckPermissionStatusAsync<LocationPermission>();
+
+            if (status != PermissionStatus.Granted)
+            {
+                status = await CrossPermissions.Current.RequestPermissionAsync<LocationPermission>();
+            }
+
+            if(status == PermissionStatus.Granted)
+            {
+                // Get a handle to the Wifi
+                var wifiMgr = (WifiManager)context.GetSystemService(Context.WifiService);
+                var wifiReceiver = new WifiReceiver(wifiMgr);
+
+                await Task.Run(() =>
+                {
+                    // Start a scan and register the Broadcast receiver to get the list of Wifi Networks
+                    context.RegisterReceiver(wifiReceiver, new IntentFilter(WifiManager.ScanResultsAvailableAction));
+                    Wifis = wifiReceiver.Scan();
+                });
+            }
+
+            return Wifis;
+
         }
 
         public async Task<WiFiInfo> GetConnectedWifi(bool? GetSignalStrength = false)
@@ -57,6 +89,60 @@ namespace TestZXing.Droid.Services
             else
             {
                 return null;
+            }
+        }
+
+        class WifiReceiver : BroadcastReceiver
+        {
+            private WifiManager wifi;
+            private List<WiFiInfo> wiFiInfos;
+            private List<string> wifiNetworks;
+            private AutoResetEvent receiverARE;
+            private Timer tmr;
+            private const int TIMEOUT_MILLIS = 20000; // 20 seconds timeout
+            string connectedSSID;
+
+            public WifiReceiver(WifiManager wifi)
+            {
+                this.wifi = wifi;
+                wifiNetworks = new List<string>();
+                wiFiInfos = new List<WiFiInfo>();
+                receiverARE = new AutoResetEvent(false);
+
+                connectedSSID = ((WifiManager)wifi).ConnectionInfo.SSID.Replace("\"","");
+            }
+
+            public List<WiFiInfo> Scan()
+            {
+                tmr = new Timer(Timeout, null, TIMEOUT_MILLIS, System.Threading.Timeout.Infinite);
+                wifi.StartScan();
+                receiverARE.WaitOne();
+                return wiFiInfos;
+            }
+
+
+            public override void OnReceive(Context context, Intent intent)
+            {
+                IList<ScanResult> scanwifinetworks = wifi.ScanResults;
+                foreach (ScanResult wifinetwork in scanwifinetworks)
+                {
+                    bool isConnected = false;
+                    if(wifinetwork.Ssid == connectedSSID)
+                    {
+                        isConnected = true;
+                    }
+                    WiFiInfo nWF = new WiFiInfo { SSID = wifinetwork.Ssid, Signal = wifinetwork.Level, IsConnected=isConnected };
+                    wiFiInfos.Add(nWF);
+                    //wifiNetworks.Add(wifinetwork.Ssid);
+                }
+
+                receiverARE.Set();
+            }
+
+            private void Timeout(object sender)
+            {
+                // NOTE release scan, which we are using now, or we throw an error?
+                receiverARE.Set();
             }
         }
     }

@@ -207,14 +207,29 @@ namespace TestZXing
 
         private async void BtnWifiStatus_Clicked(object sender, EventArgs e)
         {
-            WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
-            if (wi == null)
+            //WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
+            List<WiFiInfo> wis = await DependencyService.Get<IWifiHandler>().GetAvailableWifis(true);
+            if (wis == null)
             {
                 await DisplayAlert("Odmowa", "Aby sprawdzić nazwę sieci i moc sygnału, potrzebne jest uprawnienie do lokalizacji. Użytkownik odmówił tego uprawnienia. Spróbuj jeszcze raz i przyznaj odpowiednie uprawnienie", "OK");
             }
             else
             {
-                await DisplayAlert("Connection status", string.Format("Sieć: {0}, siła sygnału: {1}", wi.SSID, wi.Signal), "OK");
+                string status = "";
+
+                foreach(WiFiInfo w in wis.OrderByDescending(i=>i.Signal))
+                {
+                    string con = "";
+                    if (w.IsConnected)
+                    {
+                        con = "(P)";
+                    }
+                    status += w.SSID + $" ({w.Signal}){con}, ";
+                }
+
+                await DisplayAlert("Connection status", $"Dostępne sieci: {status}" , "OK");
+
+                //await DisplayAlert("Connection status", string.Format("Sieć: {0}, siła sygnału: {1}", wi.SSID, wi.Signal), "OK");
             }
         }
     }

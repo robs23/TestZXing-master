@@ -104,11 +104,30 @@ namespace TestZXing.Static
 
                 };
 
-            WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
-            if(wi != null)
+            List<WiFiInfo> wis = await DependencyService.Get<IWifiHandler>().GetAvailableWifis(true);
+            if(wis != null)
             {
-                properties.Add("Sieć Wifi", wi.SSID);
-                properties.Add("Sygnał Wifi", wi.Signal.ToString());
+                string[] status = new string[] { "" };
+
+                foreach (WiFiInfo w in wis.OrderByDescending(i => i.Signal))
+                {
+                    string con = "";
+                    if (w.IsConnected)
+                    {
+                        con = "(P)";
+                    }
+                    if(status[status.Length-1].Length + w.SSID.Length + con.Length > 125)
+                    {
+                        //create new array's item
+                        Array.Resize(ref status, status.Length +1);
+                    }
+                    status[status.Length - 1] += w.SSID + $" ({w.Signal}){con}, ";
+
+                }
+                for (int i = 0; i < status.Length; i++)
+                {
+                    properties.Add($"Status Wifi {i}", status[i]);
+                }                
             }
 
             Crashes.TrackError(ex, properties);

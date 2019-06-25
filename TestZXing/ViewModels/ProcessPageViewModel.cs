@@ -186,6 +186,7 @@ namespace TestZXing.ViewModels
             }
             catch(Exception ex)
             {
+                IsWorking = false;
                 throw;
             }
             
