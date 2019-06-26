@@ -197,7 +197,7 @@ namespace TestZXing
                     {
                         con = "(P)";
                     }
-                    status += w.SSID + $" ({w.Signal}){con}, ";
+                    status += w.SSID + $" [{w.BSSID}] ({w.Signal}){con}, \n";
                 }
 
                 await DisplayAlert("Connection status", $"Dostępne sieci: {status}" , "OK");

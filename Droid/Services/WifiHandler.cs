@@ -109,7 +109,8 @@ namespace TestZXing.Droid.Services
                 wiFiInfos = new List<WiFiInfo>();
                 receiverARE = new AutoResetEvent(false);
 
-                connectedSSID = ((WifiManager)wifi).ConnectionInfo.SSID.Replace("\"","");
+                //connectedSSID = ((WifiManager)wifi).ConnectionInfo.SSID.Replace("\"","");
+                connectedSSID = ((WifiManager)wifi).ConnectionInfo.BSSID;
             }
 
             public List<WiFiInfo> Scan()
@@ -127,11 +128,11 @@ namespace TestZXing.Droid.Services
                 foreach (ScanResult wifinetwork in scanwifinetworks)
                 {
                     bool isConnected = false;
-                    if(wifinetwork.Ssid == connectedSSID)
+                    if(wifinetwork.Bssid == connectedSSID)
                     {
                         isConnected = true;
                     }
-                    WiFiInfo nWF = new WiFiInfo { SSID = wifinetwork.Ssid, Signal = wifinetwork.Level, IsConnected=isConnected };
+                    WiFiInfo nWF = new WiFiInfo { SSID = wifinetwork.Ssid, BSSID=wifinetwork.Bssid, Signal = wifinetwork.Level, IsConnected=isConnected };
                     wiFiInfos.Add(nWF);
                     //wifiNetworks.Add(wifinetwork.Ssid);
                 }

@@ -112,16 +112,18 @@ namespace TestZXing.Static
                 foreach (WiFiInfo w in wis.OrderByDescending(i => i.Signal))
                 {
                     string con = "";
+                    string bssid = "";
                     if (w.IsConnected)
                     {
                         con = "(P)";
+                        bssid = $" [{w.BSSID}]";
                     }
-                    if(status[status.Length-1].Length + w.SSID.Length + con.Length > 125)
+                    if(status[status.Length-1].Length + bssid.Length + w.SSID.Length + con.Length +5 > 125)
                     {
                         //create new array's item
                         Array.Resize(ref status, status.Length +1);
                     }
-                    status[status.Length - 1] += w.SSID + $" ({w.Signal}){con}, ";
+                    status[status.Length - 1] += w.SSID + $"{bssid} ({w.Signal}){con}, ";
 
                 }
                 for (int i = 0; i < status.Length; i++)
