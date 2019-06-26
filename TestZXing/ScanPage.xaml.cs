@@ -37,127 +37,100 @@ namespace TestZXing
         private async void btnScan_Clicked(object sender, EventArgs e)
         {
             btnScan.IsEnabled = false;
-            scanPage = new ZXingScannerPage();
-            scanPage.OnScanResult += (result) =>
+            PermissionStatus status = await CrossPermissions.Current.CheckPermissionStatusAsync<CameraPermission>();
+
+            if (status != PermissionStatus.Granted)
             {
-                scanPage.IsScanning = false;
-
-                Device.BeginInvokeOnMainThread(async () =>
+                status = await CrossPermissions.Current.RequestPermissionAsync<CameraPermission>();
+            }
+            if(status != PermissionStatus.Granted)
+            {
+                await DisplayAlert("Odmowa", "Skanowanie kodu QR wymaga uprawnień do użycia kamery. Użytkownik odmówił tego uprawnienia. Spróbuj jeszcze raz i przyznaj odpowiednie uprawnienie", "OK");
+            }
+            else
+            {
+                scanPage = new ZXingScannerPage();
+                scanPage.OnScanResult += (result) =>
                 {
-                    Navigation.PopAsync();
-                    PopupNavigation.Instance.PushAsync(new LoadingScreen(), true);
-                    try
+                    scanPage.IsScanning = false;
+
+                    Device.BeginInvokeOnMainThread(async () =>
                     {
-                        Place = await Keeper.GetPlace(result.Text);
-                        if (Place == null)
+                        Navigation.PopAsync();
+                        PopupNavigation.Instance.PushAsync(new LoadingScreen(), true);
+                        try
                         {
-                            //check if this is MES process string
-                            string[] mesStr = Regex.Split(result.Text, ";");
-                            if(mesStr.Length == 7)
+                            Place = await Keeper.GetPlace(result.Text);
+                            if (Place == null)
                             {
-                                //there are 7 fields split by ; in the string, there's good chance it comes from MES
-                                MesString ms = new MesString();
-                                try
+                                //check if this is MES process string
+                                string[] mesStr = Regex.Split(result.Text, ";");
+                                if (mesStr.Length == 7)
                                 {
-                                    ms.MesId = mesStr[0];
-                                    ms.MesDate = DateTime.Parse(mesStr[1]);
-                                    ms.SetName = mesStr[2];
-                                    ms.ActionTypeName = mesStr[3];
-                                    ms.Reason = mesStr[5];
-
-                                    //check if such a mesId exists before creating new one
-                                    ProcessKeeper pKeeper = new ProcessKeeper();
-                                    Process nProcess = await pKeeper.GetProcess(ms.MesId);
-
-                                    //pass everything to ProcessPage.xaml
-                                    if (nProcess == null)
+                                    //there are 7 fields split by ; in the string, there's good chance it comes from MES
+                                    MesString ms = new MesString();
+                                    try
                                     {
-                                        await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms));
+                                        ms.MesId = mesStr[0];
+                                        ms.MesDate = DateTime.Parse(mesStr[1]);
+                                        ms.SetName = mesStr[2];
+                                        ms.ActionTypeName = mesStr[3];
+                                        ms.Reason = mesStr[5];
+
+                                        //check if such a mesId exists before creating new one
+                                        ProcessKeeper pKeeper = new ProcessKeeper();
+                                        Process nProcess = await pKeeper.GetProcess(ms.MesId);
+
+                                        //pass everything to ProcessPage.xaml
+                                        if (nProcess == null)
+                                        {
+                                            await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms));
+                                        }
+                                        else
+                                        {
+                                            await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms, nProcess));
+                                        }
                                     }
-                                    else
+                                    catch (Exception ex)
                                     {
-                                        await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms, nProcess));
-                                    } 
+                                        await DisplayAlert("Problem z kodem", string.Format("Coś poszło nie tak podczas deserializacji kodu {0}", result.Text) + ". Opis błędu: " + ex.Message, "OK");
+                                    }
+
                                 }
-                                catch(Exception ex)
+                                else
                                 {
-                                    await DisplayAlert("Problem z kodem", string.Format("Coś poszło nie tak podczas deserializacji kodu {0}", result.Text) + ". Opis błędu: " + ex.Message, "OK");
+                                    await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", result.Text), "OK");
                                 }
-                                
                             }
                             else
                             {
-                                await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", result.Text), "OK");
-                            }
-                        }
-                        else
-                        {
-                            
-                            List<Process> Pros = new List<Process>();
-                            try
-                            {
-                                Pros = await Place.GetProcesses(true);
-                                await Navigation.PushAsync(new ScanningResults(Pros,Place));
-                                
-                            }
-                            catch (Exception ex)
-                            {
-                                PopupNavigation.Instance.PopAsync(true); // Hide loading screen
-                                await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
-                            }
-                            
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
-                    }
-                    PopupNavigation.Instance.PopAsync(true); // Hide loading screen
-                });
-            };
-            await Navigation.PushAsync(scanPage);
-            btnScan.IsEnabled = true;
-            //------------Scanning Bypass-------------------
-            //Looper.IsVisible = true;
-            //Looper.IsRunning = true;
-            //try
-            //{
-            //    Place = await Keeper.GetPlace("0u5TxEpXEGKFuRt3rk0QA");
-            //    Place = await Keeper.GetPlace("xx");
-            //    if (Place == null)
-            //    {
-            //        await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", "xx"), "OK");
-            //    }
-            //    else
-            //    {
-            //        lblScanResult.Text = "Zeskanowano: " + Place.Name;
-            //        Pros = new List<Process>();
-            //        try
-            //        {
-            //            Pros = await Place.GetProcesses(true);
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Error Error = new Error { TenantId = RuntimeSettings.TenantId, UserId = RuntimeSettings.UserId, App = 1, Class = this.GetType().Name, Method = "btnScan_Clicked", Time = DateTime.Now, Message = ex.Message };
-            //        }
-            //        finally
-            //        {
-            //            vm = new ProcessInPlaceViewModel(Pros);
-            //        }
-            //        BindingContext = vm;
-            //        Looper.IsRunning = false;
-            //        Looper.IsVisible = false;
-            //        lblScanResult.IsVisible = true;
-            //        lblGetOrder.IsVisible = true;
-            //        lstProcesses.IsVisible = true;
-            //        btnOpenProcess.IsVisible = true;
-            //    }
 
-            //}
-            //catch (Exception ex)
-            //{
-            //    await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
-            //}
+                                List<Process> Pros = new List<Process>();
+                                try
+                                {
+                                    Pros = await Place.GetProcesses(true);
+                                    await Navigation.PushAsync(new ScanningResults(Pros, Place));
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                                    await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                                }
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                        }
+                        PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                    });
+                };
+                await Navigation.PushAsync(scanPage);
+            }
+            
+            btnScan.IsEnabled = true;
         }
 
         
