@@ -52,6 +52,7 @@ namespace TestZXing
                 scanPage = new ZXingScannerPage();
                 scanPage.OnScanResult += (result) =>
                 {
+                    //DateTime _start = DateTime.Now;
                     scanPage.IsScanning = false;
 
                     Device.BeginInvokeOnMainThread(async () =>
@@ -60,9 +61,7 @@ namespace TestZXing
                         PopupNavigation.Instance.PushAsync(new LoadingScreen(), true);
                         try
                         {
-                            Place = await Keeper.GetPlace(result.Text);
-                            if (Place == null)
-                            {
+
                                 //check if this is MES process string
                                 string[] mesStr = Regex.Split(result.Text, ";");
                                 if (mesStr.Length == 7)
@@ -99,26 +98,32 @@ namespace TestZXing
                                 }
                                 else
                                 {
-                                    await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", result.Text), "OK");
-                                }
-                            }
-                            else
-                            {
+                                    //try to find place of such token
+                                    Place = await Keeper.GetPlace(result.Text);
+                                    if (Place == null)
+                                    {
+                                        await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", result.Text), "OK");
+                                    }
+                                    else
+                                    {
+                                        List<Process> Pros = new List<Process>();
+                                        try
+                                        {
+                                            Pros = await Place.GetProcesses(true);
+                                            //await DisplayAlert("Czas", $"Zajęło {(DateTime.Now - _start).TotalMilliseconds} sekund", "Ok");
+                                            await Navigation.PushAsync(new ScanningResults(Pros, Place));
 
-                                List<Process> Pros = new List<Process>();
-                                try
-                                {
-                                    Pros = await Place.GetProcesses(true);
-                                    await Navigation.PushAsync(new ScanningResults(Pros, Place));
-
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                                            await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                                        }
+                                    }
+                                        
                                 }
-                                catch (Exception ex)
-                                {
-                                    PopupNavigation.Instance.PopAsync(true); // Hide loading screen
-                                    await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
-                                }
-
-                            }
+                            
+       
                         }
                         catch (Exception ex)
                         {
@@ -127,6 +132,7 @@ namespace TestZXing
                         PopupNavigation.Instance.PopAsync(true); // Hide loading screen
                     });
                 };
+                
                 await Navigation.PushAsync(scanPage);
             }
             

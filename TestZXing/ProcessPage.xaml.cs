@@ -120,16 +120,21 @@ namespace TestZXing
             base.OnAppearing();
             try
             {
-                if (vm.IsNew)
+                if (!vm.IsInitialized)
                 {
-                    await vm.Initialize();
-                }
-                else
-                {
+                    //initialize only when not yet initialized
+                    if (vm.IsNew)
+                    {
+                        await vm.Initialize();
+                    }
+                    else
+                    {
 
-                    await vm.Initialize(vm._thisProcess.ActionTypeId);
+                        await vm.Initialize(vm._thisProcess.ActionTypeId);
+                    }
+                    BindingContext = vm;
                 }
-                BindingContext = vm;
+                
             }
             catch (Exception ex)
             {

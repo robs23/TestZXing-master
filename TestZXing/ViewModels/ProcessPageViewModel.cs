@@ -45,6 +45,7 @@ namespace TestZXing.ViewModels
         private bool _IsMesRelated { get; set; }
         private bool _IsProcessOpen { get; set; } //there must be other open handligns for the process to be open
         private bool _RequireInitialDiagnosis { get; set; }
+        public bool _IsInitialized { get; set; } //is it already intitialized? If so, don't initialize it again and make people pissed off
         public MesString MesString { get; set; }
         public Process _thisProcess { get; set; }
         public Handling _this { get; set; }
@@ -181,7 +182,7 @@ namespace TestZXing.ViewModels
                     SelectedPlaceIndex = index;
                 }
                 IsWorking = false;
-                
+                IsInitialized = true;
                 
             }
             catch(Exception ex)
@@ -570,6 +571,21 @@ namespace TestZXing.ViewModels
                 else
                 {
                     return true;
+                }
+            }
+        }
+
+        public bool IsInitialized
+        {
+            get
+            {
+                return _IsInitialized;
+            }
+            set
+            {
+                if (value != _IsInitialized)
+                {
+                    _IsInitialized = value;
                 }
             }
         }
