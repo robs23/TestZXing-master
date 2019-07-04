@@ -11,6 +11,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Java.Util;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using TestZXing.Droid.Services;
@@ -23,10 +24,66 @@ namespace TestZXing.Droid.Services
     public class WifiHandler : IWifiHandler
     {
         private Context context = null;
+        string PreferredWifi = "Pakowanie1";
+        string PrefferedWifiPassword = "";
 
         public WifiHandler()
         {
             this.context = Android.App.Application.Context;
+        }
+
+        public async Task<(bool,string)> ConnectPreferredWifi()
+        {
+            var res = (true, "Ok");
+            List<WiFiInfo> wis = await GetAvailableWifis();
+            WiFiInfo w;
+            
+            if (wis.Any())
+            {
+                if (!wis.Where(i => i.SSID == PreferredWifi).Any())
+                {
+                    res = (false, $"Jesteś poza zasięgiem sieci {PreferredWifi}");
+                }
+                else
+                {
+                    if(!wis.Where(i=>i.SSID==PreferredWifi && i.Signal >= -73).Any())
+                    {
+                        res = (false, $"Zasięg sieci {PreferredWifi} jest zbyt słaby by nawiązać stabilne połączenie..");
+                    }
+                    else
+                    {
+                        //if we got this far, we should be able to connect successfully
+                        w = wis.Where(i => i.SSID == PreferredWifi).OrderByDescending(i => i.Signal).FirstOrDefault();
+                        if (w != null)
+                        {
+                            var wifiMgr = (WifiManager)context.GetSystemService(Context.WifiService);
+                            var formattedSsid = $"\"{w.SSID}\"";
+                            var formattedPassword = $"\"{PrefferedWifiPassword}\"";
+
+                            var wifiConfig = new WifiConfiguration
+                            {
+                                Ssid = formattedSsid,
+                                PreSharedKey = formattedPassword
+                            };
+                            var addNetwork = wifiMgr.AddNetwork(wifiConfig);
+                            var network = wifiMgr.ConfiguredNetworks.FirstOrDefault(n => n.Ssid == w.SSID);
+
+                            if (network == null)
+                            {
+                                res = (false, $"Nie udało się połączyć z {PreferredWifi}..");
+                            }
+                            else
+                            {
+                                wifiMgr.Disconnect();
+                                var enableNetwork = wifiMgr.EnableNetwork(network.NetworkId, true);
+                                res = (true, $"Połączono z {PreferredWifi} [{w.BSSID}]");
+                            }
+                        }
+                    }
+                }
+            }
+
+            return res;
         }
 
         public async Task<List<WiFiInfo>> GetAvailableWifis(bool? GetSignalStrenth = false)
@@ -73,7 +130,7 @@ namespace TestZXing.Droid.Services
                 {
                     WiFiInfo currentWifi = new WiFiInfo();
                     currentWifi.SSID = wifiManager.ConnectionInfo.SSID;
-
+                    currentWifi.BSSID = wifiManager.ConnectionInfo.BSSID;
                     if ((bool)GetSignalStrength)
                     {
                         currentWifi.Signal = wifiManager.ConnectionInfo.Rssi;
@@ -92,13 +149,64 @@ namespace TestZXing.Droid.Services
             }
         }
 
+        public async Task<string> GetWifiMacAddress()
+        {
+            string res = null;
+
+            PermissionStatus status = await CrossPermissions.Current.CheckPermissionStatusAsync<LocationPermission>();
+
+            if (status != PermissionStatus.Granted)
+            {
+                status = await CrossPermissions.Current.RequestPermissionAsync<LocationPermission>();
+            }
+
+            if(status == PermissionStatus.Granted)
+            {
+                WifiManager wifiManager = (WifiManager)(Application.Context.GetSystemService(Context.WifiService));
+                res = wifiManager.ConnectionInfo.MacAddress;
+
+                string macAddress = string.Empty;
+
+                var all = Collections.List(Java.Net.NetworkInterface.NetworkInterfaces);
+
+                foreach (var interfaces in all)
+                {
+                    if (!(interfaces as Java.Net.NetworkInterface).Name.Contains("wlan0")) continue;
+
+                    var macBytes = (interfaces as
+                    Java.Net.NetworkInterface).GetHardwareAddress();
+                    if (macBytes == null) continue;
+
+                    var sb = new System.Text.StringBuilder();
+                    foreach (var b in macBytes)
+                    {
+                        string convertedByte = string.Empty;
+                        convertedByte = (b & 0xFF).ToString("X2") + ":";
+
+                        if (convertedByte.Length == 1)
+                        {
+                            convertedByte.Insert(0, "0");
+                        }
+                        sb.Append(convertedByte);
+                    }
+
+                    macAddress = sb.ToString().Remove(sb.Length - 1);
+
+                    return macAddress;
+                }
+                return "02:00:00:00:00:00";
+            }
+
+            return res;
+        }
+
         class WifiReceiver : BroadcastReceiver
         {
             private WifiManager wifi;
             private List<WiFiInfo> wiFiInfos;
             private List<string> wifiNetworks;
             private AutoResetEvent receiverARE;
-            private Timer tmr;
+            private System.Threading.Timer tmr;
             private const int TIMEOUT_MILLIS = 20000; // 20 seconds timeout
             string connectedSSID;
 
@@ -115,7 +223,7 @@ namespace TestZXing.Droid.Services
 
             public List<WiFiInfo> Scan()
             {
-                tmr = new Timer(Timeout, null, TIMEOUT_MILLIS, System.Threading.Timeout.Infinite);
+                tmr = new System.Threading.Timer(Timeout, null, TIMEOUT_MILLIS, System.Threading.Timeout.Infinite);
                 wifi.StartScan();
                 receiverARE.WaitOne();
                 return wiFiInfos;

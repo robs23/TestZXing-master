@@ -196,7 +196,7 @@ namespace TestZXing
             {
                 string status = "";
 
-                foreach(WiFiInfo w in wis.OrderByDescending(i=>i.Signal))
+                foreach (WiFiInfo w in wis.OrderByDescending(i => i.Signal))
                 {
                     string con = "";
                     if (w.IsConnected)
@@ -206,9 +206,9 @@ namespace TestZXing
                     status += w.SSID + $" [{w.BSSID}] ({w.Signal}){con}, \n";
                 }
 
-                await DisplayAlert("Connection status", $"Dostępne sieci: {status}" , "OK");
+                WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi();
 
-                //await DisplayAlert("Connection status", string.Format("Sieć: {0}, siła sygnału: {1}", wi.SSID, wi.Signal), "OK");
+                await DisplayAlert("Connection status", $"Podłączona sieć: {wi.SSID} [{wi.BSSID}] .Dostępne sieci: {status}", "OK");
             }
         }
     }

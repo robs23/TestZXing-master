@@ -93,6 +93,8 @@ namespace TestZXing.Static
                 UserName = RuntimeSettings.CurrentUser.FullName;
             }
 
+            string macAddress = await DependencyService.Get<IWifiHandler>().GetWifiMacAddress();
+
             var properties = new Dictionary<string, string>
                 {
                     {"Type", text},
@@ -100,8 +102,8 @@ namespace TestZXing.Static
                     {"Class", className},
                     {"User", UserName},
                     {"Połączenie internetowe", InternetConnectionStatus },
-                    {"Aktywne połączenia", ActiveConnections }
-
+                    {"Aktywne połączenia", ActiveConnections },
+                    {"Adres MAC", macAddress }
                 };
 
             List<WiFiInfo> wis = await DependencyService.Get<IWifiHandler>().GetAvailableWifis(true);

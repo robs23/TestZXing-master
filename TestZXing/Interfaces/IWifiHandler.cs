@@ -12,5 +12,9 @@ namespace TestZXing.Interfaces
         Task<WiFiInfo> GetConnectedWifi(bool? GetSignalStrength = false);
 
         Task<List<WiFiInfo>> GetAvailableWifis(bool? GetSignalStrenth = false);
+
+        Task<string> GetWifiMacAddress();
+
+        Task<(bool,string)> ConnectPreferredWifi();
     }
 }
