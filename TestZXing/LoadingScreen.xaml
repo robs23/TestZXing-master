@@ -15,7 +15,7 @@
                            IsRunning="True"/>
         
         <Label TextColor="White"
-               Text="Wczytywanie.."
+               Text="{Binding Text}"
                FontSize="Large"/>
     </StackLayout>
 </pages:PopupPage>

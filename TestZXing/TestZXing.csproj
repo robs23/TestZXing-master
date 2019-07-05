@@ -95,6 +95,7 @@
     <Compile Include="ViewModels\CompletedProcessesInPlaceViewModel.cs" />
     <Compile Include="ViewModels\HandlingsPageViewModel.cs" />
     <Compile Include="ViewModels\LastPlacesViewModel.cs" />
+    <Compile Include="ViewModels\LoadingScreenViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\PlaceViewModel.cs" />
     <Compile Include="ViewModels\ProcessViewModel.cs" />

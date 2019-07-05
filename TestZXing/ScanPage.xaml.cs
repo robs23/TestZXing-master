@@ -11,6 +11,7 @@ using TestZXing.Interfaces;
 using TestZXing.Models;
 using TestZXing.Static;
 using TestZXing.ViewModels;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing.Net.Mobile.Forms;
@@ -75,7 +76,13 @@ namespace TestZXing
                                         ms.SetName = mesStr[2];
                                         ms.ActionTypeName = mesStr[3];
                                         ms.Reason = mesStr[5];
-
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        await DisplayAlert("Problem z kodem", string.Format("Coś poszło nie tak podczas deserializacji kodu {0}", result.Text) + ". Opis błędu: " + ex.Message, "OK");
+                                    }
+                                    try
+                                    {
                                         //check if such a mesId exists before creating new one
                                         ProcessKeeper pKeeper = new ProcessKeeper();
                                         Process nProcess = await pKeeper.GetProcess(ms.MesId);
@@ -89,11 +96,10 @@ namespace TestZXing
                                         {
                                             await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms, nProcess));
                                         }
-                                    }
-                                    catch (Exception ex)
+                                    }catch(Exception ex)
                                     {
-                                        await DisplayAlert("Problem z kodem", string.Format("Coś poszło nie tak podczas deserializacji kodu {0}", result.Text) + ". Opis błędu: " + ex.Message, "OK");
-                                    }
+                                        Static.Functions.CreateError(ex, "No connection", nameof(scanPage.OnScanResult), this.GetType().Name);
+                                    }  
 
                                 }
                                 else
@@ -186,29 +192,42 @@ namespace TestZXing
 
         private async void BtnWifiStatus_Clicked(object sender, EventArgs e)
         {
-            //WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
-            List<WiFiInfo> wis = await DependencyService.Get<IWifiHandler>().GetAvailableWifis(true);
-            if (wis == null)
-            {
-                await DisplayAlert("Odmowa", "Aby sprawdzić nazwę sieci i moc sygnału, potrzebne jest uprawnienie do lokalizacji. Użytkownik odmówił tego uprawnienia. Spróbuj jeszcze raz i przyznaj odpowiednie uprawnienie", "OK");
-            }
-            else
-            {
-                string status = "";
+            ////WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
+            //List<WiFiInfo> wis = await DependencyService.Get<IWifiHandler>().GetAvailableWifis(true);
+            //if (wis == null)
+            //{
+            //    await DisplayAlert("Odmowa", "Aby sprawdzić nazwę sieci i moc sygnału, potrzebne jest uprawnienie do lokalizacji. Użytkownik odmówił tego uprawnienia. Spróbuj jeszcze raz i przyznaj odpowiednie uprawnienie", "OK");
+            //}
+            //else
+            //{
+            //    string status = "";
 
-                foreach (WiFiInfo w in wis.OrderByDescending(i => i.Signal))
+            //    foreach (WiFiInfo w in wis.OrderByDescending(i => i.Signal))
+            //    {
+            //        string con = "";
+            //        if (w.IsConnected)
+            //        {
+            //            con = "(P)";
+            //        }
+            //        status += w.SSID + $" [{w.BSSID}] ({w.Signal}){con}, \n";
+            //    }
+
+            //    WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi();
+
+            //    await DisplayAlert("Connection status", $"Podłączona sieć: {wi.SSID} [{wi.BSSID}].\nDostępne sieci: {status}", "OK");
+            //}
+            if(!Connectivity.ConnectionProfiles.Contains(ConnectionProfile.WiFi) || Connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                //either Wifi is off or there's no connection to the internet
+                //connect preferred network
+                PopupNavigation.Instance.PushAsync(new LoadingScreen("Brak internetu.. Próbuje nawiązać połączenie"), true);
+                var res = await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
+                PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                if (!res.Item1)
                 {
-                    string con = "";
-                    if (w.IsConnected)
-                    {
-                        con = "(P)";
-                    }
-                    status += w.SSID + $" [{w.BSSID}] ({w.Signal}){con}, \n";
+                    //Couldn't connect to the network..
+                    await DisplayAlert("Błąd połączenia", res.Item2, "Ok");
                 }
-
-                WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi();
-
-                await DisplayAlert("Connection status", $"Podłączona sieć: {wi.SSID} [{wi.BSSID}] .Dostępne sieci: {status}", "OK");
             }
         }
     }

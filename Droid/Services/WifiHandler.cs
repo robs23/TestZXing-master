@@ -25,7 +25,7 @@ namespace TestZXing.Droid.Services
     {
         private Context context = null;
         string PreferredWifi = "Pakowanie1";
-        string PrefferedWifiPassword = "";
+        string PrefferedWifiPassword = "gienas1980";
 
         public WifiHandler()
         {
@@ -59,14 +59,16 @@ namespace TestZXing.Droid.Services
                             var wifiMgr = (WifiManager)context.GetSystemService(Context.WifiService);
                             var formattedSsid = $"\"{w.SSID}\"";
                             var formattedPassword = $"\"{PrefferedWifiPassword}\"";
+                            var formattedBssid = w.BSSID;
 
                             var wifiConfig = new WifiConfiguration
                             {
                                 Ssid = formattedSsid,
-                                PreSharedKey = formattedPassword
+                                PreSharedKey = formattedPassword,
+                                Bssid = formattedBssid
                             };
                             var addNetwork = wifiMgr.AddNetwork(wifiConfig);
-                            var network = wifiMgr.ConfiguredNetworks.FirstOrDefault(n => n.Ssid == w.SSID);
+                            var network = wifiMgr.ConfiguredNetworks.FirstOrDefault(n => n.Bssid == w.BSSID);
 
                             if (network == null)
                             {
@@ -131,6 +133,8 @@ namespace TestZXing.Droid.Services
                     WiFiInfo currentWifi = new WiFiInfo();
                     currentWifi.SSID = wifiManager.ConnectionInfo.SSID;
                     currentWifi.BSSID = wifiManager.ConnectionInfo.BSSID;
+                    currentWifi.NetworkId = wifiManager.ConnectionInfo.NetworkId;
+
                     if ((bool)GetSignalStrength)
                     {
                         currentWifi.Signal = wifiManager.ConnectionInfo.Rssi;
@@ -240,7 +244,7 @@ namespace TestZXing.Droid.Services
                     {
                         isConnected = true;
                     }
-                    WiFiInfo nWF = new WiFiInfo { SSID = wifinetwork.Ssid, BSSID=wifinetwork.Bssid, Signal = wifinetwork.Level, IsConnected=isConnected };
+                    WiFiInfo nWF = new WiFiInfo { SSID = wifinetwork.Ssid, BSSID=wifinetwork.Bssid, Signal = wifinetwork.Level, IsConnected=isConnected};
                     wiFiInfos.Add(nWF);
                     //wifiNetworks.Add(wifinetwork.Ssid);
                 }
