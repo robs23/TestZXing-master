@@ -31,7 +31,7 @@ namespace TestZXing
 
         private void btnClose_Clicked(object sender, EventArgs e)
         {
-            PopupNavigation.Instance.PopAsync(true); // Hide this screen
+            PopupNavigation.Instance.PopAllAsync(true); // Hide this screen
         }
 
         protected override bool OnBackButtonPressed()
@@ -45,7 +45,7 @@ namespace TestZXing
             if (e.Item == null)
                 return;
             Process process = ((Process)((ListView)sender).SelectedItem);
-            PopupNavigation.Instance.PopAsync(true); // Hide this screen
+            PopupNavigation.Instance.PopAllAsync(true); // Hide this screen
             await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(vm.Place.PlaceId, process));
         }
     }

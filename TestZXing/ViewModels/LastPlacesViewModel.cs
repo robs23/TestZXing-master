@@ -27,7 +27,7 @@ namespace TestZXing.ViewModels
                 {
                     if (value == false)
                     {
-                        PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                        PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
                     }
                     else
                     {

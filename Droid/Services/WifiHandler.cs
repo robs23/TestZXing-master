@@ -61,6 +61,19 @@ namespace TestZXing.Droid.Services
                             var formattedPassword = $"\"{PrefferedWifiPassword}\"";
                             var formattedBssid = w.BSSID;
 
+                            //if (wifiMgr.ConfiguredNetworks.Any())
+                            //{
+                            //    if (wifiMgr.ConfiguredNetworks.Any(i => i.Ssid == formattedSsid))
+                            //    {
+                            //        foreach(var net in wifiMgr.ConfiguredNetworks.Where(i => i.Ssid == formattedSsid))
+                            //        {
+                            //            int netId = net.NetworkId;
+                            //            bool isRemoved = wifiMgr.RemoveNetwork(netId);
+                            //            wifiMgr.SaveConfiguration();
+                            //        }
+                                    
+                            //    }
+                            //}
                             var wifiConfig = new WifiConfiguration
                             {
                                 Ssid = formattedSsid,
@@ -68,7 +81,7 @@ namespace TestZXing.Droid.Services
                                 Bssid = formattedBssid
                             };
                             var addNetwork = wifiMgr.AddNetwork(wifiConfig);
-                            var network = wifiMgr.ConfiguredNetworks.FirstOrDefault(n => n.Bssid == w.BSSID);
+                            var network = wifiMgr.ConfiguredNetworks.FirstOrDefault(n => n.Ssid == formattedSsid);
 
                             if (network == null)
                             {
@@ -76,8 +89,14 @@ namespace TestZXing.Droid.Services
                             }
                             else
                             {
-                                wifiMgr.Disconnect();
+                                //wifiMgr.Disconnect();
+                                if (!wifiMgr.IsWifiEnabled)
+                                {
+                                    wifiMgr.SetWifiEnabled(true);
+                                }
+                                
                                 var enableNetwork = wifiMgr.EnableNetwork(network.NetworkId, true);
+                                wifiMgr.Reconnect();
                                 res = (true, $"Połączono z {PreferredWifi} [{w.BSSID}]");
                             }
                         }

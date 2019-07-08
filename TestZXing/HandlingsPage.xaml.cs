@@ -30,7 +30,7 @@ namespace TestZXing
 
         private void btnClose_Clicked(object sender, EventArgs e)
         {
-            PopupNavigation.Instance.PopAsync(true); // Hide handlings screen
+            PopupNavigation.Instance.PopAllAsync(true); // Hide handlings screen
         }
 
         protected override bool OnBackButtonPressed()

@@ -122,7 +122,7 @@ namespace TestZXing
                                         }
                                         catch (Exception ex)
                                         {
-                                            PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                                            PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
                                             await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
                                         }
                                     }
@@ -135,7 +135,7 @@ namespace TestZXing
                         {
                             await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
                         }
-                        PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                        PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
                     });
                 };
                 
@@ -216,17 +216,22 @@ namespace TestZXing
 
             //    await DisplayAlert("Connection status", $"Podłączona sieć: {wi.SSID} [{wi.BSSID}].\nDostępne sieci: {status}", "OK");
             //}
-            if(!Connectivity.ConnectionProfiles.Contains(ConnectionProfile.WiFi) || Connectivity.NetworkAccess != NetworkAccess.Internet)
+
+            if (!Connectivity.ConnectionProfiles.Contains(ConnectionProfile.WiFi) || Connectivity.NetworkAccess != NetworkAccess.Internet)
             {
                 //either Wifi is off or there's no connection to the internet
                 //connect preferred network
                 PopupNavigation.Instance.PushAsync(new LoadingScreen("Brak internetu.. Próbuje nawiązać połączenie"), true);
                 var res = await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
-                PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
                 if (!res.Item1)
                 {
                     //Couldn't connect to the network..
                     await DisplayAlert("Błąd połączenia", res.Item2, "Ok");
+                }
+                else
+                {
+                    DependencyService.Get<IToaster>().LongAlert(res.Item2);
                 }
             }
         }

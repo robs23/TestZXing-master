@@ -45,6 +45,7 @@
       <DependentUpon>HandlingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ICloseApplication.cs" />
+    <Compile Include="Interfaces\IToaster.cs" />
     <Compile Include="Interfaces\IWifiHandler.cs" />
     <Compile Include="LastPlaces.xaml.cs">
       <DependentUpon>LastPlaces.xaml</DependentUpon>
