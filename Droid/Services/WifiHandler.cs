@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ using Plugin.Permissions.Abstractions;
 using TestZXing.Droid.Services;
 using TestZXing.Interfaces;
 using TestZXing.Models;
+using TestZXing.ViewModels;
 
 [assembly: Xamarin.Forms.Dependency(typeof(WifiHandler))]
 namespace TestZXing.Droid.Services
@@ -24,8 +26,8 @@ namespace TestZXing.Droid.Services
     public class WifiHandler : IWifiHandler
     {
         private Context context = null;
-        string PreferredWifi = "Pakowanie1";
-        string PrefferedWifiPassword = "gienas1980";
+        string preferredWifi = Static.RuntimeSettings.PreferredWifi;
+        string prefferedWifiPassword = Static.RuntimeSettings.PrefferedWifiPassword;
 
         public WifiHandler()
         {
@@ -35,74 +37,47 @@ namespace TestZXing.Droid.Services
         public async Task<(bool,string)> ConnectPreferredWifi()
         {
             var res = (true, "Ok");
-            List<WiFiInfo> wis = await GetAvailableWifis();
             WiFiInfo w;
             
-            if (wis.Any())
+            var wifiMgr = (WifiManager)context.GetSystemService(Context.WifiService);
+            var formattedSsid = $"\"{preferredWifi}\"";
+            var formattedPassword = $"\"{prefferedWifiPassword}\"";
+
+            //wifiMgr.Disconnect();
+            if (!wifiMgr.IsWifiEnabled)
             {
-                if (!wis.Where(i => i.SSID == PreferredWifi).Any())
+                wifiMgr.SetWifiEnabled(true);
+            }
+            w = await GetConnectedWifi(true);
+            if (w == null || w.SSID != formattedSsid)
+            {
+                //no wifi is connected or other wifi is connected
+
+                var wifiConfig = new WifiConfiguration
                 {
-                    res = (false, $"Jesteś poza zasięgiem sieci {PreferredWifi}");
+                    Ssid = formattedSsid,
+                    PreSharedKey = formattedPassword
+                };
+                var addNetwork = wifiMgr.AddNetwork(wifiConfig);
+                var network = wifiMgr.ConfiguredNetworks.FirstOrDefault(n => n.Ssid == formattedSsid);
+
+                if (network == null)
+                {
+                    res = (false, $"Nie udało się połączyć z {preferredWifi}..");
                 }
                 else
                 {
-                    if(!wis.Where(i=>i.SSID==PreferredWifi && i.Signal >= -73).Any())
+                    if(w.SSID != formattedSsid)
                     {
-                        res = (false, $"Zasięg sieci {PreferredWifi} jest zbyt słaby by nawiązać stabilne połączenie..");
+                        wifiMgr.Disconnect();
                     }
-                    else
-                    {
-                        //if we got this far, we should be able to connect successfully
-                        w = wis.Where(i => i.SSID == PreferredWifi).OrderByDescending(i => i.Signal).FirstOrDefault();
-                        if (w != null)
-                        {
-                            var wifiMgr = (WifiManager)context.GetSystemService(Context.WifiService);
-                            var formattedSsid = $"\"{w.SSID}\"";
-                            var formattedPassword = $"\"{PrefferedWifiPassword}\"";
-                            var formattedBssid = w.BSSID;
-
-                            //if (wifiMgr.ConfiguredNetworks.Any())
-                            //{
-                            //    if (wifiMgr.ConfiguredNetworks.Any(i => i.Ssid == formattedSsid))
-                            //    {
-                            //        foreach(var net in wifiMgr.ConfiguredNetworks.Where(i => i.Ssid == formattedSsid))
-                            //        {
-                            //            int netId = net.NetworkId;
-                            //            bool isRemoved = wifiMgr.RemoveNetwork(netId);
-                            //            wifiMgr.SaveConfiguration();
-                            //        }
-                                    
-                            //    }
-                            //}
-                            var wifiConfig = new WifiConfiguration
-                            {
-                                Ssid = formattedSsid,
-                                PreSharedKey = formattedPassword,
-                                Bssid = formattedBssid
-                            };
-                            var addNetwork = wifiMgr.AddNetwork(wifiConfig);
-                            var network = wifiMgr.ConfiguredNetworks.FirstOrDefault(n => n.Ssid == formattedSsid);
-
-                            if (network == null)
-                            {
-                                res = (false, $"Nie udało się połączyć z {PreferredWifi}..");
-                            }
-                            else
-                            {
-                                //wifiMgr.Disconnect();
-                                if (!wifiMgr.IsWifiEnabled)
-                                {
-                                    wifiMgr.SetWifiEnabled(true);
-                                }
-                                
-                                var enableNetwork = wifiMgr.EnableNetwork(network.NetworkId, true);
-                                wifiMgr.Reconnect();
-                                res = (true, $"Połączono z {PreferredWifi} [{w.BSSID}]");
-                            }
-                        }
-                    }
+                    var enableNetwork = wifiMgr.EnableNetwork(network.NetworkId, true);
+                    wifiMgr.Reconnect();
+                    res = (true, $"Połączono z {preferredWifi}");
                 }
             }
+            
+                       
 
             return res;
         }
@@ -221,6 +196,24 @@ namespace TestZXing.Droid.Services
             }
 
             return res;
+        }
+
+        public bool IsWifiConnected()
+        {
+            var wifiMgr = (WifiManager)context.GetSystemService(Context.WifiService);
+            if (wifiMgr.IsWifiEnabled)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public Task SetWifiOn()
+        {
+            throw new NotImplementedException();
         }
 
         class WifiReceiver : BroadcastReceiver

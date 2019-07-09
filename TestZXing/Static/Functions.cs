@@ -136,5 +136,7 @@ namespace TestZXing.Static
 
             Crashes.TrackError(ex, properties);
         }
+
+
     }
 }
