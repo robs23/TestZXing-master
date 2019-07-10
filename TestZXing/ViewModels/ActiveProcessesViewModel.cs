@@ -73,6 +73,7 @@ namespace TestZXing.ViewModels
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
+                HttpResponseMessage x = await Static.Functions.GetPostRetryAsync(httpClient.SendAsync(request), TimeSpan.FromSeconds(2));
                 var responseMsg = await httpClient.SendAsync(request);
                 string output = await ds.readStream(responseMsg);
                 if (responseMsg.IsSuccessStatusCode)
@@ -156,7 +157,7 @@ namespace TestZXing.ViewModels
                 {
                     if (value == false)
                     {
-                        PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
+                        if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
                     }
                     else
                     {

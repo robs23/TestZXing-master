@@ -122,8 +122,8 @@ namespace TestZXing
                                         }
                                         catch (Exception ex)
                                         {
-                                            PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
-                                            await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                                        if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
+                                        await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
                                         }
                                     }
                                         
@@ -135,7 +135,7 @@ namespace TestZXing
                         {
                             await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
                         }
-                        PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
+                        if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
                     });
                 };
                 
@@ -192,41 +192,49 @@ namespace TestZXing
 
         private async void BtnWifiStatus_Clicked(object sender, EventArgs e)
         {
-            ////WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
-            //List<WiFiInfo> wis = await DependencyService.Get<IWifiHandler>().GetAvailableWifis(true);
-            //if (wis == null)
-            //{
-            //    await DisplayAlert("Odmowa", "Aby sprawdzić nazwę sieci i moc sygnału, potrzebne jest uprawnienie do lokalizacji. Użytkownik odmówił tego uprawnienia. Spróbuj jeszcze raz i przyznaj odpowiednie uprawnienie", "OK");
-            //}
-            //else
-            //{
-            //    string status = "";
+            //WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
+            List<WiFiInfo> wis = await DependencyService.Get<IWifiHandler>().GetAvailableWifis(true);
+            if (wis == null)
+            {
+                await DisplayAlert("Odmowa", "Aby sprawdzić nazwę sieci i moc sygnału, potrzebne jest uprawnienie do lokalizacji. Użytkownik odmówił tego uprawnienia. Spróbuj jeszcze raz i przyznaj odpowiednie uprawnienie", "OK");
+            }
+            else
+            {
+                string status = "";
 
-            //    foreach (WiFiInfo w in wis.OrderByDescending(i => i.Signal))
-            //    {
-            //        string con = "";
-            //        if (w.IsConnected)
-            //        {
-            //            con = "(P)";
-            //        }
-            //        status += w.SSID + $" [{w.BSSID}] ({w.Signal}){con}, \n";
-            //    }
+                foreach (WiFiInfo w in wis.OrderByDescending(i => i.Signal))
+                {
+                    string con = "";
+                    if (w.IsConnected)
+                    {
+                        con = "(P)";
+                    }
+                    status += w.SSID + $" [{w.BSSID}] ({w.Signal}){con}, \n";
+                }
 
-            //    WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi();
+                WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi();
 
-            //    await DisplayAlert("Connection status", $"Podłączona sieć: {wi.SSID} [{wi.BSSID}].\nDostępne sieci: {status}", "OK");
-            //}
+                await DisplayAlert("Connection status", $"Podłączona sieć: {wi.SSID} [{wi.BSSID}].\nDostępne sieci: {status}", "OK");
+            }
 
 
             //either Wifi is off or there's no connection to the internet
             //connect preferred network
 
-            PopupNavigation.Instance.PushAsync(new LoadingScreen(), true);
-            DateTime s = DateTime.Now;
-            Retry.Do(divider, TimeSpan.FromSeconds(2));
-            string x = (DateTime.Now - s).TotalMilliseconds.ToString();
-            DependencyService.Get<IToaster>().LongAlert(x);
-            PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
+
+            //PopupNavigation.Instance.PushAsync(new LoadingScreen(), true);
+            //DateTime s = DateTime.Now;
+            //try
+            //{
+            //    string ux = await Static.Functions.DoWithRetryAsync(divider, TimeSpan.FromSeconds(2));
+            //}catch(Exception ex)
+            //{
+            //    await DisplayAlert("Błąd", "xxx", "ok");
+            //}
+
+            //string x = (DateTime.Now - s).TotalMilliseconds.ToString();
+            //DependencyService.Get<IToaster>().LongAlert(x);
+            //PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
             //if (!res.Item1)
             //{
             //    //Couldn't connect to the network..
@@ -237,12 +245,5 @@ namespace TestZXing
             //    //DependencyService.Get<IToaster>().LongAlert(res.Item2);
             //}
         }
-
-        public void divider()
-        {
-            int y = 1;
-            int x = 9 / y;
-        }
-
     }
 }

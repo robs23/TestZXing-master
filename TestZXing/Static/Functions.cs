@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -135,6 +136,35 @@ namespace TestZXing.Static
             }
 
             Crashes.TrackError(ex, properties);
+        }
+
+        public static async Task<HttpResponseMessage> GetPostRetryAsync(Func<Task<HttpResponseMessage>> action, TimeSpan sleepPeriod, int tryCount = 3)
+        {
+            int attempted = 0;
+            if (tryCount <= 0)
+                throw new ArgumentOutOfRangeException(nameof(tryCount));
+
+            while (true)
+            {
+                try
+                {
+                    await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
+                    attempted++;
+                    DependencyService.Get<IToaster>().LongAlert($"Próba {attempted + 1}");
+
+                    var res = await action();
+                    return res ; // success!
+                }
+                catch(Exception ex)
+                {
+                    if (--tryCount <= 0)
+                    {
+                        throw;
+                    }
+                        
+                    await Task.Delay(sleepPeriod);
+                }
+            }
         }
 
 

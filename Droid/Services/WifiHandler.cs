@@ -34,9 +34,9 @@ namespace TestZXing.Droid.Services
             this.context = Android.App.Application.Context;
         }
 
-        public async Task<(bool,string)> ConnectPreferredWifi()
+        public async Task<bool> ConnectPreferredWifi()
         {
-            var res = (true, "Ok");
+            var res = true;
             WiFiInfo w;
             
             var wifiMgr = (WifiManager)context.GetSystemService(Context.WifiService);
@@ -63,7 +63,7 @@ namespace TestZXing.Droid.Services
 
                 if (network == null)
                 {
-                    res = (false, $"Nie udało się połączyć z {preferredWifi}..");
+                    res = false;
                 }
                 else
                 {
@@ -73,11 +73,8 @@ namespace TestZXing.Droid.Services
                     }
                     var enableNetwork = wifiMgr.EnableNetwork(network.NetworkId, true);
                     wifiMgr.Reconnect();
-                    res = (true, $"Połączono z {preferredWifi}");
                 }
             }
-            
-                       
 
             return res;
         }

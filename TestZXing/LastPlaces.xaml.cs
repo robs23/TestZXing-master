@@ -38,13 +38,13 @@ namespace TestZXing
             try
             {
                 Pros = await Place.GetProcesses(true);
-                PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
+                if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
                 await Navigation.PushAsync(new ScanningResults(Pros, Place));
 
             }
             catch (Exception ex)
             {
-                PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
+                if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
                 await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
             }
 

@@ -54,7 +54,7 @@ namespace TestZXing
                 }
                 else
                 {
-                    PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
+                    if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
                     await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
                     var closer = DependencyService.Get<ICloseApplication>();
                     closer?.closeApplication();
@@ -70,7 +70,7 @@ namespace TestZXing
             {
                 
             }
-            PopupNavigation.Instance.PopAllAsync(true);
+            if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }
         }
 
         private async void btnLogin_Clicked(object sender, EventArgs e)
@@ -154,7 +154,7 @@ namespace TestZXing
                                         RuntimeSettings.CurrentUser = theUser;
                                         RuntimeSettings.TenantId = theUser.TenantId;
                                         theUser.Login();
-                                        PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
+                                        if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
                                         await Application.Current.MainPage.Navigation.PushAsync(new ScanPage());
                                         nAnal = new Anal("Zalogowano kodem QR");
                                     }
