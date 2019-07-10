@@ -26,8 +26,8 @@ namespace TestZXing.Droid.Services
     public class WifiHandler : IWifiHandler
     {
         private Context context = null;
-        string preferredWifi = Static.RuntimeSettings.PreferredWifi;
-        string prefferedWifiPassword = Static.RuntimeSettings.PrefferedWifiPassword;
+        string preferredWifi = Static.Secrets.PreferredWifi;
+        string prefferedWifiPassword = Static.Secrets.PrefferedWifiPassword;
 
         public WifiHandler()
         {

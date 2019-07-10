@@ -148,11 +148,18 @@ namespace TestZXing.Static
             {
                 try
                 {
-                    await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
+
                     attempted++;
-                    DependencyService.Get<IToaster>().LongAlert($"Próba {attempted + 1}");
+                    if (attempted > 1)
+                    {
+                        DependencyService.Get<IToaster>().LongAlert($"Próba {attempted}");
+                    }
+                    await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
+
 
                     var res = await action();
+                    
+                    
                     return res ; // success!
                 }
                 catch(Exception ex)
