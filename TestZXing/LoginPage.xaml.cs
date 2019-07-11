@@ -75,7 +75,7 @@ namespace TestZXing
 
         private async void btnLogin_Clicked(object sender, EventArgs e)
         {
-            if (cmbUsernames == null || String.IsNullOrEmpty(txtPassword.Text) == true)
+            if (cmbUsernames.SelectedItem==null || String.IsNullOrEmpty(txtPassword.Text) == true)
             {
                 await DisplayAlert("Podaj dane", "Nie wybrano użytkownika z listy rozwijanej lub nie podano hasła!", "OK");
             }

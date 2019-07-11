@@ -33,8 +33,7 @@ namespace TestZXing
 
         private async void UpdateList()
         {
-            Looper.IsVisible = true;
-            Looper.IsRunning = true;
+            PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
             Pros = new List<Process>();
             try
             {
@@ -52,8 +51,7 @@ namespace TestZXing
 
             }
             vm.SelectedItem = null;
-            Looper.IsRunning = false;
-            Looper.IsVisible = false;
+            if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }
         }
 
         protected override void OnAppearing()
@@ -69,6 +67,8 @@ namespace TestZXing
 
         private async void lstProcesses_ItemTapped(object sender, ItemTappedEventArgs e)
         {
+            bool goOn = true;  
+
             if (vm.SelectedItem != null)
             {
                 if (vm.SelectedItem.Id == 0)
@@ -78,8 +78,29 @@ namespace TestZXing
                 }
                 else
                 {
-                    Process process = Pros.Where(p => p.ProcessId == vm.SelectedItem.Id).FirstOrDefault();
-                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId, process));
+                    if(Pros.Count == 0)
+                    {
+                        try
+                        {
+                            
+                            PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
+                            Pros = await Place.GetProcesses(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            goOn = false;
+                            await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                        }
+                        if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }
+                    }
+                    if(goOn)
+                    {
+                        Process process = Pros.Where(p => p.ProcessId == vm.SelectedItem.Id).FirstOrDefault();
+                        if (process != null)
+                        {
+                            await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId, process));
+                        }
+                    }                    
                 }
             }
             else

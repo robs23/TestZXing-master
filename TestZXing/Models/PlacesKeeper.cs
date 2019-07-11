@@ -113,7 +113,7 @@ namespace TestZXing.Models
 
             try
             {
-                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 10), EnableUntrustedCertificates = true, DisableCaching = true });
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
                 var responseMsg = await httpClient.SendAsync(request);
                 string output = await ds.readStream(responseMsg);

@@ -24,8 +24,16 @@ namespace TestZXing
 
         protected async override void OnAppearing()
         {
-            await vm.Initialize();
-            BindingContext = vm;
+            try
+            {
+                await vm.Initialize();
+                BindingContext = vm;
+            }catch(Exception ex)
+            {
+                vm.IsWorking = false;
+                DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+            }
+            
         }
 
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)

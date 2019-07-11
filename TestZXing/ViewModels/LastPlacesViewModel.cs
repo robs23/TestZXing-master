@@ -61,8 +61,8 @@ namespace TestZXing.ViewModels
             IsWorking = true;
             PlacesKeeper keeper = new PlacesKeeper();
             Places = await keeper.GetUsersLastPlaces();
-            IsWorking = false;
             OnPropertyChanged(nameof(Places));
+            IsWorking = false;
         }
 
         private Place _selectedItem { get; set; }
