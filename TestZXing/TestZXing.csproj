@@ -87,6 +87,7 @@
     <Compile Include="ScanPage.xaml.cs">
       <DependentUpon>ScanPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Static\Extensions.cs" />
     <Compile Include="Static\Functions.cs" />
     <Compile Include="Static\Retry.cs" />
     <Compile Include="Static\RuntimeSettings.cs" />

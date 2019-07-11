@@ -67,7 +67,7 @@ namespace TestZXing.Droid.Services
                 }
                 else
                 {
-                    if(w.SSID != formattedSsid && w.SSID != "<UnknownSSID>")
+                    if(w.SSID != formattedSsid && w.SSID != "<unknown ssid>")
                     {
                         wifiMgr.Disconnect();
                     }
