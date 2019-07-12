@@ -122,7 +122,8 @@ namespace TestZXing.Models
                 var serialized = JsonConvert.SerializeObject(this);
                 var content = new StringContent(serialized, Encoding.UTF8, "application/json");
                 //var httpResponse = await httpClient.PostAsync(new Uri(url), content);
-                var httpResponse = await httpClient.PostAsync(new Uri(url), content);
+                HttpResponseMessage httpResponse = await Static.Functions.GetPostRetryAsync(() => httpClient.PostAsync(new Uri(url), content), TimeSpan.FromSeconds(3));
+                //var httpResponse = await httpClient.PostAsync(new Uri(url), content);
                 if (!httpResponse.IsSuccessStatusCode)
                 {
                     _Result = httpResponse.ReasonPhrase;

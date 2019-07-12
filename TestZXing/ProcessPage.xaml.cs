@@ -58,7 +58,7 @@ namespace TestZXing
             string _Res = vm.Validate(true);
             if (_Res=="OK")
             {
-                if(await vm.AreThereOpenHandlingsLeft() == "No")
+                if(true)//await vm.AreThereOpenHandlingsLeft() == "No")
                 {
                     //if (vm.IsMesRelated)
                     //{
