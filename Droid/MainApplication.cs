@@ -30,5 +30,7 @@ namespace TestZXing.Droid
                 base.OnCreate();
                 CrossCurrentActivity.Current.Init(this);
             }
+
+
         }
 }

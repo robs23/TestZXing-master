@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AppCenter.Distribute;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,5 +33,7 @@ namespace TestZXing
         {
             // Handle when your app resumes
         }
+
+        
     }
 }
