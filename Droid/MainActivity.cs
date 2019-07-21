@@ -27,7 +27,7 @@ namespace TestZXing.Droid
 
             Rg.Plugins.Popup.Popup.Init(this, bundle);
 
-            Distribute.ReleaseAvailable = OnReleaseAvailable;
+            //Distribute.ReleaseAvailable = OnReleaseAvailable;
             AppCenter.Start($"{Static.Secrets.AppCenterSecret}", typeof(Analytics), typeof(Crashes), typeof(Distribute));
                 
             global::Xamarin.Forms.Forms.Init(this, bundle);
@@ -56,45 +56,45 @@ namespace TestZXing.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
-        bool OnReleaseAvailable(ReleaseDetails releaseDetails)
-        {
-            // Look at releaseDetails public properties to get version information, release notes text or release notes URL
-            string versionName = releaseDetails.ShortVersion;
-            string versionCodeOrBuildNumber = releaseDetails.Version;
-            string releaseNotes = releaseDetails.ReleaseNotes;
-            Uri releaseNotesUrl = releaseDetails.ReleaseNotesUrl;
+        //bool OnReleaseAvailable(ReleaseDetails releaseDetails)
+        //{
+        //    // Look at releaseDetails public properties to get version information, release notes text or release notes URL
+        //    string versionName = releaseDetails.ShortVersion;
+        //    string versionCodeOrBuildNumber = releaseDetails.Version;
+        //    string releaseNotes = releaseDetails.ReleaseNotes;
+        //    Uri releaseNotesUrl = releaseDetails.ReleaseNotesUrl;
 
-            // custom dialog
-            var title = "Version " + versionName + " available!";
-            Task answer;
+        //    // custom dialog
+        //    var title = "Wersja " + versionName + " jest dostępna!";
+        //    Task answer;
 
-            // On mandatory update, user cannot postpone
-            if (releaseDetails.MandatoryUpdate)
-            {
-                answer = TestZXing.App.Current.MainPage.DisplayAlert(title, releaseNotes, "Download and Install");
-            }
-            else
-            {
-                answer = TestZXing.App.Current.MainPage.DisplayAlert(title, releaseNotes, "Download and Install", "Maybe tomorrow...");
-            }
-            answer.ContinueWith((task) =>
-            {
-                // If mandatory or if answer was positive
-                if (releaseDetails.MandatoryUpdate || (task as Task<bool>).Result)
-                {
-                    // Notify SDK that user selected update
-                    Distribute.NotifyUpdateAction(UpdateAction.Update);
-                }
-                else
-                {
-                    // Notify SDK that user selected postpone (for 1 day)
-                    // Note that this method call is ignored by the SDK if the update is mandatory
-                    Distribute.NotifyUpdateAction(UpdateAction.Postpone);
-                }
-            });
+        //    // On mandatory update, user cannot postpone
+        //    if (releaseDetails.MandatoryUpdate)
+        //    {
+        //        answer = TestZXing.App.Current.MainPage.DisplayAlert(title, releaseNotes, "Pobierz i zainstaluj");
+        //    }
+        //    else
+        //    {
+        //        answer = TestZXing.App.Current.MainPage.DisplayAlert(title, releaseNotes, "Pobierz i zainstaluj", "Może jutro..");
+        //    }
+        //    answer.ContinueWith((task) =>
+        //    {
+        //        // If mandatory or if answer was positive
+        //        if (releaseDetails.MandatoryUpdate || (task as Task<bool>).Result)
+        //        {
+        //            // Notify SDK that user selected update
+        //            Distribute.NotifyUpdateAction(UpdateAction.Update);
+        //        }
+        //        else
+        //        {
+        //            // Notify SDK that user selected postpone (for 1 day)
+        //            // Note that this method call is ignored by the SDK if the update is mandatory
+        //            Distribute.NotifyUpdateAction(UpdateAction.Postpone);
+        //        }
+        //    });
 
-            // Return true if you are using your own dialog, false otherwise
-            return true;
-        }
+        //    // Return true if you are using your own dialog, false otherwise
+        //    return true;
+        //}
     }
 }

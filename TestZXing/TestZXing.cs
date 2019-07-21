@@ -1,4 +1,7 @@
-﻿using Microsoft.AppCenter.Distribute;
+﻿using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Distribute;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,6 +12,7 @@ using TestZXing.Classes;
 using TestZXing.Models;
 using TestZXing.Static;
 using Xamarin.Forms;
+
 
 namespace TestZXing
 {
@@ -22,6 +26,9 @@ namespace TestZXing
         protected override void OnStart()
         {
             // Handle when your app starts
+            AppCenter.Start($"android={Static.Secrets.AppCenterSecret}", typeof(Analytics), typeof(Crashes), typeof(Distribute));
+            Analytics.SetEnabledAsync(true);
+            Distribute.SetEnabledAsync(true);
         }
 
         protected override void OnSleep()
