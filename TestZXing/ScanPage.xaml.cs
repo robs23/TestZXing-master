@@ -193,6 +193,9 @@ namespace TestZXing
         private async void BtnWifiStatus_Clicked(object sender, EventArgs e)
         {
             //WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
+            var apiPing = DependencyService.Get<IWifiHandler>().PingHost();
+            string pingStatus = $"{Static.Secrets.ServerIp} : ";
+            if (await apiPing) { pingStatus += "Dostępny"; } else { pingStatus += "Niedostępny"; }
             List<WiFiInfo> wis = await DependencyService.Get<IWifiHandler>().GetAvailableWifis(true);
             if (wis == null)
             {
@@ -214,7 +217,7 @@ namespace TestZXing
 
                 WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi();
 
-                await DisplayAlert("Connection status", $"Podłączona sieć: {wi.SSID} [{wi.BSSID}].\nDostępne sieci: {status}", "OK");
+                await DisplayAlert("Connection status", $"Podłączona sieć: {wi.SSID} [{wi.BSSID}].\nDostępne sieci: {status}.\nPing: {pingStatus}", "OK");
             }
 
 

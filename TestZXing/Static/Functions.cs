@@ -96,6 +96,10 @@ namespace TestZXing.Static
 
             string macAddress = await DependencyService.Get<IWifiHandler>().GetWifiMacAddress();
 
+            var ApiPing = DependencyService.Get<IWifiHandler>().PingHost();
+            string pingStatus = $"{Static.Secrets.ServerIp} : ";
+            if (await ApiPing) { pingStatus += "Dostępny"; } else { pingStatus += "Niedostępny"; }
+
             var properties = new Dictionary<string, string>
                 {
                     {"Type", text},
@@ -104,9 +108,11 @@ namespace TestZXing.Static
                     {"User", UserName},
                     {"Połączenie internetowe", InternetConnectionStatus },
                     {"Aktywne połączenia", ActiveConnections },
-                    {"Adres MAC", macAddress }
+                    {"Adres MAC", macAddress },
+                    {"Status pingu", pingStatus}
                 };
 
+            
             List<WiFiInfo> wis = await DependencyService.Get<IWifiHandler>().GetAvailableWifis(true);
             if(wis != null)
             {
@@ -134,7 +140,7 @@ namespace TestZXing.Static
                     properties.Add($"Status Wifi {i}", status[i]);
                 }                
             }
-
+            
             Crashes.TrackError(ex, properties);
         }
 

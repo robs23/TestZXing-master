@@ -12,6 +12,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Java.Lang;
 using Java.Util;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
@@ -206,6 +207,26 @@ namespace TestZXing.Droid.Services
             {
                 return false;
             }
+        }
+
+        public Task<bool> PingHost(string host = null)
+        {
+            bool pingable = false;
+        
+            if (host == null)
+            {
+                host = Static.Secrets.ServerIp;
+            }
+
+            Runtime runtime = Runtime.GetRuntime();
+            Java.Lang.Process process = runtime.Exec($"ping -c 1 {host}");
+            int result = process.WaitFor();
+            if (result == 0)
+            {
+                pingable = true;
+            }
+
+            return Task.FromResult(pingable);
         }
 
         public Task SetWifiOn()
