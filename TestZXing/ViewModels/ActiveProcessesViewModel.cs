@@ -157,6 +157,7 @@ namespace TestZXing.ViewModels
                 {
                     if (value == false)
                     {
+                        
                         if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
                     }
                     else

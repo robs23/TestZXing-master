@@ -28,9 +28,9 @@ namespace TestZXing
             await vm.Initialize();
         }
 
-        private void btnClose_Clicked(object sender, EventArgs e)
+        private async void btnClose_Clicked(object sender, EventArgs e)
         {
-            if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }  // Hide handlings screen
+            if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide handlings screen
         }
 
         protected override bool OnBackButtonPressed()

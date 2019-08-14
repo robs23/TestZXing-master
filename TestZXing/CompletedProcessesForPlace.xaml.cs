@@ -29,9 +29,9 @@ namespace TestZXing
             await vm.Initialize();
         }
 
-        private void btnClose_Clicked(object sender, EventArgs e)
+        private async void btnClose_Clicked(object sender, EventArgs e)
         {
-            if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }  // Hide this screen
+            if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide this screen
         }
 
         protected override bool OnBackButtonPressed()
@@ -45,7 +45,7 @@ namespace TestZXing
             if (e.Item == null)
                 return;
             Process process = ((Process)((ListView)sender).SelectedItem);
-            if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); } // Hide this screen
+            if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); } // Hide this screen
             await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(vm.Place.PlaceId, process));
         }
     }
