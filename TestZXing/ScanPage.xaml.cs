@@ -193,9 +193,9 @@ namespace TestZXing
         private async void BtnWifiStatus_Clicked(object sender, EventArgs e)
         {
             //WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi(true);
-            var apiPing = DependencyService.Get<IWifiHandler>().PingHost();
+            var apiPing = await DependencyService.Get<IWifiHandler>().PingHost();
             string pingStatus = $"{Static.Secrets.ServerIp} : ";
-            if (await apiPing) { pingStatus += "Dostępny"; } else { pingStatus += "Niedostępny"; }
+            if (apiPing) { pingStatus += "Dostępny"; } else { pingStatus += "Niedostępny"; }
             List<WiFiInfo> wis = await DependencyService.Get<IWifiHandler>().GetAvailableWifis(true);
             if (wis == null)
             {

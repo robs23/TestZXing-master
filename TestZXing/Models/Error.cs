@@ -19,6 +19,9 @@ namespace TestZXing.Models
     {
         public List<WiFiInfo> AvailableWifi { get; set; }
         public WiFiInfo ConnectedWifi { get; set; }
+        public NetworkAccess NetworkAccess { get; set; }
+        public string MacAddress { get; set; }
+        public bool PingStatus { get; set; }
 
         public Error(Exception ex)
         {

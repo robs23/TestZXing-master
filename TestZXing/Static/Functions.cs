@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TestZXing.CustomExceptions;
 using TestZXing.Interfaces;
 using TestZXing.Models;
 using Xamarin.Essentials;
@@ -49,6 +50,7 @@ namespace TestZXing.Static
 
         public static async Task CreateError(Exception ex, string text, string methodName, string className)
         {
+
             string UserName = string.Empty;
 
             string InternetConnectionStatus = "";
@@ -96,9 +98,11 @@ namespace TestZXing.Static
 
             string macAddress = await DependencyService.Get<IWifiHandler>().GetWifiMacAddress();
 
-            var ApiPing = DependencyService.Get<IWifiHandler>().PingHost();
+            var ApiPing = await DependencyService.Get<IWifiHandler>().PingHost();
             string pingStatus = $"{Static.Secrets.ServerIp} : ";
-            if (await ApiPing) { pingStatus += "Dostępny"; } else { pingStatus += "Niedostępny"; }
+            if (ApiPing) { pingStatus += "Dostępny"; } else { pingStatus += "Niedostępny"; }
+
+            WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi();
 
             var properties = new Dictionary<string, string>
                 {
@@ -108,11 +112,13 @@ namespace TestZXing.Static
                     {"User", UserName},
                     {"Połączenie internetowe", InternetConnectionStatus },
                     {"Aktywne połączenia", ActiveConnections },
+                    {"SSID (BSSID) aktywnej sieci", wi.SSID + $"({wi.BSSID})" },
                     {"Adres MAC", macAddress },
                     {"Status pingu", pingStatus}
                 };
 
             
+
             List<WiFiInfo> wis = await DependencyService.Get<IWifiHandler>().GetAvailableWifis(true);
             if(wis != null)
             {
@@ -147,6 +153,8 @@ namespace TestZXing.Static
         public static async Task<HttpResponseMessage> GetPostRetryAsync(Func<Task<HttpResponseMessage>> action, TimeSpan sleepPeriod, int tryCount = 3)
         {
             int attempted = 0;
+            Exception exc;
+
             if (tryCount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(tryCount));
 
@@ -161,8 +169,15 @@ namespace TestZXing.Static
                         DependencyService.Get<IToaster>().LongAlert($"Próba {attempted}");
                     }
                     await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
-
-
+                    if(attempted > 1)
+                    {
+                        bool pingable = await DependencyService.Get<IWifiHandler>().PingHost();
+                        if (!pingable)
+                        {
+                            throw new ServerUnreachableException();
+                        }
+                    }
+                    
                     var res = await action();
                     
                     

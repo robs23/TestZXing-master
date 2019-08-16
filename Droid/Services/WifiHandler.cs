@@ -75,6 +75,7 @@ namespace TestZXing.Droid.Services
                     var enableNetwork = wifiMgr.EnableNetwork(network.NetworkId, true);
                     wifiMgr.Reconnect();
                 }
+                throw new NoPreferredConnectionException();
             }
 
             return res;

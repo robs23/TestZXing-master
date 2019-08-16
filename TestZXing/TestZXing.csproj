@@ -40,6 +40,7 @@
       <DependentUpon>CompletedProcessesForPlace.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomEditor.cs" />
+    <Compile Include="CustomExceptions\ServerUnreachableException.cs" />
     <Compile Include="CustomLabel.cs" />
     <Compile Include="HandlingsPage.xaml.cs">
       <DependentUpon>HandlingsPage.xaml</DependentUpon>
@@ -64,6 +65,7 @@
     <Compile Include="Models\Handling.cs" />
     <Compile Include="Models\HandlingKeeper.cs" />
     <Compile Include="Models\MesString.cs" />
+    <Compile Include="CustomExceptions\NoPreferredConnectionException.cs" />
     <Compile Include="Models\Place.cs" />
     <Compile Include="Models\PlacesKeeper.cs" />
     <Compile Include="Models\Post.cs" />
