@@ -32,7 +32,7 @@ namespace TestZXing.Models
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
-                var responseMsg = await httpClient.SendAsync(request);
+                var responseMsg =  await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
                 if (!responseMsg.IsSuccessStatusCode)
                 {
                     _Result = responseMsg.ReasonPhrase;
@@ -59,7 +59,7 @@ namespace TestZXing.Models
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
-                var responseMsg = await httpClient.SendAsync(request);
+                var responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
                 if (responseMsg.IsSuccessStatusCode)
                 {
                     string output = await ds.readStream(responseMsg);
