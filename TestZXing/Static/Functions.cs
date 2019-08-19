@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using TestZXing.CustomExceptions;
 using TestZXing.Interfaces;
@@ -153,6 +154,10 @@ namespace TestZXing.Static
         public static async Task<HttpResponseMessage> GetPostRetryAsync(Func<Task<HttpResponseMessage>> action, TimeSpan sleepPeriod, int tryCount = 3)
         {
             int attempted = 0;
+            bool pingable = false;
+            CancellationTokenSource PingCts = new CancellationTokenSource();
+            CancellationTokenSource actionCts = new CancellationTokenSource();
+            HttpResponseMessage res = new HttpResponseMessage();
             Exception exc;
 
             if (tryCount <= 0)
@@ -169,17 +174,34 @@ namespace TestZXing.Static
                         DependencyService.Get<IToaster>().LongAlert($"Próba {attempted}");
                     }
                     await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
-                    if(attempted > 1)
+
+                    var ping = Task.Run(() => DependencyService.Get<IWifiHandler>().PingHost(),PingCts.Token);
+                    var resTask = Task.Run(() => action(),actionCts.Token);
+                    Task firstFinieshed = await Task.WhenAny(ping, resTask);
+
+                    if(ping.Status == TaskStatus.RanToCompletion)
                     {
-                        bool pingable = await DependencyService.Get<IWifiHandler>().PingHost();
+                        pingable = await ping;
                         if (!pingable)
                         {
-                            throw new ServerUnreachableException();
+                            actionCts.Cancel();
+                        }
+                        else
+                        {
+                            res = await resTask;
                         }
                     }
-                    
-                    var res = await action();
-                    
+                    else
+                    {
+                        PingCts.Cancel();
+                        res = await resTask;
+                    }
+
+                    if (!pingable)
+                    {
+                        exc = new ServerUnreachableException();
+                        throw exc;
+                    }
                     
                     return res ; // success!
                 }
