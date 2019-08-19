@@ -1,6 +1,7 @@
 ﻿using Microsoft.AppCenter.Crashes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -159,6 +160,7 @@ namespace TestZXing.Static
             CancellationTokenSource actionCts = new CancellationTokenSource();
             HttpResponseMessage res = new HttpResponseMessage();
             Exception exc;
+            Debug.WriteLine(DateTime.Now + ": Starting 'JDE_Scan'");
 
             if (tryCount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(tryCount));
