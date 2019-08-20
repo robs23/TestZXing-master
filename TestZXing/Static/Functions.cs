@@ -177,14 +177,19 @@ namespace TestZXing.Static
                         DependencyService.Get<IToaster>().LongAlert($"Próba {attempted}");
                     }
                     Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Checking preferred network");
-                    await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
+                    WiFiInfo w = await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
+                    var formattedSsid = $"\"{Static.Secrets.PreferredWifi}\"";
+                    if (w.SSID == formattedSsid)
+                    {
+                        tryCount = 1;
+                    }
                     Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Pinging google to start");
                     PingCts = new CancellationTokenSource();
-                    var ping = Task.Run(() => Task.Delay(9000),PingCts.Token); //DependencyService.Get<IWifiHandler>().PingHost(),PingCts.Token);
+                    var ping = Task.Run(() => DependencyService.Get<IWifiHandler>().PingHost("www.google.com"),PingCts.Token);
                     Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Pinging google started. Id={ping.Id}, Status = {ping.Status}");
                     Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Http action to start");
                     actionCts = new CancellationTokenSource();
-                    var resTask = Task.Run(() => Task.Delay(8500), actionCts.Token); //action(),actionCts.Token);
+                    var resTask = Task.Run(() => action(),actionCts.Token);
                     Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Http action started. Id={resTask.Id}, Status = {resTask.Status}");
                     
                     Task firstFinieshed = await Task.WhenAny(ping, resTask);
@@ -193,7 +198,7 @@ namespace TestZXing.Static
                     Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - . Ping status={ping.Status}, http status={resTask.Status}");
                     if (ping.Status == TaskStatus.RanToCompletion)
                     {
-                        pingable = false; //await ping;
+                        pingable = await ping;
                         Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Google is {pingable} ");
                         if (!pingable)
                         {
@@ -206,7 +211,7 @@ namespace TestZXing.Static
                         }
                         else
                         {
-                            res = new HttpResponseMessage(System.Net.HttpStatusCode.Accepted); //await resTask;
+                            res = await resTask;
                         }
                     }
                     else
@@ -214,7 +219,7 @@ namespace TestZXing.Static
                         Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Cancelling PingCts ");
                         PingCts.Cancel();
                         Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - PingCts cancelled");
-                        res = new HttpResponseMessage(System.Net.HttpStatusCode.Accepted); //await resTask;
+                        res = await resTask;
                         Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - res={res.IsSuccessStatusCode}");
                     }
 

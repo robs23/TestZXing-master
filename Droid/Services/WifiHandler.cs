@@ -35,10 +35,9 @@ namespace TestZXing.Droid.Services
             this.context = Android.App.Application.Context;
         }
 
-        public async Task<bool> ConnectPreferredWifi()
+        public async Task<WiFiInfo> ConnectPreferredWifi()
         {
-            var res = true;
-            WiFiInfo w;
+            WiFiInfo w = null;
             
             var wifiMgr = (WifiManager)context.GetSystemService(Context.WifiService);
             var formattedSsid = $"\"{preferredWifi}\"";
@@ -64,7 +63,7 @@ namespace TestZXing.Droid.Services
 
                 if (network == null)
                 {
-                    res = false;
+                    w = null;
                 }
                 else
                 {
@@ -78,7 +77,7 @@ namespace TestZXing.Droid.Services
                 throw new NoPreferredConnectionException();
             }
 
-            return res;
+            return w;
         }
 
         public async Task<List<WiFiInfo>> GetAvailableWifis(bool? GetSignalStrenth = false)

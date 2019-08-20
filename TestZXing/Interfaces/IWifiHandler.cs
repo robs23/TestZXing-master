@@ -15,7 +15,7 @@ namespace TestZXing.Interfaces
 
         Task<string> GetWifiMacAddress();
 
-        Task<bool> ConnectPreferredWifi();
+        Task<WiFiInfo> ConnectPreferredWifi();
 
         bool IsWifiConnected();
 
