@@ -220,7 +220,7 @@ namespace TestZXing.Droid.Services
             }
 
             Runtime runtime = Runtime.GetRuntime();
-            Java.Lang.Process process = runtime.Exec($"ping -c 1 {host}");
+            Java.Lang.Process process = runtime.Exec($"ping -c 1 -W 2 {host}");
             int result = process.WaitFor();
             if (result == 0)
             {

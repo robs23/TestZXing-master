@@ -156,11 +156,11 @@ namespace TestZXing.Static
         {
             int attempted = 0;
             bool pingable = false;
-            CancellationTokenSource PingCts = new CancellationTokenSource();
-            CancellationTokenSource actionCts = new CancellationTokenSource();
+            CancellationTokenSource PingCts;
+            CancellationTokenSource actionCts;
             HttpResponseMessage res = new HttpResponseMessage();
             Exception exc;
-            Debug.WriteLine(DateTime.Now + ": Starting 'JDE_Scan'");
+            Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Starting");
 
             if (tryCount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(tryCount));
@@ -171,40 +171,55 @@ namespace TestZXing.Static
                 {
 
                     attempted++;
+                    Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Attempt "+attempted);
                     if (attempted > 1)
                     {
                         DependencyService.Get<IToaster>().LongAlert($"Próba {attempted}");
                     }
+                    Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Checking preferred network");
                     await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
-
-                    var ping = Task.Run(() => DependencyService.Get<IWifiHandler>().PingHost(),PingCts.Token);
-                    var resTask = Task.Run(() => action(),actionCts.Token);
+                    Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Pinging google to start");
+                    PingCts = new CancellationTokenSource();
+                    var ping = Task.Run(() => Task.Delay(9000),PingCts.Token); //DependencyService.Get<IWifiHandler>().PingHost(),PingCts.Token);
+                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Pinging google started. Id={ping.Id}, Status = {ping.Status}");
+                    Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Http action to start");
+                    actionCts = new CancellationTokenSource();
+                    var resTask = Task.Run(() => Task.Delay(8500), actionCts.Token); //action(),actionCts.Token);
+                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Http action started. Id={resTask.Id}, Status = {resTask.Status}");
+                    
                     Task firstFinieshed = await Task.WhenAny(ping, resTask);
-
-                    if(ping.Status == TaskStatus.RanToCompletion)
+                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - First action finished (Id={firstFinieshed.Id},Status={firstFinieshed.Status}). Ping status={ping.Status}, http status={resTask.Status}");
+                    await Task.Delay(1000);
+                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - . Ping status={ping.Status}, http status={resTask.Status}");
+                    if (ping.Status == TaskStatus.RanToCompletion)
                     {
-                        pingable = await ping;
+                        pingable = false; //await ping;
+                        Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Google is {pingable} ");
                         if (!pingable)
                         {
+                            Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Cancelling actionCts ");
                             actionCts.Cancel();
+                            Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - ActionCts cancelled");
+                            Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Throwing ServerUnreachableException");
+                            exc = new ServerUnreachableException();
+                            throw exc;
                         }
                         else
                         {
-                            res = await resTask;
+                            res = new HttpResponseMessage(System.Net.HttpStatusCode.Accepted); //await resTask;
                         }
                     }
                     else
                     {
+                        Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Cancelling PingCts ");
                         PingCts.Cancel();
-                        res = await resTask;
+                        Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - PingCts cancelled");
+                        res = new HttpResponseMessage(System.Net.HttpStatusCode.Accepted); //await resTask;
+                        Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - res={res.IsSuccessStatusCode}");
                     }
 
-                    if (!pingable)
-                    {
-                        exc = new ServerUnreachableException();
-                        throw exc;
-                    }
-                    
+
+                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Exiting. Is success status code?={res.IsSuccessStatusCode}");
                     return res ; // success!
                 }
                 catch(Exception ex)
@@ -214,7 +229,7 @@ namespace TestZXing.Static
                     {
                         throw;
                     }
-                        
+                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Going sleep");
                     await Task.Delay(sleepPeriod);
                 }
             }
