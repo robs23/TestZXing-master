@@ -24,14 +24,14 @@ namespace TestZXing
         ZXingScannerPage scanPage;
         Place Place;
         PlacesKeeper Keeper;
-        UserSettingsViewModel vm;
+        User vm;
 
         public ScanPage()
         {
             InitializeComponent();
             Keeper = new PlacesKeeper();
             Place = new Place();
-            vm = new UserSettingsViewModel();
+            vm = Static.RuntimeSettings.CurrentUser;
             BindingContext = vm;
         }
 

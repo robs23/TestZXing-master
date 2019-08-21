@@ -106,7 +106,6 @@
     <Compile Include="ViewModels\ProcessViewModel.cs" />
     <Compile Include="ViewModels\ProcessInPlaceViewModel.cs" />
     <Compile Include="ViewModels\ProcessPageViewModel.cs" />
-    <Compile Include="ViewModels\UserSettingsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.AppCenter, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">

@@ -7,14 +7,14 @@
              Title="Menu">
     <ContentPage.ToolbarItems>
         <ToolbarItem Name="lblUser"
-                     Text="{Binding UserSurname}"
+                     Text="{Binding Surname}"
                      Priority="0"
                      Order="Default"
                      />
         <ToolbarItem Name="UserStatus"
                      Priority="1"
                      Order="Default"
-                     Icon="{Binding UserStatus}"
+                     Icon="{Binding Icon}"
                      />
         <ToolbarItem Name="btnLogout"
                      Text="Wyloguj"

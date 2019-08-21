@@ -3,8 +3,10 @@ using ModernHttpClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Classes;
@@ -12,8 +14,15 @@ using TestZXing.Static;
 
 namespace TestZXing.Models
 {
-    public class User
+    public class User : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
         public int UserId { get; set; }
         public int TenantId { get; set; }
         public string TenantName { get; set; }
@@ -63,6 +72,8 @@ namespace TestZXing.Models
                     string output = await ds.readStream(responseMsg);
                     IsWorking = JsonConvert.DeserializeObject<bool>(output);
                 }
+                OnPropertyChanged(nameof(IsWorking));
+                OnPropertyChanged(nameof(Icon));
             }
             catch(Exception ex)
             {
