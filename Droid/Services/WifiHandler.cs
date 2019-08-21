@@ -209,7 +209,7 @@ namespace TestZXing.Droid.Services
             }
         }
 
-        public Task<bool> PingHost(string host = null)
+        public Task<bool> PingHost(string host = null, int timeout=3)
         {
             bool pingable = false;
         
@@ -219,7 +219,7 @@ namespace TestZXing.Droid.Services
             }
 
             Runtime runtime = Runtime.GetRuntime();
-            Java.Lang.Process process = runtime.Exec($"ping -c 1 -W 2 {host}");
+            Java.Lang.Process process = runtime.Exec($"ping -c 1 -W {timeout} {host}");
             int result = process.WaitFor();
             if (result == 0)
             {

@@ -11,6 +11,11 @@
                      Priority="0"
                      Order="Default"
                      />
+        <ToolbarItem Name="UserStatus"
+                     Priority="1"
+                     Order="Default"
+                     Icon="{Binding UserStatus}"
+                     />
         <ToolbarItem Name="btnLogout"
                      Text="Wyloguj"
                      Priority="0"

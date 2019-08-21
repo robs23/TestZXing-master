@@ -21,7 +21,7 @@ namespace TestZXing.Interfaces
 
         Task SetWifiOn();
 
-        Task<bool> PingHost(string host = null);
+        Task<bool> PingHost(string host = null, int timeout=3);
 
     }
 }

@@ -185,7 +185,7 @@ namespace TestZXing.Static
                     }
                     Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Pinging google to start");
                     PingCts = new CancellationTokenSource();
-                    var ping = Task.Run(() => DependencyService.Get<IWifiHandler>().PingHost("www.google.com"),PingCts.Token);
+                    var ping = Task.Run(() => DependencyService.Get<IWifiHandler>().PingHost(),PingCts.Token);
                     Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Pinging google started. Id={ping.Id}, Status = {ping.Status}");
                     Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Http action to start");
                     actionCts = new CancellationTokenSource();

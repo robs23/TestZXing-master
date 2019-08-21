@@ -18,6 +18,14 @@ namespace TestZXing.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+        public string UserStatus
+        {
+            get
+            {
+                return Static.RuntimeSettings.CurrentUser.Icon;
+            }
+        }
+
         public string UserSurname {
             get
             {
