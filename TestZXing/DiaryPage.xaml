@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:testzxing="clr-namespace:TestZXing"
+             x:Class="TestZXing.DiaryPage">
+    <ListView x:Name="lstDiary"
+            ItemsSource="{Binding Items}"
+            ItemTapped="Handle_ItemTapped"
+            CachingStrategy="RecycleElement">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <StackLayout Padding="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="6*"/>
+                                <RowDefinition Height="4*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="7*"/>
+                                <ColumnDefinition Width="3*"/>
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                        <Label
+                                        Text="{Binding ResourceName}"
+                                        LineBreakMode="WordWrap"
+                                        Style="{DynamicResource ListItemTextStyle}"
+                                        FontSize="Medium"
+                                        FontAttributes="Bold"
+                                        Grid.Row="0"
+                                        Grid.Column="0"/>
+                        <testzxing:CustomLabel
+                                        Text="{Binding VisitedAtString}"
+                                        BgColor="CadetBlue"
+                                        FontSize="Small"
+                                        Grid.Row="0"
+                                        Grid.Column="1"/>
+                    </StackLayout>
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</ContentPage>
