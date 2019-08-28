@@ -58,5 +58,10 @@ namespace TestZXing
 
             ((ListView)sender).SelectedItem = null;
         }
+
+        private void UserStatus_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.MainPage.Navigation.PushAsync(new DiaryPage());
+        }
     }
 }

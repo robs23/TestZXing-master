@@ -35,6 +35,7 @@ namespace TestZXing.Models
         public DateTime? CreatedOn { get; set; }
         public DateTime? LastLoggedOn { get; set; }
         public string MesLogin { get; set; }
+        private bool? _IsWorking { get; set; }
         public string FullName { get
             {
                 return Name + " " + Surname;
@@ -54,7 +55,18 @@ namespace TestZXing.Models
                     return "circle_red.png";
                 }
             } }
-        public bool? IsWorking { get; set; }
+        public bool? IsWorking { get
+            {
+                return _IsWorking;
+            } set
+            {
+                if (value != _IsWorking)
+                {
+                    _IsWorking = value;
+                    OnPropertyChanged(nameof(Icon));
+                }
+            }
+        }
 
         public async void Login()
         {
@@ -84,6 +96,36 @@ namespace TestZXing.Models
                 Static.Functions.CreateError(ex, "No connection", nameof(this.Login), this.GetType().Name);
             }
             
+        }
+
+        public async Task UpdateStatus()
+        {
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                DataService ds = new DataService();
+                string url = Secrets.ApiAddress + "IsUserWorking?token=" + Secrets.TenantToken + "&UserId=" + this.UserId;
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    string output = await ds.readStream(responseMsg);
+                    IsWorking = JsonConvert.DeserializeObject<bool>(output);
+                }
+                OnPropertyChanged(nameof(IsWorking));
+                OnPropertyChanged(nameof(Icon));
+            }
+            catch (Exception ex)
+            {
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Login), this.GetType().Name);
+            }
+
+        }
+
+        public void UpdateIcon()
+        {
+            OnPropertyChanged(nameof(IsWorking));
+            OnPropertyChanged(nameof(Icon));
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -56,12 +57,25 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public string Icon { get
+            {
+                return Static.RuntimeSettings.CurrentUser.Icon;
+            }
+            }
+
         public async Task Initialize()
         {
             IsWorking = true;
             PlacesKeeper keeper = new PlacesKeeper();
             Places = await keeper.GetUsersLastPlaces();
             OnPropertyChanged(nameof(Places));
+            //Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Preparing");
+            //Task.Run(async () => {
+            //        await Static.RuntimeSettings.CurrentUser.UpdateStatus();
+            //        Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Updated");
+            //}
+            //);
+            //Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Changing IsWorking to false");
             IsWorking = false;
         }
 

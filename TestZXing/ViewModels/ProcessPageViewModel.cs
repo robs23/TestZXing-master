@@ -656,6 +656,8 @@ namespace TestZXing.ViewModels
                         _Result = await _this.Edit();
                         OnPropertyChanged(nameof(NextState));
                     }
+                    RuntimeSettings.CurrentUser.IsWorking = true;
+
                 }
             }
             catch (Exception ex)
@@ -776,9 +778,11 @@ namespace TestZXing.ViewModels
                         _this.Output = _thisProcess.Output;
                     }
                     _Result = await _this.Edit();
+                    RuntimeSettings.CurrentUser.IsWorking = false;
                     if (!_Result.Equals("OK"))
                     {
                         _this.Status = prevStatus;
+                        RuntimeSettings.CurrentUser.IsWorking = true;
                     }
                 }
 

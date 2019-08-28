@@ -5,9 +5,15 @@
              x:Class="TestZXing.ScanningResults"
              Title="Zgłoszenia dla zasobu">
     <ContentPage.ToolbarItems>
+        <ToolbarItem Name="UserStatus"
+                     Priority="0"
+                     Order="Default"
+                     Icon="{Binding Icon}"
+                     Clicked="UserStatus_Clicked"
+                     />
         <ToolbarItem Name="btnShowCompleted"
                      Text="Historia zasobu"
-                     Priority="0"
+                     Priority="1"
                      Order="Secondary"
                      Clicked="btnShowCompleted_Clicked"/>
     </ContentPage.ToolbarItems>

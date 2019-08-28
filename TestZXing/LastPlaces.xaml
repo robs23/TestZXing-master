@@ -4,6 +4,14 @@
              xmlns:testzxing="clr-namespace:TestZXing"
              x:Class="TestZXing.LastPlaces"
              Title="Ostatnie">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Name="UserStatus"
+                     Priority="0"
+                     Order="Default"
+                     Icon="{Binding Icon}"
+                     Clicked="UserStatus_Clicked"
+                     />
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
             <ListView x:Name="lstPlaces"

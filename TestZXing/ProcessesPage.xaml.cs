@@ -18,5 +18,10 @@ namespace TestZXing
             Children.Add(new ActiveProcesses(new ActiveProcessesViewModel(true)));
             Children.Add(new ActiveProcesses(new ActiveProcessesViewModel()));
         }
+
+        private void UserStatus_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.MainPage.Navigation.PushAsync(new DiaryPage());
+        }
     }
 }
