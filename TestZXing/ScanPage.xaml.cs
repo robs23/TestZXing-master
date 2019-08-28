@@ -219,34 +219,11 @@ namespace TestZXing
 
                 await DisplayAlert("Connection status", $"Podłączona sieć: {wi.SSID} [{wi.BSSID}].\nDostępne sieci: {status}.\nPing: {pingStatus}", "OK");
             }
+        }
 
-
-            //either Wifi is off or there's no connection to the internet
-            //connect preferred network
-
-
-            //PopupNavigation.Instance.PushAsync(new LoadingScreen(), true);
-            //DateTime s = DateTime.Now;
-            //try
-            //{
-            //    string ux = await Static.Functions.DoWithRetryAsync(divider, TimeSpan.FromSeconds(2));
-            //}catch(Exception ex)
-            //{
-            //    await DisplayAlert("Błąd", "xxx", "ok");
-            //}
-
-            //string x = (DateTime.Now - s).TotalMilliseconds.ToString();
-            //DependencyService.Get<IToaster>().LongAlert(x);
-            //PopupNavigation.Instance.PopAllAsync(true); // Hide loading screen
-            //if (!res.Item1)
-            //{
-            //    //Couldn't connect to the network..
-            //    await DisplayAlert("Błąd połączenia", res.Item2, "Ok");
-            //}
-            //else
-            //{
-            //    //DependencyService.Get<IToaster>().LongAlert(res.Item2);
-            //}
+        private void UserStatus_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.MainPage.Navigation.PushAsync(new DiaryPage());
         }
     }
 }

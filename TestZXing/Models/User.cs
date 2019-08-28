@@ -41,7 +41,11 @@ namespace TestZXing.Models
             } }
         public string Icon { get
             {
-                if (IsWorking)
+                if (IsWorking==null)
+                {
+                    return "circle_yellow.png";
+                }
+                else if((bool)IsWorking==true)
                 {
                     return "circle_green.png";
                 }
@@ -50,7 +54,7 @@ namespace TestZXing.Models
                     return "circle_red.png";
                 }
             } }
-        public bool IsWorking { get; set; }
+        public bool? IsWorking { get; set; }
 
         public async void Login()
         {

@@ -101,6 +101,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ActiveProcessesViewModel.cs" />
     <Compile Include="ViewModels\CompletedProcessesInPlaceViewModel.cs" />
+    <Compile Include="ViewModels\DiaryViewModel.cs" />
     <Compile Include="ViewModels\HandlingsPageViewModel.cs" />
     <Compile Include="ViewModels\LastPlacesViewModel.cs" />
     <Compile Include="ViewModels\LoadingScreenViewModel.cs" />

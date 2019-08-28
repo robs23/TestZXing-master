@@ -63,6 +63,27 @@ namespace TestZXing.Models
 
         }
 
+        public async Task<ObservableCollection<Handling>> GetUserHandlings()
+        {
+            string url = Secrets.ApiAddress + "GetUserHandlings?token=" + Secrets.TenantToken + $"&UserId={RuntimeSettings.CurrentUser.UserId}&page=1&PageSize=30";
+            DataService ds = new DataService();
+            ObservableCollection<Handling> _nHandlings = null;
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
+                string output = await ds.readStream(responseMsg);
+                _nHandlings = JsonConvert.DeserializeObject<ObservableCollection<Handling>>(output);
+            }
+            catch (Exception ex)
+            {
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetHandligngsByProcess), this.GetType().Name);
+                throw;
+            }
+            return _nHandlings;
+
+        }
+
         public async Task<Handling> GetUsersOpenHandling(int? ProcessId=null)
         {
             string url = Secrets.ApiAddress + "GetHandlings?token=" + Secrets.TenantToken;

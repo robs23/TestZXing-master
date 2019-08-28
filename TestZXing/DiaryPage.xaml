@@ -2,10 +2,15 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:testzxing="clr-namespace:TestZXing"
-             x:Class="TestZXing.DiaryPage">
+             x:Class="TestZXing.DiaryPage"
+             Title="Moja historia">
     <ListView x:Name="lstDiary"
-            ItemsSource="{Binding Items}"
+            VerticalOptions="FillAndExpand"
+            HasUnevenRows="True"
+            SeparatorVisibility="Default"
+            ItemsSource="{Binding Handlings}"
             ItemTapped="Handle_ItemTapped"
+            SelectedItem="{Binding SelectedItem}"
             CachingStrategy="RecycleElement">
         <ListView.ItemTemplate>
             <DataTemplate>
@@ -13,28 +18,57 @@
                     <StackLayout Padding="10">
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="6*"/>
-                                <RowDefinition Height="4*"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="7*"/>
-                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="6*"/>
+                                <ColumnDefinition Width="4*"/>
                             </Grid.ColumnDefinitions>
-                        </Grid>
-                        <Label
-                                        Text="{Binding ResourceName}"
+                            <Label
+                                        Text="{Binding PlaceName}"
                                         LineBreakMode="WordWrap"
                                         Style="{DynamicResource ListItemTextStyle}"
                                         FontSize="Medium"
                                         FontAttributes="Bold"
                                         Grid.Row="0"
                                         Grid.Column="0"/>
-                        <testzxing:CustomLabel
-                                        Text="{Binding VisitedAtString}"
-                                        BgColor="CadetBlue"
-                                        FontSize="Small"
-                                        Grid.Row="0"
+                            <testzxing:CustomLabel
+                                            Text="{Binding LengthFormatted}"
+                                            BgColor="CadetBlue"
+                                            FontSize="Medium"
+                                            FontAttributes="Bold"
+                                            Grid.Row="0"
+                                            Grid.Column="1"/>
+                            <Label
+                                            Text="{Binding SetName}"
+                                            LineBreakMode="WordWrap"
+                                            Style="{DynamicResource ListItemTextStyle}"
+                                            FontSize="Medium"
+                                            FontAttributes="Bold"
+                                            Grid.Row="1"
+                                            Grid.Column="0"/>
+                            <Label
+                                            Text="{Binding HandlingPeriod}"
+                                            FontSize="Small"
+                                            Grid.Row="1"
+                                            Grid.Column="1"/>
+                        
+                            <testzxing:CustomLabel
+                                            Text="{Binding ActionTypeName}"
+                                            BgColor="DarkRed"
+                                            FontSize="Medium"
+                                            TextColor="White"
+                                            Grid.Row="2"
+                                            Grid.Column="0"/>
+                            <Label
+                                            Text="{Binding StartedOnDate}"
+                                            LineBreakMode="WordWrap"
+                                            Style="{DynamicResource ListItemTextStyle}"
+                                            FontSize="Medium"
+                                            FontAttributes="Bold"
+                                            Grid.Row="2"
                                         Grid.Column="1"/>
+                        </Grid>
                     </StackLayout>
                 </ViewCell>
             </DataTemplate>

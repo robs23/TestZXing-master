@@ -35,6 +35,31 @@ namespace TestZXing.Models
         public int ActionTypeId { get; set; }
         public string ActionTypeName { get; set; }
         public int? Length { get; set; }
+        public string StartedOnDate
+        {
+            get
+            {
+                return StartedOn == null ? "???" : ((DateTime)StartedOn).ToString("dd.MM.yyyy");
+            }
+        }
+
+        public string HandlingPeriod
+        {
+            get
+            {
+                string s = StartedOn == null ? "???" : ((DateTime)StartedOn).ToString("HH:mm");
+                string f = FinishedOn == null ? "???" : ((DateTime)FinishedOn).ToString("HH:mm");
+                return s + " - " + f;
+            }
+        }
+
+        public string LengthFormatted
+        {
+            get
+            {
+                return Length == null ? "???" : Length + " min";
+            }
+        }
 
         public string Status
         {
