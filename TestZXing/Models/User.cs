@@ -122,10 +122,5 @@ namespace TestZXing.Models
 
         }
 
-        //public void UpdateIcon()
-        //{
-        //    OnPropertyChanged(nameof(IsWorking));
-        //    OnPropertyChanged(nameof(Icon));
-        //}
     }
 }

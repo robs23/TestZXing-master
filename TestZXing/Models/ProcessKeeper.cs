@@ -54,7 +54,6 @@ namespace TestZXing.Models
             try
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
                 HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
                 string output = await ds.readStream(responseMsg);
                 Process Item = new Process();
@@ -77,7 +76,6 @@ namespace TestZXing.Models
             try
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
                 HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
                 if (responseMsg.IsSuccessStatusCode)
                 {

@@ -94,7 +94,6 @@
     </Compile>
     <Compile Include="Static\Extensions.cs" />
     <Compile Include="Static\Functions.cs" />
-    <Compile Include="Static\Retry.cs" />
     <Compile Include="Static\RuntimeSettings.cs" />
     <Compile Include="Static\Secrets.cs" />
     <Compile Include="TestZXing.cs" />

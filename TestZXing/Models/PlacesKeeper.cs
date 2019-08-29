@@ -31,8 +31,8 @@ namespace TestZXing.Models
             try
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                string output = await ds.readStream(await httpClient.SendAsync(request));
+                HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
+                string output = await ds.readStream(responseMsg);
                 Items = JsonConvert.DeserializeObject<List<Place>>(output);
             }
             catch (Exception ex)
@@ -51,8 +51,7 @@ namespace TestZXing.Models
             try
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                var responseMsg = await httpClient.SendAsync(request);
+                HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
                 if (responseMsg.IsSuccessStatusCode)
                 {
                     string output = await ds.readStream(responseMsg);
@@ -82,8 +81,7 @@ namespace TestZXing.Models
             try
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                var responseMsg = await httpClient.SendAsync(request);
+                HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
                 if (responseMsg.IsSuccessStatusCode)
                 {
                     string output = await ds.readStream(responseMsg);
@@ -114,8 +112,7 @@ namespace TestZXing.Models
             try
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 10), EnableUntrustedCertificates = true, DisableCaching = true });
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                var responseMsg = await httpClient.SendAsync(request);
+                HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
                 string output = await ds.readStream(responseMsg);
                 if (responseMsg.IsSuccessStatusCode)
                 {

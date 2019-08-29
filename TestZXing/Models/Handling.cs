@@ -146,9 +146,7 @@ namespace TestZXing.Models
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var serialized = JsonConvert.SerializeObject(this);
                 var content = new StringContent(serialized, Encoding.UTF8, "application/json");
-                //var httpResponse = await httpClient.PostAsync(new Uri(url), content);
                 HttpResponseMessage httpResponse = await Static.Functions.GetPostRetryAsync(() => httpClient.PostAsync(new Uri(url), content), TimeSpan.FromSeconds(3));
-                //var httpResponse = await httpClient.PostAsync(new Uri(url), content);
                 if (!httpResponse.IsSuccessStatusCode)
                 {
                     _Result = httpResponse.ReasonPhrase;
@@ -171,7 +169,7 @@ namespace TestZXing.Models
 
         public async Task<string> Edit()
         {
-            string url = Secrets.ApiAddress + "EditHandling?token=" + Secrets.TenantToken + "&id={0}&UserId={1}";
+            string url = Secrets.ApiAddress + "EditHandling?token=" + Secrets.TenantToken + $"&id={this.HandlingId}&UserId={RuntimeSettings.CurrentUser.UserId}";
             string _Result = "OK";
 
             try
@@ -179,7 +177,7 @@ namespace TestZXing.Models
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 var serializedProduct = JsonConvert.SerializeObject(this);
                 var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
-                var result = await httpClient.PutAsync(String.Format(url, this.HandlingId, RuntimeSettings.UserId), content);
+                HttpResponseMessage result = await Static.Functions.GetPostRetryAsync(() => httpClient.PutAsync(new Uri(url), content), TimeSpan.FromSeconds(3));
                 if (!result.IsSuccessStatusCode)
                 {
                     _Result = result.ReasonPhrase;

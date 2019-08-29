@@ -160,7 +160,6 @@ namespace TestZXing.Static
             CancellationTokenSource actionCts;
             HttpResponseMessage res = new HttpResponseMessage();
             Exception exc;
-            Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Starting");
 
             if (tryCount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(tryCount));
@@ -171,41 +170,29 @@ namespace TestZXing.Static
                 {
 
                     attempted++;
-                    Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Attempt "+attempted);
                     if (attempted > 1)
                     {
                         DependencyService.Get<IToaster>().LongAlert($"Próba {attempted}");
                     }
-                    Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Checking preferred network");
                     WiFiInfo w = await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
                     var formattedSsid = $"\"{Static.Secrets.PreferredWifi}\"";
                     if (w.SSID == formattedSsid)
                     {
                         tryCount = 1;
                     }
-                    Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Pinging google to start");
                     PingCts = new CancellationTokenSource();
                     var ping = Task.Run(() => DependencyService.Get<IWifiHandler>().PingHost(),PingCts.Token);
-                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Pinging google started. Id={ping.Id}, Status = {ping.Status}");
-                    Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Http action to start");
                     actionCts = new CancellationTokenSource();
                     var resTask = Task.Run(() => action(),actionCts.Token);
-                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Http action started. Id={resTask.Id}, Status = {resTask.Status}");
                     
                     Task firstFinieshed = await Task.WhenAny(ping, resTask);
-                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - First action finished (Id={firstFinieshed.Id},Status={firstFinieshed.Status}). Ping status={ping.Status}, http status={resTask.Status}");
-                    await Task.Delay(1000);
-                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - . Ping status={ping.Status}, http status={resTask.Status}");
+
                     if (ping.Status == TaskStatus.RanToCompletion)
                     {
                         pingable = await ping;
-                        Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Google is {pingable} ");
                         if (!pingable)
                         {
-                            Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Cancelling actionCts ");
                             actionCts.Cancel();
-                            Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - ActionCts cancelled");
-                            Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Throwing ServerUnreachableException");
                             exc = new ServerUnreachableException();
                             throw exc;
                         }
@@ -216,15 +203,11 @@ namespace TestZXing.Static
                     }
                     else
                     {
-                        Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Cancelling PingCts ");
                         PingCts.Cancel();
-                        Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - PingCts cancelled");
                         res = await resTask;
-                        Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - res={res.IsSuccessStatusCode}");
                     }
 
 
-                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Exiting. Is success status code?={res.IsSuccessStatusCode}");
                     return res ; // success!
                 }
                 catch(Exception ex)
@@ -234,7 +217,6 @@ namespace TestZXing.Static
                     {
                         throw;
                     }
-                    Debug.WriteLine(DateTime.Now + $" 'JDE_Scan' - Going sleep");
                     await Task.Delay(sleepPeriod);
                 }
             }
