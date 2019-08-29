@@ -657,7 +657,7 @@ namespace TestZXing.ViewModels
                         OnPropertyChanged(nameof(NextState));
                     }
                     RuntimeSettings.CurrentUser.IsWorking = true;
-
+                    OnPropertyChanged(nameof(Icon));
                 }
             }
             catch (Exception ex)
@@ -789,6 +789,7 @@ namespace TestZXing.ViewModels
                 OnPropertyChanged(nameof(NextState));
                 OnPropertyChanged(nameof(IsOpen));
                 OnPropertyChanged(nameof(IsClosable));
+                OnPropertyChanged(nameof(Icon));
             }
             catch (Exception ex)
             {
@@ -824,6 +825,14 @@ namespace TestZXing.ViewModels
             }
             IsWorking = false;
             return _Result;
+        }
+
+        public string Icon
+        {
+            get
+            {
+                return Static.RuntimeSettings.CurrentUser.Icon;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

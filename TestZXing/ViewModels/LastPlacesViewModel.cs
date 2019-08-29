@@ -69,6 +69,7 @@ namespace TestZXing.ViewModels
             PlacesKeeper keeper = new PlacesKeeper();
             Places = await keeper.GetUsersLastPlaces();
             OnPropertyChanged(nameof(Places));
+            OnPropertyChanged(nameof(Icon));
             //Debug.WriteLine(DateTime.Now + " 'JDE_Scan' - Preparing");
             //Task.Run(async () => {
             //        await Static.RuntimeSettings.CurrentUser.UpdateStatus();

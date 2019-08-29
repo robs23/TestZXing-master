@@ -56,6 +56,7 @@ namespace TestZXing
 
         protected override void OnAppearing()
         {
+            vm.Initialize();
             if (Place != null)
             {
                 if (Place.PlaceId != 0)

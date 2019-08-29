@@ -12,7 +12,7 @@ using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
 {
-    public class ProcessInPlaceViewModel: INotifyPropertyChanged
+    public class ProcessInPlaceViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<ProcessItem> Items { get; set; }
 
@@ -23,7 +23,7 @@ namespace TestZXing.ViewModels
             ProcessItem pii = new ProcessItem { Id = 0, Name = "Nowy", Description = "Dodaj nowe zgłoszenie" };
             Items.Add(pii);
 
-            
+
             if (nItems.Any())
             {
                 try
@@ -36,7 +36,7 @@ namespace TestZXing.ViewModels
                         if (p.LastStatus != null)
                         {
                             //try to show last status if available
-                            pi.Description = p.LastStatus.ToString() + " " + p.LastStatusOn + " przez " + p.LastStatusByName + Environment.NewLine + "Aktualnie obsługujących: " + p.OpenHandlings; 
+                            pi.Description = p.LastStatus.ToString() + " " + p.LastStatusOn + " przez " + p.LastStatusByName + Environment.NewLine + "Aktualnie obsługujących: " + p.OpenHandlings;
                         }
                         else
                         {
@@ -45,12 +45,25 @@ namespace TestZXing.ViewModels
                         pi.Status = p.Status;
                         Items.Add(pi);
                     }
-                }catch(Exception ex)
+                } catch (Exception ex)
                 {
 
                 }
-                
+
             }
+        }
+
+        public string Icon
+        {
+            get
+            {
+                return Static.RuntimeSettings.CurrentUser.Icon;
+            }
+        }
+
+        public void Initialize()
+        {
+            OnPropertyChanged(nameof(Icon));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
