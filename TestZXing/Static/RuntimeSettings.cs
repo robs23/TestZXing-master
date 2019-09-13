@@ -12,5 +12,6 @@ namespace TestZXing.Static
         public static int TenantId { get; set; }
         public static int UserId { get; set; }
         public static User CurrentUser { get; set; }
+        public static string LocalDbPath { get; set; }
     }
 }

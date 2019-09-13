@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TestZXing.Classes;
@@ -18,9 +19,16 @@ namespace TestZXing
 {
     public class App : Application
     {
+
         public App()
         {
             MainPage = new NavigationPage(new LoginPage());
+        }
+
+        public App(string filePath)
+        {
+            MainPage = new NavigationPage(new LoginPage());
+            Static.RuntimeSettings.LocalDbPath = filePath;
         }
 
         protected override void OnStart()

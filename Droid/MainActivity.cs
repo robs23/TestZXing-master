@@ -10,6 +10,7 @@ using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Distribute;
 using Plugin.CurrentActivity;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace TestZXing.Droid
 {
@@ -32,7 +33,10 @@ namespace TestZXing.Droid
                 
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
-            LoadApplication(new App());
+            string localDbFileName = "JDE_Scan_db.db3";
+            string localDbFolderPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+            string localDbPath = Path.Combine(localDbFolderPath, localDbFileName);
+            LoadApplication(new App(localDbPath));
         }
 
         public override void OnBackPressed()
