@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:testzxing="clr-namespace:TestZXing"
+             x:Class="TestZXing.SearchPage"
+             Title="Szukaj">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            <SearchBar x:Name="txtSearch" 
+                   PlaceholderColor="DeepSkyBlue"
+                   Placeholder="Wpisz czego szukasz.." 
+                   HorizontalTextAlignment="Center" 
+                   TextColor="CadetBlue"
+                   TextChanged="TxtSearch_TextChanged"></SearchBar>
+            <ListView x:Name="lstSuggestions">
+                
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -225,5 +225,10 @@ namespace TestZXing
         {
             Application.Current.MainPage.Navigation.PushAsync(new DiaryPage());
         }
+
+        private void BtnSearch_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.MainPage.Navigation.PushAsync(new SearchPage());
+        }
     }
 }

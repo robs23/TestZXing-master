@@ -40,6 +40,12 @@
                     TextColor="White"
                     BackgroundColor="DeepSkyBlue"
                     Clicked="btnScan_Clicked"/>
+            <testzxing:RoundedButton x:Name="btnSearch"
+                    Margin="0,20,0,0"
+                    Text="Szukaj"
+                    TextColor="White"
+                    BackgroundColor="DeepSkyBlue"
+                    Clicked="BtnSearch_Clicked"/>
             <testzxing:RoundedButton x:Name="btnOpenProcesses"
                     Margin="0,20,0,0"
                     Text="Otwarte zgłoszenia"

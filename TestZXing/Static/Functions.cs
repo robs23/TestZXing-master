@@ -181,7 +181,7 @@ namespace TestZXing.Static
                         tryCount = 1;
                     }
                     PingCts = new CancellationTokenSource();
-                    var ping = Task.Run(() => DependencyService.Get<IWifiHandler>().PingHost(),PingCts.Token);
+                    var ping = Task.Run(() => DependencyService.Get<IWifiHandler>().PingHost("www.google.com"),PingCts.Token);
                     actionCts = new CancellationTokenSource();
                     var resTask = Task.Run(() => action(),actionCts.Token);
                     
