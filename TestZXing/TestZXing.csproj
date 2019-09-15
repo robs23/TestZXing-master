@@ -68,9 +68,11 @@
     <Compile Include="Models\ErrorKeeper.cs" />
     <Compile Include="Models\Handling.cs" />
     <Compile Include="Models\HandlingKeeper.cs" />
+    <Compile Include="Models\Keeper.cs" />
     <Compile Include="Models\MesString.cs" />
     <Compile Include="CustomExceptions\NoPreferredConnectionException.cs" />
     <Compile Include="Models\Part.cs" />
+    <Compile Include="Models\PartKeeper.cs" />
     <Compile Include="Models\Place.cs" />
     <Compile Include="Models\PlacesKeeper.cs" />
     <Compile Include="Models\Post.cs" />
