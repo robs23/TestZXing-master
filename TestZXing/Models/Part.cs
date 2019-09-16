@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace TestZXing.Models
 {
     public class Part : Entity<Part>
     {
+        [Unique]
         public int PartId { get; set; }
         public override int Id
         {

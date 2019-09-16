@@ -45,9 +45,10 @@ namespace TestZXing.Models
         public async Task CreateLocalBackup()
         {
             var db = new SQLiteConnection(Static.RuntimeSettings.LocalDbPath);
+            //db.Execute("DELETE FROM Part");
             db.CreateTable<T>();
             await this.Reload();
-            db.InsertAll(Items);
+            db.InsertOrReplaceAll(Items);
 
         }
     }

@@ -88,6 +88,7 @@ namespace TestZXing
                     RuntimeSettings.CurrentUser = vm.SelectedUser;
                     RuntimeSettings.TenantId = vm.SelectedUser.TenantId;
                     vm.SelectedUser.Login();
+                    CreateBackup();
                     await Application.Current.MainPage.Navigation.PushAsync(new ScanPage());
                 }
                 else
@@ -96,6 +97,16 @@ namespace TestZXing
                 }
             }
             
+        }
+
+        private async Task CreateBackup()
+        {
+            PartKeeper partKeeper = new PartKeeper();
+
+            Task.Run(async() =>
+            {
+                partKeeper.CreateLocalBackup();
+            });
         }
 
         protected override bool OnBackButtonPressed()
