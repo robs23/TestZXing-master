@@ -50,7 +50,18 @@ namespace TestZXing
             }
             else
             {
+                var options = new ZXing.Mobile.MobileBarcodeScanningOptions
+                {
+                    PossibleFormats = new List<ZXing.BarcodeFormat>
+                    {
+                        ZXing.BarcodeFormat.QR_CODE
+                    },
+                    TryHarder = false,
+                    AutoRotate = false,
+                    TryInverted = false,
+                };
                 scanPage = new ZXingScannerPage();
+                scanPage.AutoFocus();
                 scanPage.OnScanResult += (result) =>
                 {
                     //DateTime _start = DateTime.Now;
