@@ -68,7 +68,12 @@ namespace TestZXing.ViewModels
             _thisProcess = Process;
             _thisProcess.PlaceId = PlaceId;
             _this = new Handling();
-            IsProcessOpen = true;
+
+            if(!_thisProcess.IsActive && !_thisProcess.IsFrozen)
+            {
+                IsNew = true;
+            }
+                
             if (!string.IsNullOrEmpty(_thisProcess.MesId))
             {
                 IsMesRelated = true;
@@ -275,6 +280,7 @@ namespace TestZXing.ViewModels
             }
         }
 
+
         public bool RequireInitialDiagnosis
         {
             get
@@ -318,6 +324,7 @@ namespace TestZXing.ViewModels
 
         public bool IsNew
         {
+            //says if handling is open meaning there is active & not closed handling for current user
             get
             {
                 return _IsNew;
@@ -563,6 +570,7 @@ namespace TestZXing.ViewModels
 
         public bool IsOpen
         {
+            //it says if project hasn't been finished yet. If it has, there is no option to start new handling
             get
             {
                 if(_this.IsCompleted || IsWorking)

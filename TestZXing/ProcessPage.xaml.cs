@@ -125,7 +125,7 @@ namespace TestZXing
                 {
                     Debug.WriteLine("Not initalized");
                     //initialize only when not yet initialized
-                    if (vm.IsNew)
+                    if (vm.IsNew && vm._thisProcess.Status != "Planowany")
                     {
                         await vm.Initialize();
                     }
