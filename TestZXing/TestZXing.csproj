@@ -49,6 +49,7 @@
       <DependentUpon>HandlingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ICloseApplication.cs" />
+    <Compile Include="Interfaces\IActionKeeper.cs" />
     <Compile Include="Interfaces\IToaster.cs" />
     <Compile Include="Interfaces\IWifiHandler.cs" />
     <Compile Include="LastPlaces.xaml.cs">
@@ -60,6 +61,7 @@
     <Compile Include="LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\PlaceAction.cs" />
     <Compile Include="Models\ProcessAction.cs" />
     <Compile Include="Models\ActionType.cs" />
     <Compile Include="Models\ActionTypesKeeper.cs" />

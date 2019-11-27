@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestZXing.Interfaces;
 
 namespace TestZXing.Models
 {
-    public class ProcessAction : Entity<ProcessAction>
+    public class ProcessAction : Entity<ProcessAction>, IActionKeeper
     {
         public int ProcessActionId { get; set; }
         public override int Id
@@ -24,5 +25,21 @@ namespace TestZXing.Models
         public int? GivenTime { get; set; }
         public int? HandlingTime { get; set; }
         public string Type { get; set; }
+        public int? PlaceId { get; set; }
+
+        public bool IsRequired
+        {
+            get
+            {
+                if (PlannedStart == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
     }
 }

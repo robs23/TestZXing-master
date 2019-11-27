@@ -12,6 +12,7 @@
             <DataTemplate>
                 <ViewCell>
                     <StackLayout Padding="10">
+                        
                         <Label
                             Text="{Binding ActionName}"
                             LineBreakMode="WordWrap"

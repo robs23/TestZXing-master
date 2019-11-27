@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using TestZXing.Interfaces;
 using TestZXing.Models;
 
 namespace TestZXing.ViewModels
@@ -39,8 +40,8 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public ObservableCollection<ProcessAction> _items { get; set; }
-        public ObservableCollection<ProcessAction> Items
+        public ObservableCollection<IActionKeeper> _items { get; set; }
+        public ObservableCollection<IActionKeeper> Items
         {
             get
             {
