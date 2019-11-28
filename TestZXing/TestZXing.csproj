@@ -62,6 +62,7 @@
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\PlaceAction.cs" />
+    <Compile Include="Models\PlaceActionKeeper.cs" />
     <Compile Include="Models\ProcessAction.cs" />
     <Compile Include="Models\ActionType.cs" />
     <Compile Include="Models\ActionTypesKeeper.cs" />

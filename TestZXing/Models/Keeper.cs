@@ -23,10 +23,15 @@ namespace TestZXing.Models
             Items = new List<T>();
         }
 
-        public async Task Reload()
+        public async Task Reload(string query=null)
         {
             string url = Secrets.ApiAddress + $"Get{PluralizedObjectName}?token=" + Secrets.TenantToken;
             DataService ds = new DataService();
+            if (query != null)
+            {
+                url += $"&query={query}";
+            }
+            
 
             try
             {

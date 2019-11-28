@@ -36,5 +36,6 @@ namespace TestZXing.Static
 
             return c;
         }
+
     }
 }

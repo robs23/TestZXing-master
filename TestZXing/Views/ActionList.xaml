@@ -6,6 +6,9 @@
   <ListView x:Name="MyListView"
             ItemsSource="{Binding Items}"
             ItemTapped="Handle_ItemTapped"
+            VerticalOptions="FillAndExpand"
+            HasUnevenRows="True"
+            SeparatorVisibility="Default"
             CachingStrategy="RecycleElement">
             
     <ListView.ItemTemplate>
@@ -13,54 +16,83 @@
                 <ViewCell>
                     <StackLayout Padding="10">
                         
-                        <Label
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image 
+                                Source="tick_green.png"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                IsVisible="{Binding IsChecked}"/>
+                            <Label
                             Text="{Binding ActionName}"
                             LineBreakMode="WordWrap"
                             Style="{DynamicResource ListItemTextStyle}"
                             FontSize="Medium"
                             FontAttributes="Bold"
                             Grid.Row="0"
-                            Grid.Column="0"/>
+                            Grid.Column="1"/>
+                            <Image
+                                Source="exclamation_red.png"
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                IsVisible="{Binding IsRequired}"/>
+                        </Grid>
+                        
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label
-                                Text="Założono: "
+                                Text="Czas: "
                                 LineBreakMode="WordWrap"
                                 Style="{DynamicResource ListItemTextStyle}"
                                 FontSize="Small"
                                 FontAttributes="None"
                                 Grid.Row="0"
                                 Grid.Column="0"/>
-                            <testzxing:CustomLabel
-                                Text="{Binding GivenTimeFormatted}"
-                                BgColor="CadetBlue"
-                                FontSize="Small"
-                                FontAttributes="Bold"
-                                Grid.Row="0"
-                                Grid.Column="1"/>
                             <Label
-                                Text="Wykonano: "
+                                Text="{Binding GivenTime}"
                                 LineBreakMode="WordWrap"
                                 Style="{DynamicResource ListItemTextStyle}"
                                 FontSize="Small"
                                 FontAttributes="None"
                                 Grid.Row="0"
-                                Grid.Column="2"/>
-                            <testzxing:CustomLabel
-                                Text="{Binding HandlingTimeFormatted}"
-                                BgColor="CadetBlue"
+                                Grid.Column="1"/>
+                            <Label
+                                Text="Tu["
                                 FontSize="Small"
-                                FontAttributes="Bold"
+                                FontAttributes="None"
+                                Grid.Row="0"
+                                Grid.Column="2"/>
+                            <Label x:Name="lblX"
+                                Text="{Binding Type}"
+                                FontSize="Small"
+                                FontAttributes="None"
                                 Grid.Row="0"
                                 Grid.Column="3"/>
+                            <testzxing:CustomLabel x:Name="lblIsRequired"
+                                Text="Wymagane"
+                                BgColor="Red"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                IsVisible="{Binding IsRequired}"
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                />
                         </Grid>
                     </StackLayout>
                 </ViewCell>

@@ -11,6 +11,7 @@ using TestZXing.Interfaces;
 using TestZXing.Models;
 using TestZXing.Static;
 using TestZXing.ViewModels;
+using TestZXing.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -239,7 +240,8 @@ namespace TestZXing
 
         private void BtnSearch_Clicked(object sender, EventArgs e)
         {
-            Application.Current.MainPage.Navigation.PushAsync(new SearchPage());
+            //Application.Current.MainPage.Navigation.PushAsync(new SearchPage());
+            Application.Current.MainPage.Navigation.PushAsync(new ActionList(4359,10));
         }
     }
 }

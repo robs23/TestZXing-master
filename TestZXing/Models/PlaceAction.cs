@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Interfaces;
 
 namespace TestZXing.Models
 {
-    class PlaceAction : Entity<PlaceAction>, IActionKeeper
+    public class PlaceAction : Entity<PlaceAction>, IActionKeeper, INotifyPropertyChanged
     {
         public int PlaceActionId { get; set; }
         public override int Id
@@ -27,6 +29,14 @@ namespace TestZXing.Models
             {
                 return false;
             }
+        }
+        public bool IsChecked { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }
