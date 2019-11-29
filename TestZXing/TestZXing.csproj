@@ -125,6 +125,9 @@
     <Compile Include="Views\ActionList.xaml.cs">
       <DependentUpon>ActionList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProcessGeneralPage.xaml.cs">
+      <DependentUpon>ProcessGeneralPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.AppCenter, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -286,6 +289,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\ActionList.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\ProcessGeneralPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

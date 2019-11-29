@@ -46,8 +46,15 @@ namespace TestZXing.Views
         {
             if (e.Item == null)
                 return;
-
-            ((IActionKeeper)e.Item).IsChecked = true;
+            if (((IActionKeeper)e.Item).IsChecked)
+            {
+                ((IActionKeeper)e.Item).IsChecked = false;
+            }
+            else
+            {
+                ((IActionKeeper)e.Item).IsChecked = true;
+            }
+                
 
             //Deselect Item
             ((ListView)sender).SelectedItem = null;

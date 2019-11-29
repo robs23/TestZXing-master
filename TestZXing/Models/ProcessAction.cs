@@ -43,7 +43,23 @@ namespace TestZXing.Models
                 }
             }
         }
-        public bool IsChecked { get; set; }
+
+        public bool _IsChecked { get; set; }
+        public bool IsChecked
+        {
+            get
+            {
+                return _IsChecked;
+            }
+            set
+            {
+                if (value != _IsChecked)
+                {
+                    _IsChecked = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

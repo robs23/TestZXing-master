@@ -24,13 +24,24 @@ namespace TestZXing.Models
         public string ActionName { get; set; }
         public int? GivenTime { get; set; }
         public string Type { get; set; }
-        public bool IsRequired {
+        public bool IsRequired { get; set; }
+
+        public bool _IsChecked { get; set; }
+        public bool IsChecked
+        {
             get
             {
-                return false;
+                return _IsChecked;
+            }
+            set
+            {
+                if (value != _IsChecked)
+                {
+                    _IsChecked = value;
+                    OnPropertyChanged();
+                }
             }
         }
-        public bool IsChecked { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
