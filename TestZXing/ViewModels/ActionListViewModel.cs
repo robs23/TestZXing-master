@@ -13,7 +13,7 @@ using TestZXing.Models;
 
 namespace TestZXing.ViewModels
 {
-    class ActionListViewModel : INotifyPropertyChanged
+    public class ActionListViewModel : INotifyPropertyChanged
     {
         public ActionListViewModel(int ProcessId, int PlaceId)
         {
@@ -125,6 +125,7 @@ namespace TestZXing.ViewModels
                 }
             }
         }
+
 
         private ObservableCollection<IActionKeeper> _items { get; set; }
         public ObservableCollection<IActionKeeper> Items

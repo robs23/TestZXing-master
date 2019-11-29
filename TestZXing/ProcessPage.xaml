@@ -21,6 +21,11 @@
                      Priority="2"
                      Order="Secondary"
                      Clicked="btnShowHandlings_Clicked"/>
+        <ToolbarItem Name="btnShowActions"
+                     Text="Czynności"
+                     Priority="3"
+                     Order="Secondary"
+                     Clicked="BtnShowActions_Clicked"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout VerticalOptions="Center" Margin="15,5">

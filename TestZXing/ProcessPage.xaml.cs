@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
 using TestZXing.ViewModels;
+using TestZXing.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -194,6 +195,11 @@ namespace TestZXing
         private void UserStatus_Clicked(object sender, EventArgs e)
         {
             Application.Current.MainPage.Navigation.PushAsync(new DiaryPage());
+        }
+
+        private void BtnShowActions_Clicked(object sender, EventArgs e)
+        {
+            PopupNavigation.Instance.PushAsync(new ActionList(vm.ActionListVm), true);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rg.Plugins.Popup.Services;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -13,34 +14,34 @@ using Xamarin.Forms.Xaml;
 namespace TestZXing.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ActionList : ContentPage
+    public partial class ActionList : Rg.Plugins.Popup.Pages.PopupPage
     {
         ActionListViewModel vm;
 
-        public ActionList(int processId, int placeId)
+        public ActionList(ActionListViewModel _vm)
         {
             InitializeComponent();
-            vm = new ActionListViewModel(processId, placeId);
+            vm = _vm;
             BindingContext = vm;
         }
 
-        protected async override void OnAppearing()
-        {
-            base.OnAppearing();
-            try
-            {
-                if (!vm.IsInitialized)
-                {
-                    vm.Initialize();
-                }
+        //protected async override void OnAppearing()
+        //{
+        //    base.OnAppearing();
+        //    try
+        //    {
+        //        //if (!vm.IsInitialized)
+        //        //{
+        //        //    vm.Initialize();
+        //        //}
 
                 
 
-            }catch(Exception ex)
-            {
-                DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
-            }
-        }
+        //    }catch(Exception ex)
+        //    {
+        //        DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+        //    }
+        //}
 
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
@@ -58,6 +59,21 @@ namespace TestZXing.Views
 
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
+        }
+
+        private void StateImage_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("Source"))
+            {
+                var image = sender as Image;
+                image.Opacity = 0;
+                image.FadeTo(1, 1000);
+            }
+        }
+
+        private async void BtnOK_Clicked(object sender, EventArgs e)
+        {
+            if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide handlings screen
         }
     }
 }

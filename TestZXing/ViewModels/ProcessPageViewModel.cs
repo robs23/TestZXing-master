@@ -49,6 +49,7 @@ namespace TestZXing.ViewModels
         public MesString MesString { get; set; }
         public Process _thisProcess { get; set; }
         public Handling _this { get; set; }
+        public ActionListViewModel ActionListVm { get; set; }
         public ProcessKeeper Processes = new ProcessKeeper();
 
         public ProcessPageViewModel(int PlaceId)
@@ -67,6 +68,7 @@ namespace TestZXing.ViewModels
         {
             _thisProcess = Process;
             _thisProcess.PlaceId = PlaceId;
+            ActionListVm = new ActionListViewModel(Process.ProcessId, PlaceId);
             _this = new Handling();
 
             if(!_thisProcess.IsActive && !_thisProcess.IsFrozen)
@@ -128,6 +130,10 @@ namespace TestZXing.ViewModels
             try
             {
                 IsWorking = true;
+                if (ActionListVm != null)
+                {
+                    Task.Run(() => ActionListVm.Initialize());
+                }
                 //if IsMesRelated then first 'get' scanned action type just to make sure she'll be added to the list if missing
                 ActionType nAt = new ActionType();
                 if (IsMesRelated)

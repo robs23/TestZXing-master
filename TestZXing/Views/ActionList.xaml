@@ -1,36 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:testzxing="clr-namespace:TestZXing"
-             x:Class="TestZXing.Views.ActionList">
-  <ListView x:Name="MyListView"
+                xmlns:testzxing="clr-namespace:TestZXing"
+             x:Class="TestZXing.Views.ActionList"
+                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup">
+    <StackLayout>
+        <ListView x:Name="lstActions"
             ItemsSource="{Binding Items}"
             ItemTapped="Handle_ItemTapped"
             VerticalOptions="FillAndExpand"
             HasUnevenRows="True"
             SeparatorVisibility="Default"
             CachingStrategy="RecycleElement">
-            
-    <ListView.ItemTemplate>
-            <DataTemplate>
-                <ViewCell>
-                    <StackLayout Padding="10">
-                        
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="8*"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-                            <Image 
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image 
                                 Source="tick_green.png"
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 IsVisible="{Binding IsChecked}"/>
-                            <Label
+                                <Label
                             Text="{Binding ActionName}"
                             LineBreakMode="WordWrap"
                             Style="{DynamicResource ListItemTextStyle}"
@@ -38,25 +38,25 @@
                             FontAttributes="Bold"
                             Grid.Row="0"
                             Grid.Column="1"/>
-                            <Image
+                                <Image
                                 Source="exclamation_red.png"
                                 Grid.Row="0"
                                 Grid.Column="2"
                                 IsVisible="{Binding IsRequired}"/>
-                        </Grid>
-                        
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Label
+                            </Grid>
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Label
                                 Text="Czas: "
                                 LineBreakMode="WordWrap"
                                 Style="{DynamicResource ListItemTextStyle}"
@@ -64,7 +64,7 @@
                                 FontAttributes="None"
                                 Grid.Row="0"
                                 Grid.Column="0"/>
-                            <Label
+                                <Label
                                 Text="{Binding GivenTime}"
                                 LineBreakMode="WordWrap"
                                 Style="{DynamicResource ListItemTextStyle}"
@@ -72,19 +72,19 @@
                                 FontAttributes="None"
                                 Grid.Row="0"
                                 Grid.Column="1"/>
-                            <Label
+                                <Label
                                 Text="Tu["
                                 FontSize="Small"
                                 FontAttributes="None"
                                 Grid.Row="0"
                                 Grid.Column="2"/>
-                            <Label x:Name="lblX"
+                                <Label x:Name="lblX"
                                 Text="{Binding Type}"
                                 FontSize="Small"
                                 FontAttributes="None"
                                 Grid.Row="0"
                                 Grid.Column="3"/>
-                            <testzxing:CustomLabel x:Name="lblIsRequired"
+                                <testzxing:CustomLabel x:Name="lblIsRequired"
                                 Text="Wymagane"
                                 BgColor="Red"
                                 FontSize="Small"
@@ -93,11 +93,19 @@
                                 Grid.Row="1"
                                 Grid.Column="2"
                                 />
-                        </Grid>
-                    </StackLayout>
-                </ViewCell>
-            </DataTemplate>
-        </ListView.ItemTemplate>
+                            </Grid>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <testzxing:RoundedButton x:Name="btnOK"
+                                 Text="OK"
+                                 Margin="0,10,0,0"
+                                 BackgroundColor="DeepSkyBlue"
+                                 Clicked="BtnOK_Clicked"/>
+    </StackLayout>
     
-  </ListView>
-</ContentPage>
+
+                 
+</pages:PopupPage>
