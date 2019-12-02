@@ -201,5 +201,10 @@ namespace TestZXing
         {
             PopupNavigation.Instance.PushAsync(new ActionList(vm.ActionListVm), true);
         }
+
+        private void BtnActions_Clicked(object sender, EventArgs e)
+        {
+
+        }
     }
 }

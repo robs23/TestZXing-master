@@ -88,6 +88,14 @@
                 />
             <testzxing:RoundedButton
                 Margin="0,10,0,0"
+                x:Name="btnActions"
+                BackgroundColor="DeepSkyBlue"
+                Text="Czynności"  
+                IsVisible="{Binding HasActions}"
+                Clicked="BtnActions_Clicked"
+                />
+            <testzxing:RoundedButton
+                Margin="0,10,0,0"
                 x:Name="btnChangeState"
                 BackgroundColor="DeepSkyBlue"
                 Text="{Binding NextState}"  

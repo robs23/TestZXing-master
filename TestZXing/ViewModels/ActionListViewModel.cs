@@ -23,7 +23,7 @@ namespace TestZXing.ViewModels
             PlaceActionKeeper = new PlaceActionKeeper();
         }
 
-        public async Task Initialize()
+        public async Task<bool> Initialize()
         {
             //get all the placeActions of this placeId and processActions for this process
             //and fill the list in
@@ -44,6 +44,14 @@ namespace TestZXing.ViewModels
                     Items.Add(p);
                 }
                 
+            }
+            if (Items.Any())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
             IsInitialized = true;
         }

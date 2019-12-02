@@ -130,9 +130,11 @@ namespace TestZXing.ViewModels
             try
             {
                 IsWorking = true;
+                Task<bool> ActionListInitialization = null;
                 if (ActionListVm != null)
                 {
-                    Task.Run(() => ActionListVm.Initialize());
+                    ActionListInitialization = Task.Run(() => ActionListVm.Initialize());
+                    
                 }
                 //if IsMesRelated then first 'get' scanned action type just to make sure she'll be added to the list if missing
                 ActionType nAt = new ActionType();
@@ -193,6 +195,7 @@ namespace TestZXing.ViewModels
                     SelectedPlaceIndex = index;
                 }
                 IsWorking = false;
+                HasActions = await ActionListInitialization;
                 IsInitialized = true;
                 
             }
@@ -216,6 +219,24 @@ namespace TestZXing.ViewModels
                     return _thisProcess.PlaceName;
                 }
             }
+        }
+
+        private bool _HasActions { get; set; }
+
+        public bool HasActions {
+            get
+            {
+                return _HasActions;
+            }
+            set
+            {
+                if(value != _HasActions)
+                {
+                    _HasActions = value;
+                    OnPropertyChanged();
+                }
+            }
+
         }
 
         public bool IsWorking

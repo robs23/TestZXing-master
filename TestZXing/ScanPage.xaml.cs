@@ -240,8 +240,8 @@ namespace TestZXing
 
         private void BtnSearch_Clicked(object sender, EventArgs e)
         {
-            //Application.Current.MainPage.Navigation.PushAsync(new SearchPage());
-            Application.Current.MainPage.Navigation.PushAsync(new ActionList(4359,10));
+            Application.Current.MainPage.Navigation.PushAsync(new SearchPage());
+            //Application.Current.MainPage.Navigation.PushAsync(new ActionList(4359,10));
         }
     }
 }
