@@ -204,7 +204,7 @@ namespace TestZXing
 
         private void BtnActions_Clicked(object sender, EventArgs e)
         {
-
+            PopupNavigation.Instance.PushAsync(new ActionList(vm.ActionListVm), true);
         }
     }
 }

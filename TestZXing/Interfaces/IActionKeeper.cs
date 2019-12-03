@@ -18,5 +18,6 @@ namespace TestZXing.Interfaces
         string Type { get; set; }
         bool IsRequired { get; }
         bool IsChecked { get; set; }
+        DateTime?[] LastCheck { get; set; }
     }
 }

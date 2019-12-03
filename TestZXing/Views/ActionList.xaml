@@ -3,8 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                 xmlns:testzxing="clr-namespace:TestZXing"
              x:Class="TestZXing.Views.ActionList"
-                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup">
-    <StackLayout>
+                 xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+                 xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="400"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+    <StackLayout
+        Margin="12"
+                 Padding="18"
+                 Spacing="0"
+                 BackgroundColor="White"
+                 HorizontalOptions="Center"
+                 VerticalOptions="Center">
         <ListView x:Name="lstActions"
             ItemsSource="{Binding Items}"
             ItemTapped="Handle_ItemTapped"
@@ -55,6 +74,8 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Label
                                 Text="Czas: "
@@ -73,7 +94,7 @@
                                 Grid.Row="0"
                                 Grid.Column="1"/>
                                 <Label
-                                Text="Tu["
+                                Text="Typ"
                                 FontSize="Small"
                                 FontAttributes="None"
                                 Grid.Row="0"
@@ -84,15 +105,17 @@
                                 FontAttributes="None"
                                 Grid.Row="0"
                                 Grid.Column="3"/>
-                                <testzxing:CustomLabel x:Name="lblIsRequired"
-                                Text="Wymagane"
-                                BgColor="Red"
+                                <Label
+                                Text="Ostatnio: "
                                 FontSize="Small"
-                                FontAttributes="Bold"
-                                IsVisible="{Binding IsRequired}"
-                                Grid.Row="1"
-                                Grid.Column="2"
-                                />
+                                FontAttributes="None"
+                                Grid.Row="0"
+                                Grid.Column="4"/>
+                                <Label Text="{Binding LastCheck}"
+                                FontSize="Small"
+                                FontAttributes="None"
+                                Grid.Row="0"
+                                Grid.Column="5"/>
                             </Grid>
                         </StackLayout>
                     </ViewCell>

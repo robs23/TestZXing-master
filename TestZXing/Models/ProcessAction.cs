@@ -25,7 +25,7 @@ namespace TestZXing.Models
         public Nullable<int> ActionId { get; set; }
         public string ActionName { get; set; }
         public int? GivenTime { get; set; }
-        public int? HandlingTime { get; set; }
+        public int? HandlingId { get; set; }
         public string Type { get; set; }
         public int? PlaceId { get; set; }
 
@@ -60,6 +60,8 @@ namespace TestZXing.Models
                 }
             }
         }
+
+        public DateTime?[] LastCheck { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

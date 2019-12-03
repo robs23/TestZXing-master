@@ -23,20 +23,41 @@ namespace TestZXing.ViewModels
             PlaceActionKeeper = new PlaceActionKeeper();
         }
 
+        public ActionListViewModel(int PlaceId)
+        {
+            this.PlaceId = PlaceId;
+            ProcessActionKeeper = new ProcessActionKeeper();
+            PlaceActionKeeper = new PlaceActionKeeper();
+        }
+
         public async Task<bool> Initialize()
         {
             //get all the placeActions of this placeId and processActions for this process
             //and fill the list in
 
-            var processReload = Task.Run(() => ProcessActionKeeper.Reload($"ProcessId={ProcessId}"));
-            var placeReload = Task.Run(()=> PlaceActionKeeper.Reload($"PlaceId={PlaceId}"));
+            CheckedItems = new ObservableCollection<ProcessAction>();
+            Items = new ObservableCollection<IActionKeeper>();
 
-            await Task.WhenAll(processReload, placeReload);
+            if (ProcessId != 0)
+            {
+                var processReload = Task.Run(() => ProcessActionKeeper.Reload($"ProcessId={ProcessId}"));
+                var placeReload = Task.Run(() => PlaceActionKeeper.Reload($"PlaceId={PlaceId}"));
 
-            //go no further till both tasks complete
+                //go no further till both tasks complete
+                await Task.WhenAll(processReload, placeReload);
 
-            CheckedItems = new ObservableCollection<ProcessAction>(ProcessActionKeeper.Items);
-            Items = new ObservableCollection<IActionKeeper>(CheckedItems);
+                CheckedItems = new ObservableCollection<ProcessAction>(ProcessActionKeeper.Items);
+                Items = new ObservableCollection<IActionKeeper>(CheckedItems);
+            }
+            else
+            {
+                var placeReload = Task.Run(() => PlaceActionKeeper.Reload($"PlaceId={PlaceId}"));
+
+                //go no further till task complete
+                await Task.WhenAll(placeReload);
+            }
+
+            
             foreach(PlaceAction p in PlaceActionKeeper.Items)
             {
                 if (!CheckedItems.Any(i => i.ActionId == p.ActionId))
@@ -45,6 +66,7 @@ namespace TestZXing.ViewModels
                 }
                 
             }
+            IsInitialized = true;
             if (Items.Any())
             {
                 return true;
@@ -53,7 +75,7 @@ namespace TestZXing.ViewModels
             {
                 return false;
             }
-            IsInitialized = true;
+            
         }
 
         private bool _IsInitialized { get; set; }
@@ -167,6 +189,54 @@ namespace TestZXing.ViewModels
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public string Validate()
+        {
+            string _res = "OK";
+
+            foreach (IActionKeeper i in Items)
+            {
+                if (i.IsRequired && !i.IsChecked)
+                {
+                    //at least 1 required action hasn't been checked
+                    _res = $"Czynność {i.ActionName} jest wymagana!";
+                    break;
+                }
+            }
+
+            return _res;
+        }
+
+        public async Task<string> Save(int handlingId)
+        {
+            List<Task<string>> listOfTask = new List<Task<string>>();
+
+            foreach(ProcessAction pa in CheckedItems)
+            {
+
+                pa.HandlingId = handlingId;
+                if (pa.ProcessActionId == 0)
+                {
+                    listOfTask.Add(pa.Add());
+                }
+                else
+                {
+                    listOfTask.Add(pa.Edit());
+                }
+                
+            }
+
+            IEnumerable<string> results = await Task.WhenAll<string>(listOfTask);
+            if(results.Where(r => r != "OK").Any())
+            {
+                return string.Join("; ", results.Where(r => r != "OK"));
+            }
+            else
+            {
+                return "OK";
+            }
+            
         }
 
 

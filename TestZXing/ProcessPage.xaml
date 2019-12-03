@@ -91,7 +91,7 @@
                 x:Name="btnActions"
                 BackgroundColor="DeepSkyBlue"
                 Text="Czynności"  
-                IsVisible="{Binding HasActions}"
+                IsVisible="{Binding ActionsApplicable}"
                 Clicked="BtnActions_Clicked"
                 />
             <testzxing:RoundedButton

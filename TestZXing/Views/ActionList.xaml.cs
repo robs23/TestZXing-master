@@ -25,24 +25,6 @@ namespace TestZXing.Views
             BindingContext = vm;
         }
 
-        //protected async override void OnAppearing()
-        //{
-        //    base.OnAppearing();
-        //    try
-        //    {
-        //        //if (!vm.IsInitialized)
-        //        //{
-        //        //    vm.Initialize();
-        //        //}
-
-                
-
-        //    }catch(Exception ex)
-        //    {
-        //        DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
-        //    }
-        //}
-
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             if (e.Item == null)
@@ -50,10 +32,21 @@ namespace TestZXing.Views
             if (((IActionKeeper)e.Item).IsChecked)
             {
                 ((IActionKeeper)e.Item).IsChecked = false;
+                IActionKeeper item = ((IActionKeeper)e.Item);
+                if (!vm.CheckedItems.Any(i => i.ActionId == item.ActionId))
+                {
+                    vm.CheckedItems.Remove(vm.CheckedItems.FirstOrDefault(i => i.ActionId == item.ActionId));
+                }
             }
             else
             {
                 ((IActionKeeper)e.Item).IsChecked = true;
+                IActionKeeper item = ((IActionKeeper)e.Item);
+                if (!vm.CheckedItems.Any(i => i.ActionId == item.ActionId))
+                {
+                    vm.CheckedItems.Add(ToProcessAction(item));
+                }
+
             }
                 
 
@@ -61,19 +54,23 @@ namespace TestZXing.Views
             ((ListView)sender).SelectedItem = null;
         }
 
-        private void StateImage_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private ProcessAction ToProcessAction(IActionKeeper item)
         {
-            if (e.PropertyName.Equals("Source"))
-            {
-                var image = sender as Image;
-                image.Opacity = 0;
-                image.FadeTo(1, 1000);
-            }
+            ProcessAction pa = new ProcessAction();
+            pa.ActionId = item.ActionId;
+            pa.ActionName = item.ActionName;
+            pa.GivenTime = item.GivenTime;
+            pa.IsChecked = item.IsChecked;
+            pa.LastCheck = item.LastCheck;
+            pa.PlaceId = item.PlaceId;
+            pa.PlaceName = item.PlaceName;
+            return pa;
         }
 
         private async void BtnOK_Clicked(object sender, EventArgs e)
         {
             if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide handlings screen
+            
         }
     }
 }

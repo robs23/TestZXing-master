@@ -25,7 +25,6 @@ namespace TestZXing.Models
         public int? GivenTime { get; set; }
         public string Type { get; set; }
         public bool IsRequired { get; set; }
-
         public bool _IsChecked { get; set; }
         public bool IsChecked
         {
@@ -42,6 +41,8 @@ namespace TestZXing.Models
                 }
             }
         }
+
+        public DateTime?[] LastCheck { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

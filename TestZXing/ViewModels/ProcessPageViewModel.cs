@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
+using TestZXing.Interfaces;
 using TestZXing.Static;
 
 namespace TestZXing.ViewModels
@@ -59,6 +60,7 @@ namespace TestZXing.ViewModels
             _this = new Handling();
             IsNew = true;
             IsProcessOpen = false; //not known till we have it checked
+            ActionListVm = new ActionListViewModel(PlaceId);
             //Initialize();
 
 
@@ -221,7 +223,7 @@ namespace TestZXing.ViewModels
             }
         }
 
-        private bool _HasActions { get; set; }
+        private bool _HasActions { get; set; } = false;
 
         public bool HasActions {
             get
@@ -234,9 +236,31 @@ namespace TestZXing.ViewModels
                 {
                     _HasActions = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(ActionsApplicable));
                 }
             }
 
+        }
+
+        public bool ActionsApplicable
+        {
+            // says if btnAction should be displayed or not
+            get
+            {
+                if (Type == null || Type.ShowInPlanning==null)
+                {
+                    return false;
+                }
+                else if(HasActions && (bool)Type.ShowInPlanning)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+                
+            }
         }
 
         public bool IsWorking
@@ -484,6 +508,7 @@ namespace TestZXing.ViewModels
                         }
                         OnPropertyChanged();
                         OnPropertyChanged(nameof(NextState));
+                        OnPropertyChanged(nameof(ActionsApplicable));
                     }
                 }catch(Exception ex)
                 {
@@ -691,6 +716,12 @@ namespace TestZXing.ViewModels
                         _Result = await _this.Edit();
                         OnPropertyChanged(nameof(NextState));
                     }
+                    if (_Result == "OK" && ActionsApplicable)
+                    {
+                        //Save actions if there are any
+
+                        _Result = await ActionListVm.Save(_this.HandlingId);
+                    }
                     RuntimeSettings.CurrentUser.IsWorking = true;
                     OnPropertyChanged(nameof(Icon));
                 }
@@ -703,6 +734,8 @@ namespace TestZXing.ViewModels
             return _Result;
             
         }
+
+        
 
         public string Validate(bool EndValidation = false)
         {
@@ -761,6 +794,10 @@ namespace TestZXing.ViewModels
                 }
             }
             
+            if(_res=="OK" && EndValidation && ActionsApplicable)
+            {
+                _res = ActionListVm.Validate();
+            }
             
             return _res;
         }
