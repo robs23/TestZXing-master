@@ -197,7 +197,7 @@ namespace TestZXing.ViewModels
 
             foreach (IActionKeeper i in Items)
             {
-                if (i.IsRequired && !i.IsChecked)
+                if (i.IsRequired && !(bool)i.IsChecked)
                 {
                     //at least 1 required action hasn't been checked
                     _res = $"Czynność {i.ActionName} jest wymagana!";
@@ -208,7 +208,7 @@ namespace TestZXing.ViewModels
             return _res;
         }
 
-        public async Task<string> Save(int handlingId)
+        public async Task<string> Save(int handlingId, int processId)
         {
             List<Task<string>> listOfTask = new List<Task<string>>();
 
@@ -216,6 +216,7 @@ namespace TestZXing.ViewModels
             {
 
                 pa.HandlingId = handlingId;
+                pa.ProcessId = processId;
                 if (pa.ProcessActionId == 0)
                 {
                     listOfTask.Add(pa.Add());

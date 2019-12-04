@@ -26,7 +26,7 @@ namespace TestZXing.Models
         public string Type { get; set; }
         public bool IsRequired { get; set; }
         public bool _IsChecked { get; set; }
-        public bool IsChecked
+        public bool? IsChecked
         {
             get
             {
@@ -36,13 +36,31 @@ namespace TestZXing.Models
             {
                 if (value != _IsChecked)
                 {
-                    _IsChecked = value;
+                    _IsChecked = (bool)value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public DateTime?[] LastCheck { get; set; }
+        public List<DateTime?> LastChecks { get; set; }
+
+        public DateTime? LastCheck { get
+            {
+                if (LastChecks.Any())
+                {
+                    return LastChecks.FirstOrDefault();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -44,11 +44,15 @@ namespace TestZXing.Models
             }
         }
 
-        public bool _IsChecked { get; set; }
-        public bool IsChecked
+        public bool? _IsChecked { get; set; }
+        public bool? IsChecked
         {
             get
             {
+                if (_IsChecked == null)
+                {
+                    return false;
+                }
                 return _IsChecked;
             }
             set
@@ -61,7 +65,21 @@ namespace TestZXing.Models
             }
         }
 
-        public DateTime?[] LastCheck { get; set; }
+        public List<DateTime?> LastChecks { get; set; }
+        public DateTime? LastCheck
+        {
+            get
+            {
+                if (LastChecks.Any())
+                {
+                    return LastChecks.FirstOrDefault();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

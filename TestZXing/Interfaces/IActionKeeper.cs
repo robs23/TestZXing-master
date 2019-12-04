@@ -17,7 +17,8 @@ namespace TestZXing.Interfaces
         int? GivenTime { get; set; }
         string Type { get; set; }
         bool IsRequired { get; }
-        bool IsChecked { get; set; }
-        DateTime?[] LastCheck { get; set; }
+        bool? IsChecked { get; set; }
+        List<DateTime?> LastChecks { get; set; }
+        DateTime? LastCheck { get;  }
     }
 }

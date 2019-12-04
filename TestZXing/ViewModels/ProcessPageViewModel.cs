@@ -60,7 +60,6 @@ namespace TestZXing.ViewModels
             _this = new Handling();
             IsNew = true;
             IsProcessOpen = false; //not known till we have it checked
-            ActionListVm = new ActionListViewModel(PlaceId);
             //Initialize();
 
 
@@ -70,10 +69,9 @@ namespace TestZXing.ViewModels
         {
             _thisProcess = Process;
             _thisProcess.PlaceId = PlaceId;
-            ActionListVm = new ActionListViewModel(Process.ProcessId, PlaceId);
             _this = new Handling();
-
-            if(!_thisProcess.IsActive && !_thisProcess.IsFrozen)
+            IsProcessOpen = true;
+            if (!_thisProcess.IsActive && !_thisProcess.IsFrozen)
             {
                 IsNew = true;
             }
@@ -127,17 +125,39 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public async Task InitializeActions()
+        {
+            try
+            {
+                if (ActionsApplicable)
+                {
+                    if (_thisProcess.ProcessId > 0)
+                    {
+                        ActionListVm = new ActionListViewModel(_thisProcess.ProcessId, _thisProcess.PlaceId);
+                    }
+                    else
+                    {
+                        ActionListVm = new ActionListViewModel(_thisProcess.PlaceId);
+                    }
+
+                    Task<bool> ActionListInitialization = null;
+                    ActionListInitialization = Task.Run(() => ActionListVm.Initialize());
+
+                    HasActions = await ActionListInitialization;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task Initialize(int AtId = -1)
         {
             try
             {
                 IsWorking = true;
-                Task<bool> ActionListInitialization = null;
-                if (ActionListVm != null)
-                {
-                    ActionListInitialization = Task.Run(() => ActionListVm.Initialize());
-                    
-                }
+                
                 //if IsMesRelated then first 'get' scanned action type just to make sure she'll be added to the list if missing
                 ActionType nAt = new ActionType();
                 if (IsMesRelated)
@@ -172,6 +192,7 @@ namespace TestZXing.ViewModels
                     SelectedIndex = index;
                 }
 
+                Task.Run(() => InitializeActions());
                 //load places to combobox
                 if (_IsMesRelated)
                 {
@@ -197,7 +218,6 @@ namespace TestZXing.ViewModels
                     SelectedPlaceIndex = index;
                 }
                 IsWorking = false;
-                HasActions = await ActionListInitialization;
                 IsInitialized = true;
                 
             }
@@ -251,7 +271,7 @@ namespace TestZXing.ViewModels
                 {
                     return false;
                 }
-                else if(HasActions && (bool)Type.ShowInPlanning)
+                else if((bool)Type.ShowInPlanning)
                 {
                     return true;
                 }
@@ -486,6 +506,7 @@ namespace TestZXing.ViewModels
                                     _this = await GetHandling();
                                     OnPropertyChanged(nameof(NextState));
                                 }
+                                Task.Run(() => InitializeActions());
                             });
                         }
                         else
@@ -493,6 +514,7 @@ namespace TestZXing.ViewModels
                             Task.Run(async () =>
                             {
                                 _this = await GetHandling();
+                                Task.Run(() => InitializeActions());
                                 OnPropertyChanged(nameof(NextState));
                             });
                         }
@@ -716,11 +738,11 @@ namespace TestZXing.ViewModels
                         _Result = await _this.Edit();
                         OnPropertyChanged(nameof(NextState));
                     }
-                    if (_Result == "OK" && ActionsApplicable)
+                    if (_Result == "OK" && ActionsApplicable && HasActions)
                     {
                         //Save actions if there are any
 
-                        _Result = await ActionListVm.Save(_this.HandlingId);
+                        _Result = await ActionListVm.Save(_this.HandlingId, _thisProcess.ProcessId);
                     }
                     RuntimeSettings.CurrentUser.IsWorking = true;
                     OnPropertyChanged(nameof(Icon));
@@ -850,6 +872,13 @@ namespace TestZXing.ViewModels
                         _this.Output = _thisProcess.Output;
                     }
                     _Result = await _this.Edit();
+                    if (_Result == "OK" && ActionsApplicable && HasActions)
+                    {
+                        //Save actions if there are any
+
+                        _Result = await ActionListVm.Save(_this.HandlingId, _thisProcess.ProcessId);
+                    }
+
                     RuntimeSettings.CurrentUser.IsWorking = false;
                     if (!_Result.Equals("OK"))
                     {

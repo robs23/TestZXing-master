@@ -29,11 +29,11 @@ namespace TestZXing.Views
         {
             if (e.Item == null)
                 return;
-            if (((IActionKeeper)e.Item).IsChecked)
+            if ((bool)((IActionKeeper)e.Item).IsChecked)
             {
                 ((IActionKeeper)e.Item).IsChecked = false;
                 IActionKeeper item = ((IActionKeeper)e.Item);
-                if (!vm.CheckedItems.Any(i => i.ActionId == item.ActionId))
+                if (vm.CheckedItems.Any(i => i.ActionId == item.ActionId))
                 {
                     vm.CheckedItems.Remove(vm.CheckedItems.FirstOrDefault(i => i.ActionId == item.ActionId));
                 }
@@ -61,9 +61,10 @@ namespace TestZXing.Views
             pa.ActionName = item.ActionName;
             pa.GivenTime = item.GivenTime;
             pa.IsChecked = item.IsChecked;
-            pa.LastCheck = item.LastCheck;
+            pa.LastChecks = item.LastChecks;
             pa.PlaceId = item.PlaceId;
             pa.PlaceName = item.PlaceName;
+            pa.CreatedBy = RuntimeSettings.CurrentUser.UserId;
             return pa;
         }
 
