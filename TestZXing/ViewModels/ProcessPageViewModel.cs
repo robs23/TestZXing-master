@@ -701,6 +701,12 @@ namespace TestZXing.ViewModels
                     {
                         _thisProcess.Status = "Rozpoczęty";
                     }
+                    if (_thisProcess.StartedOn == null)
+                    {
+                        //it's planned process, open but NOT started yet..
+                        _thisProcess.StartedOn = DateTime.Now;
+                        _thisProcess.StartedBy = RuntimeSettings.CurrentUser.UserId;
+                    }
                     _Result = await _thisProcess.Edit();
                 }
 
