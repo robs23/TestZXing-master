@@ -229,6 +229,23 @@ namespace TestZXing.ViewModels
             
         }
 
+
+        public int ChangeStateButtonCount
+        {
+            //just because I can't refer to grid control from code behind (stupid XF intellisense issue)
+            get
+            {
+                if (ActionsApplicable && HasActions)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 2;
+                }
+            }
+        }
+
         public string Description {
             get
             {
@@ -257,6 +274,7 @@ namespace TestZXing.ViewModels
                     _HasActions = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(ActionsApplicable));
+                    OnPropertyChanged(nameof(ChangeStateButtonCount));
                 }
             }
 
@@ -531,6 +549,7 @@ namespace TestZXing.ViewModels
                         OnPropertyChanged();
                         OnPropertyChanged(nameof(NextState));
                         OnPropertyChanged(nameof(ActionsApplicable));
+                        OnPropertyChanged(nameof(ChangeStateButtonCount));
                     }
                 }catch(Exception ex)
                 {

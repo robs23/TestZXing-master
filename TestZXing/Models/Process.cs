@@ -22,6 +22,8 @@ namespace TestZXing.Models
         public DateTime? FinishedOn { get; set; }
         public int? FinishedBy { get; set; }
         public string FinishedByName { get; set; }
+        public Nullable<DateTime> PlannedStart { get; set; }
+        public Nullable<DateTime> PlannedFinish { get; set; }
         public int ActionTypeId { get; set; }
         public string ActionTypeName { get; set; }
         public bool IsActive { get; set; }
