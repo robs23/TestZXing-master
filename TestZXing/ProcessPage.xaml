@@ -91,8 +91,8 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="7*"/>
-                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
                 <testzxing:RoundedButton
                 Margin="0,10,0,0"
@@ -108,8 +108,9 @@
                 <testzxing:RoundedButton
                 Margin="0,10,0,0"
                 x:Name="btnActions"
-                BackgroundColor="DeepSkyBlue"
-                Text="Czynności"  
+                PropertyChanged="BtnActions_PropertyChanged"
+                BackgroundColor="Black"
+                Image="checklist_48.png"
                 IsVisible="{Binding ActionsApplicable}"
                 Clicked="BtnActions_Clicked"
                 Grid.Row="0"

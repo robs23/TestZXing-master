@@ -205,7 +205,20 @@ namespace TestZXing
 
         private void BtnActions_Clicked(object sender, EventArgs e)
         {
+            
             PopupNavigation.Instance.PushAsync(new ActionList(vm.ActionListVm), true);
+        }
+
+        private async void BtnActions_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsVisible")
+            {
+                if (vm.ActionsApplicable)
+                {
+                    await btnActions.ScaleTo(1.3, 150);
+                    await btnActions.ScaleTo(1, 150);
+                }
+            }
         }
     }
 }
