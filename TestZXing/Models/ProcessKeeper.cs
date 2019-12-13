@@ -46,6 +46,35 @@ namespace TestZXing.Models
             }
         }
 
+        public async Task GetUsersOpenProcesses(string query = null)
+        {
+            string url = Secrets.ApiAddress + "GetUsersOpenProcesses?token=" + Secrets.TenantToken + $"&UserId={RuntimeSettings.CurrentUser.UserId}";
+            DataService ds = new DataService();
+
+            if (query != null)
+            {
+                url += "&query=" + query;
+            }
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
+                string output = await ds.readStream(responseMsg);
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    Items = JsonConvert.DeserializeObject<List<Process>>(output);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetUsersOpenProcesses), this.GetType().Name);
+                throw;
+            }
+        }
+
         public async Task<Process> GetProcess(int id)
         {
             string url = Secrets.ApiAddress + "GetProcess?token=" + Secrets.TenantToken + "&id=" + id.ToString();

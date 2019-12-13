@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Classes;
 using TestZXing.Static;
+using TestZXing.ViewModels;
 
 namespace TestZXing.Models
 {
@@ -74,6 +75,7 @@ namespace TestZXing.Models
             {
                 //App.Current.Properties.Add("UserId", UserId);
                 //App.Current.Properties.Add("UserExpirationTime")
+                Task.Run(() => GetPlannedProcesses());
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 string url = Secrets.ApiAddress + "LogIn?token=" + Secrets.TenantToken + "&id=" + this.UserId;
                 var serializedProduct = JsonConvert.SerializeObject(this);
@@ -96,6 +98,12 @@ namespace TestZXing.Models
                 Static.Functions.CreateError(ex, "No connection", nameof(this.Login), this.GetType().Name);
             }
             
+        }
+
+        public async Task GetPlannedProcesses()
+        {
+            AssignedProcessesViewModel vm = new AssignedProcessesViewModel();
+            vm.Initialize();
         }
 
         public async Task UpdateStatus()

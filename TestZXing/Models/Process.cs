@@ -3,16 +3,19 @@ using ModernHttpClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Classes;
 using TestZXing.Static;
+using Xamarin.Forms;
 
 namespace TestZXing.Models
 {
-    public class Process
+    public class Process : INotifyPropertyChanged
     {
         public int ProcessId { get; set; }
         public string Description { get; set; }
@@ -22,7 +25,22 @@ namespace TestZXing.Models
         public DateTime? FinishedOn { get; set; }
         public int? FinishedBy { get; set; }
         public string FinishedByName { get; set; }
-        public Nullable<DateTime> PlannedStart { get; set; }
+        private Nullable<DateTime> _PlannedStart { get; set; }
+        public Nullable<DateTime> PlannedStart
+        {
+            get
+            {
+                return _PlannedStart;
+            }
+            set
+            {
+                if (value != _PlannedStart)
+                {
+                    _PlannedStart = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         public Nullable<DateTime> PlannedFinish { get; set; }
         public int ActionTypeId { get; set; }
         public string ActionTypeName { get; set; }
@@ -118,6 +136,57 @@ namespace TestZXing.Models
         public DateTime? LastStatusOn { get; set; }
         public int? OpenHandlings { get; set; }
         public int? AllHandlings { get; set; }
+
+        public string TimingVsPlan
+        {
+            get
+            {
+                if (PlannedStart == null)
+                {
+                    return "Nie dotyczy";
+                }
+                else
+                {
+                    if (PlannedStart < DateTime.Now.AddDays(-7))
+                    {
+                        return "Zaległe";
+                    }
+                    else
+                    {
+                        return "Bieżące";
+                    }
+                }
+            }
+        }
+        public Color TimingBgColor
+        {
+            get
+            {
+                if (PlannedStart == null)
+                {
+                    return Color.Default;
+                }
+                else
+                {
+                    if (PlannedStart < DateTime.Now.AddDays(-7))
+                    {
+                        return Color.Red;
+                    }
+                    else
+                    {
+                        return Color.Green;
+                    }
+                }
+
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         public override string ToString()
         {
