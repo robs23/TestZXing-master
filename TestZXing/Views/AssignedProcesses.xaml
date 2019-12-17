@@ -64,11 +64,35 @@
                                         Grid.Column="0"/>
                                     <testzxing:CustomLabel
                                         Text="{Binding TimingVsPlan}"
-                                        BgColor="{Binding TimingBgColor}"
+                                        BackgroundColor="{Binding TimingBgColor}"
                                         FontSize="Small"
                                         Grid.Row="0"
                                         Grid.Column="1"/>
                                 </Grid>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label
+                                        Text="Planowany na: "
+                                        LineBreakMode="WordWrap"
+                                        Style="{DynamicResource ListItemTextStyle}"
+                                        FontSize="Small"
+                                        Grid.Row="0"
+                                        Grid.Column="0"/>
+                                    <Label
+                                        Text="{Binding PlannedFor}"
+                                        LineBreakMode="WordWrap"
+                                        Style="{DynamicResource ListItemTextStyle}"
+                                        FontSize="Small"
+                                        Grid.Row="0"
+                                        Grid.Column="1"/>
+                                </Grid>
+                                
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

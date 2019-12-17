@@ -23,7 +23,15 @@ namespace TestZXing.ViewModels
             get {
                 if (_process.LastStatus != null)
                 {
-                    return _process.LastStatus.ToString() + " " + _process.LastStatusOn + " przez " + _process.LastStatusByName + Environment.NewLine + "Aktualnie obsługujących: " + _process.OpenHandlings;
+                    if(_process.LastStatus == ProcessStatus.Planowany)
+                    {
+                        return _process.LastStatus.ToString() + " do wykonania " + _process.PlannedFor + Environment.NewLine + "Aktualnie obsługujących: " + _process.OpenHandlings;
+                    }
+                    else
+                    {
+                        return _process.LastStatus.ToString() + " " + _process.LastStatusOn + " przez " + _process.LastStatusByName + Environment.NewLine + "Aktualnie obsługujących: " + _process.OpenHandlings;
+                    }
+                    
                 }
                 else
                 {

@@ -64,5 +64,10 @@ namespace TestZXing
                 await DisplayAlert("Nie zaznaczono elementu", "Najpierw zaznacz zgłoszenie, które chcesz wyświetlić!", "OK");
             }
         }
+
+        private void Switch_Toggled(object sender, ToggledEventArgs e)
+        {
+            vm.HidePlannedToggled();
+        }
     }
 }

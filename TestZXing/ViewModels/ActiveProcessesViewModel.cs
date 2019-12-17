@@ -24,10 +24,28 @@ namespace TestZXing.ViewModels
         public ObservableRangeCollection<PlaceViewModel> List { get; private set; }
         = new ObservableRangeCollection<PlaceViewModel>();
 
+        public List<Process> Items { get; set; } = new List<Process>();
+
         public ICommand HeaderClickCommand { get; private set; }
         private bool _IsWorking { get; set; }
         private bool UProcesses { get; set; }
         private string _title { get; set; }
+        public bool _HidePlanned { get; set; }
+        public bool HidePlanned
+        {
+            get
+            {
+                return _HidePlanned;
+            }
+            set
+            {
+                if (value != _HidePlanned)
+                {
+                    _HidePlanned = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public ActiveProcessesViewModel(bool UsersProcesses = false)
         {
@@ -35,10 +53,12 @@ namespace TestZXing.ViewModels
             if (UProcesses)
             {
                 Title = "MOJE";
+                HidePlanned = false;
             }
             else
             {
                 Title = "WSZYSTKIE";
+                HidePlanned = true;
             }
             this.HeaderClickCommand = new Command<PlaceViewModel>((item) => ExecuteHeaderClickCommand(item));
         }
@@ -58,16 +78,9 @@ namespace TestZXing.ViewModels
             }
             
             DataService ds = new DataService();
-            List<Process> Items = new List<Process>();
-            List<Place> Places;
+            Items = new List<Process>();   
 
             IsWorking = true;
-
-            if (List.Any())
-            {
-                //if there are any existent items, delete them
-                List.Clear();
-            }
 
             try
             {
@@ -93,47 +106,99 @@ namespace TestZXing.ViewModels
                 Static.Functions.CreateError(ex, "No connection", nameof(this.ExecuteLoadDataCommand), this.GetType().Name);
                 throw;
             }
+            PopulateListbox();
+            
+            IsWorking = false;
+            return _Result;
+        }
 
+        public async void PopulateListbox()
+        {
+            if (List.Any())
+            {
+                //if there are any existent items, delete them
+                List.Clear();
+            }
+
+            List<Place> Places;
             if (Items.Any())
             {
                 Places = new List<Place>();
- 
-                //get list of places
-                foreach(Process p in Items)
+
+                if (HidePlanned)
                 {
-                    int pId = p.PlaceId;
-                    
-                    if (Places.Where(pl=>pl.PlaceId==pId).Any())
+                    //get list of places
+                    foreach (Process p in Items.Where(i=>i.LastStatus != ProcessStatus.Planowany))
                     {
-                        //there's already such a place
-                        Place nPlace = Places.Where(pl => pl.PlaceId == pId).FirstOrDefault();
-                        nPlace.Processes.Add(p);
+                        int pId = p.PlaceId;
+
+                        if (Places.Where(pl => pl.PlaceId == pId).Any())
+                        {
+                            //there's already such a place
+                            Place nPlace = Places.Where(pl => pl.PlaceId == pId).FirstOrDefault();
+                            nPlace.Processes.Add(p);
+                        }
+                        else
+                        {
+                            //no place like that yet. Have to create new one
+                            Place nPlace = new Place();
+                            nPlace.PlaceId = p.PlaceId;
+                            nPlace.Name = p.PlaceName;
+                            nPlace.SetId = (int)p.SetId;
+                            nPlace.SetName = p.SetName;
+                            nPlace.AreaId = (int)p.AreaId;
+                            nPlace.AreaName = p.AreaName;
+                            nPlace.Processes.Add(p);
+                            Places.Add(nPlace);
+                        }
                     }
-                    else
+                    if (Places.Any())
                     {
-                        //no place like that yet. Have to create new one
-                        Place nPlace = new Place();
-                        nPlace.PlaceId = p.PlaceId;
-                        nPlace.Name = p.PlaceName;
-                        nPlace.SetId = (int)p.SetId;
-                        nPlace.SetName = p.SetName;
-                        nPlace.AreaId = (int)p.AreaId;
-                        nPlace.AreaName = p.AreaName;
-                        nPlace.Processes.Add(p);
-                        Places.Add(nPlace);
+                        foreach (Place pl in Places)
+                        {
+                            PlaceViewModel vm = new PlaceViewModel(pl);
+                            List.Add(vm);
+                        }
                     }
                 }
-                if (Places.Any())
+                else
                 {
-                    foreach(Place pl in Places)
+                    //get list of places
+                    foreach (Process p in Items)
                     {
-                        PlaceViewModel vm = new PlaceViewModel(pl);
-                        List.Add(vm);
+                        int pId = p.PlaceId;
+
+                        if (Places.Where(pl => pl.PlaceId == pId).Any())
+                        {
+                            //there's already such a place
+                            Place nPlace = Places.Where(pl => pl.PlaceId == pId).FirstOrDefault();
+                            nPlace.Processes.Add(p);
+                        }
+                        else
+                        {
+                            //no place like that yet. Have to create new one
+                            Place nPlace = new Place();
+                            nPlace.PlaceId = p.PlaceId;
+                            nPlace.Name = p.PlaceName;
+                            nPlace.SetId = (int)p.SetId;
+                            nPlace.SetName = p.SetName;
+                            nPlace.AreaId = (int)p.AreaId;
+                            nPlace.AreaName = p.AreaName;
+                            nPlace.Processes.Add(p);
+                            Places.Add(nPlace);
+                        }
+                    }
+                    if (Places.Any())
+                    {
+                        foreach (Place pl in Places)
+                        {
+                            PlaceViewModel vm = new PlaceViewModel(pl);
+                            List.Add(vm);
+                        }
                     }
                 }
+                
             }
-            IsWorking = false;
-            return _Result;
         }
 
         private void ExecuteHeaderClickCommand(PlaceViewModel item)
@@ -143,6 +208,11 @@ namespace TestZXing.ViewModels
             {
                 SelectedItem = null;
             }
+        }
+
+        public async void HidePlannedToggled()
+        {
+            PopulateListbox();
         }
 
         public bool IsWorking

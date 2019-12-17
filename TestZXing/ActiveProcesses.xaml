@@ -8,6 +8,27 @@
              Title="{Binding Title}">
     <ContentPage.Content>
         <StackLayout>
+            <Grid Margin="0,20,0,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Label Margin="10,0,0,0" Text="Ukryj planowane"
+                       FontSize="Large"
+                       FontAttributes="Bold"
+                       TextColor="DeepSkyBlue"
+                       Grid.Row="0"
+                       Grid.Column="0"/>
+                <Switch x:Name="swiHidePlanned"
+                        IsToggled="{Binding HidePlanned}"
+                        Toggled="Switch_Toggled"
+                        Grid.Row="0"
+                        Grid.Column="1"/>
+            </Grid>
+            
             <ListView
                 x:Name="lstPlaces"
                 ItemsSource="{Binding List}"

@@ -15,7 +15,7 @@ using Xamarin.Forms;
 
 namespace TestZXing.Models
 {
-    public class Process : INotifyPropertyChanged
+    public class Process
     {
         public int ProcessId { get; set; }
         public string Description { get; set; }
@@ -25,22 +25,7 @@ namespace TestZXing.Models
         public DateTime? FinishedOn { get; set; }
         public int? FinishedBy { get; set; }
         public string FinishedByName { get; set; }
-        private Nullable<DateTime> _PlannedStart { get; set; }
-        public Nullable<DateTime> PlannedStart
-        {
-            get
-            {
-                return _PlannedStart;
-            }
-            set
-            {
-                if (value != _PlannedStart)
-                {
-                    _PlannedStart = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public Nullable<DateTime> PlannedStart { get; set; }
         public Nullable<DateTime> PlannedFinish { get; set; }
         public int ActionTypeId { get; set; }
         public string ActionTypeName { get; set; }
@@ -137,6 +122,27 @@ namespace TestZXing.Models
         public int? OpenHandlings { get; set; }
         public int? AllHandlings { get; set; }
 
+        public string PlannedFor
+        {
+            get
+            {
+                string plStart = "??";
+                string plFinish = "??";
+
+                if (PlannedStart != null)
+                {
+                    plStart = PlannedStart.Value.ToString("dd.MM.yyyy");
+                }
+
+                if (PlannedFinish != null)
+                {
+                    plFinish = PlannedFinish.Value.ToString("dd.MM.yyyy");
+                }
+
+                return plStart + " - " + plFinish;
+            }
+        }
+
         public string TimingVsPlan
         {
             get
@@ -177,7 +183,6 @@ namespace TestZXing.Models
                         return Color.Green;
                     }
                 }
-
             }
         }
 

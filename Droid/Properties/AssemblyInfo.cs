@@ -10,7 +10,7 @@ using Android.App;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("(c) Alessandro Caliaro")]
+[assembly: AssemblyCopyright("(c) Robert Roszak")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: UsesPermission(Android.Manifest.Permission.AccessNetworkState)]
