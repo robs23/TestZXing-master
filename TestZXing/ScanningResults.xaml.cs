@@ -20,13 +20,13 @@ namespace TestZXing
         ProcessInPlaceViewModel vm;
         List<Process> Pros;
 
-        public ScanningResults (List<Process>Proses, Place nPlace)
+        public ScanningResults (Place nPlace)
 		{
 			InitializeComponent ();
-            Pros = Proses;
+            //Pros = Proses;
             Place = nPlace;
             Keeper = new PlacesKeeper();
-            vm = new ProcessInPlaceViewModel(Pros);
+            vm = new ProcessInPlaceViewModel();
             BindingContext = vm;
             lblScanResult.Text = Place.Name;
         }
@@ -38,7 +38,8 @@ namespace TestZXing
             try
             {
                 Pros = await Place.GetProcesses(true);
-                vm = new ProcessInPlaceViewModel(Pros);
+                vm = new ProcessInPlaceViewModel();
+                vm.Update(Pros);
                 BindingContext = vm;
             }
             catch (Exception ex)

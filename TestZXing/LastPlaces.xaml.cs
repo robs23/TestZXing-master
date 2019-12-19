@@ -42,12 +42,11 @@ namespace TestZXing
                 return;
             await PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
             Place Place = ((Place)((ListView)sender).SelectedItem);
-            List<Process> Pros = new List<Process>();
+
             try
             {
-                Pros = await Place.GetProcesses(true);
                 if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
-                await Navigation.PushAsync(new ScanningResults(Pros, Place));
+                await Navigation.PushAsync(new ScanningResults( Place));
 
             }
             catch (Exception ex)

@@ -16,7 +16,20 @@ namespace TestZXing.ViewModels
     {
         public ObservableCollection<ProcessItem> Items { get; set; }
 
-        public ProcessInPlaceViewModel(List<Process> nItems)
+        public ProcessInPlaceViewModel()
+        {
+            
+        }
+
+        public string Icon
+        {
+            get
+            {
+                return Static.RuntimeSettings.CurrentUser.Icon;
+            }
+        }
+
+        public void Update(List<Process> nItems)
         {
             Items = new ObservableCollection<ProcessItem>();
 
@@ -45,7 +58,8 @@ namespace TestZXing.ViewModels
                         pi.Status = p.Status;
                         Items.Add(pi);
                     }
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
 
                 }
@@ -53,16 +67,9 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public string Icon
-        {
-            get
-            {
-                return Static.RuntimeSettings.CurrentUser.Icon;
-            }
-        }
-
         public void Initialize()
         {
+            
             OnPropertyChanged(nameof(Icon));
         }
 

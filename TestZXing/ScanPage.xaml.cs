@@ -124,12 +124,10 @@ namespace TestZXing
                                     }
                                     else
                                     {
-                                        List<Process> Pros = new List<Process>();
                                         try
                                         {
-                                            Pros = await Place.GetProcesses(true);
                                             //await DisplayAlert("Czas", $"Zajęło {(DateTime.Now - _start).TotalMilliseconds} sekund", "Ok");
-                                            await Navigation.PushAsync(new ScanningResults(Pros, Place));
+                                            await Navigation.PushAsync(new ScanningResults(Place));
 
                                         }
                                         catch (Exception ex)
