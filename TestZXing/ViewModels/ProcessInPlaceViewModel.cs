@@ -49,8 +49,18 @@ namespace TestZXing.ViewModels
                         if (p.LastStatus != null)
                         {
                             //try to show last status if available
-                            pi.Description = p.LastStatus.ToString() + " " + p.LastStatusOn + " przez " + p.LastStatusByName + Environment.NewLine + "Aktualnie obsługujących: " + p.OpenHandlings;
-                        }
+
+                            if (p.LastStatus == ProcessStatus.Planowany)
+                            {
+                                pi.Description = p.LastStatus.ToString() + " do wykonania " + p.PlannedFor + " dla " + p.AssignedUserNames +  Environment.NewLine + "Aktualnie obsługujących: " + p.OpenHandlings;
+                            }
+                            else
+                            {
+                                pi.Description = p.LastStatus.ToString() + " " + p.LastStatusOn + " przez " + p.LastStatusByName + Environment.NewLine + "Aktualnie obsługujących: " + p.OpenHandlings;
+                            }
+                            
+
+                         }
                         else
                         {
                             pi.Description = "Utworzono " + p.CreatedOn.ToString() + " przez " + p.CreatedByName;

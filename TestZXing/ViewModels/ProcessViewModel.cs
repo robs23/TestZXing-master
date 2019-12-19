@@ -25,7 +25,7 @@ namespace TestZXing.ViewModels
                 {
                     if(_process.LastStatus == ProcessStatus.Planowany)
                     {
-                        return _process.LastStatus.ToString() + " do wykonania " + _process.PlannedFor + Environment.NewLine + "Aktualnie obsługujących: " + _process.OpenHandlings;
+                        return _process.LastStatus.ToString() + " do wykonania " + _process.PlannedFor + " dla " + _process.AssignedUserNames + Environment.NewLine + "Aktualnie obsługujących: " + _process.OpenHandlings;
                     }
                     else
                     {

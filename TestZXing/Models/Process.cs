@@ -121,6 +121,7 @@ namespace TestZXing.Models
         public DateTime? LastStatusOn { get; set; }
         public int? OpenHandlings { get; set; }
         public int? AllHandlings { get; set; }
+        public string AssignedUserNames { get; set; }
 
         public string PlannedFor
         {
