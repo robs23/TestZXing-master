@@ -25,7 +25,7 @@ namespace TestZXing
             BindingContext = vm;
         }
 
-        public ProcessPage(int PlaceId, Process Process)
+        public ProcessPage(int PlaceId, Models.Process Process)
         {
             //existing
             InitializeComponent();
@@ -41,7 +41,7 @@ namespace TestZXing
             BindingContext = vm;
         }
 
-        public ProcessPage(MesString ms, Process Process)
+        public ProcessPage(MesString ms, Models.Process Process)
         {
             //From MES, existing
             InitializeComponent();

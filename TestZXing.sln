@@ -1,8 +1,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2015
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestZXing", "TestZXing\TestZXing.csproj", "{E12AF761-8481-4112-8738-8CCE1C5ABC2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestZXing", "TestZXing\TestZXing.csproj", "{E12AF761-8481-4112-8738-8CCE1C5ABC2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestZXing.iOS", "iOS\TestZXing.iOS.csproj", "{257F5AEF-5D1C-4DB1-AF6E-1F1860172F95}"
 EndProject
