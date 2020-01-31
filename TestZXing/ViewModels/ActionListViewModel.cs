@@ -48,6 +48,14 @@ namespace TestZXing.ViewModels
 
                 CheckedItems = new ObservableCollection<ProcessAction>(ProcessActionKeeper.Items);
                 Items = new ObservableCollection<IActionKeeper>(CheckedItems);
+                foreach(var item in Items)
+                {
+                    if ((bool)item.IsChecked)
+                    {
+                        //if item has been saved as checked, don't let anyone change it
+                        item.IsMutable = false;
+                    }
+                }
             }
             else
             {
@@ -212,7 +220,7 @@ namespace TestZXing.ViewModels
         {
             List<Task<string>> listOfTask = new List<Task<string>>();
 
-            foreach(ProcessAction pa in CheckedItems)
+            foreach(ProcessAction pa in CheckedItems.Where(p=>(bool)p.IsMutable))
             {
 
                 pa.HandlingId = handlingId;

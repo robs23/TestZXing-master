@@ -42,6 +42,8 @@ namespace TestZXing.Models
             }
         }
 
+        public bool? IsMutable { get; set; }
+
         public List<DateTime?> LastChecks { get; set; }
 
         public DateTime? LastCheck { get

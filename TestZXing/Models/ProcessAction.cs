@@ -28,6 +28,23 @@ namespace TestZXing.Models
         public int? HandlingId { get; set; }
         public string Type { get; set; }
         public int? PlaceId { get; set; }
+        public bool? _IsMutable { get; set; } = true;
+
+        public bool? IsMutable
+        {
+            get
+            {
+                return _IsMutable;
+            }
+            set
+            {
+                if (value != _IsMutable)
+                {
+                    _IsMutable = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public bool IsRequired
         {

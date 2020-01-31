@@ -18,6 +18,7 @@ namespace TestZXing.Interfaces
         string Type { get; set; }
         bool IsRequired { get; }
         bool? IsChecked { get; set; }
+        bool? IsMutable { get; set; } //can it be changed? Not, if it was saved already..
         List<DateTime?> LastChecks { get; set; }
         DateTime? LastCheck { get;  }
     }

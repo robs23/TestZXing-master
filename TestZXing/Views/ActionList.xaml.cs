@@ -29,25 +29,33 @@ namespace TestZXing.Views
         {
             if (e.Item == null)
                 return;
-            if ((bool)((IActionKeeper)e.Item).IsChecked)
+            if ((bool)((IActionKeeper)e.Item).IsMutable)
             {
-                ((IActionKeeper)e.Item).IsChecked = false;
-                IActionKeeper item = ((IActionKeeper)e.Item);
-                if (vm.CheckedItems.Any(i => i.ActionId == item.ActionId))
+                if ((bool)((IActionKeeper)e.Item).IsChecked)
                 {
-                    vm.CheckedItems.Remove(vm.CheckedItems.FirstOrDefault(i => i.ActionId == item.ActionId));
+                    ((IActionKeeper)e.Item).IsChecked = false;
+                    IActionKeeper item = ((IActionKeeper)e.Item);
+                    if (vm.CheckedItems.Any(i => i.ActionId == item.ActionId))
+                    {
+                        vm.CheckedItems.Remove(vm.CheckedItems.FirstOrDefault(i => i.ActionId == item.ActionId));
+                    }
+                }
+                else
+                {
+                    ((IActionKeeper)e.Item).IsChecked = true;
+                    IActionKeeper item = ((IActionKeeper)e.Item);
+                    if (!vm.CheckedItems.Any(i => i.ActionId == item.ActionId))
+                    {
+                        vm.CheckedItems.Add(ToProcessAction(item));
+                    }
+
                 }
             }
             else
             {
-                ((IActionKeeper)e.Item).IsChecked = true;
-                IActionKeeper item = ((IActionKeeper)e.Item);
-                if (!vm.CheckedItems.Any(i => i.ActionId == item.ActionId))
-                {
-                    vm.CheckedItems.Add(ToProcessAction(item));
-                }
-
+                DependencyService.Get<IToaster>().LongAlert($"Czynność została oznaczona jako wykonana w innej obsłudze i nie można jej zmienić..");
             }
+            
                 
 
             //Deselect Item

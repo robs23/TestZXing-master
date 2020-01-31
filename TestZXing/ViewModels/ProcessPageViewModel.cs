@@ -843,7 +843,7 @@ namespace TestZXing.ViewModels
             
             if(_res=="OK" && EndValidation && ActionsApplicable)
             {
-                _res = ActionListVm.Validate();
+                //_res = ActionListVm.Validate();
             }
             
             return _res;

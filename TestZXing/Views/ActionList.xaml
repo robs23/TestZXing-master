@@ -48,13 +48,15 @@
                                 Source="tick_green.png"
                                 Grid.Row="0"
                                 Grid.Column="0"
-                                IsVisible="{Binding IsChecked}"/>
+                                IsVisible="{Binding IsChecked}"
+                                IsEnabled="{Binding IsMutable}"/>
                                 <Label
                             Text="{Binding ActionName}"
                             LineBreakMode="WordWrap"
                             Style="{DynamicResource ListItemTextStyle}"
                             FontSize="Medium"
                             FontAttributes="Bold"
+                            IsEnabled="{Binding IsMutable}"
                             Grid.Row="0"
                             Grid.Column="1"/>
                                 <Image
@@ -80,6 +82,7 @@
                                 <Label
                                 Text="Czas: "
                                 LineBreakMode="WordWrap"
+                                IsEnabled="{Binding IsMutable}"
                                 Style="{DynamicResource ListItemTextStyle}"
                                 FontSize="Small"
                                 FontAttributes="None"
@@ -88,6 +91,7 @@
                                 <Label
                                 Text="{Binding GivenTime}"
                                 LineBreakMode="WordWrap"
+                                IsEnabled="{Binding IsMutable}"
                                 Style="{DynamicResource ListItemTextStyle}"
                                 FontSize="Small"
                                 FontAttributes="None"
@@ -97,11 +101,13 @@
                                 Text="Typ"
                                 FontSize="Small"
                                 FontAttributes="None"
+                                IsEnabled="{Binding IsMutable}"
                                 Grid.Row="0"
                                 Grid.Column="2"/>
                                 <Label x:Name="lblX"
                                 Text="{Binding Type}"
                                 FontSize="Small"
+                                IsEnabled="{Binding IsMutable}"
                                 FontAttributes="None"
                                 Grid.Row="0"
                                 Grid.Column="3"/>
@@ -109,11 +115,13 @@
                                 Text="Ostatnio: "
                                 FontSize="Small"
                                 FontAttributes="None"
+                                IsEnabled="{Binding IsMutable}"
                                 Grid.Row="0"
                                 Grid.Column="4"/>
                                 <Label Text="{Binding LastCheck}"
                                 FontSize="Small"
                                 FontAttributes="None"
+                                IsEnabled="{Binding IsMutable}"
                                 Grid.Row="0"
                                 Grid.Column="5"/>
                             </Grid>
