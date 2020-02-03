@@ -225,15 +225,17 @@ namespace TestZXing.ViewModels
 
                 pa.HandlingId = handlingId;
                 pa.ProcessId = processId;
-                if (pa.ProcessActionId == 0)
+                if ((bool)pa.IsMutable && (bool)pa.IsChecked)
                 {
-                    listOfTask.Add(pa.Add());
-                }
-                else
-                {
-                    listOfTask.Add(pa.Edit());
-                }
-                
+                    if (pa.ProcessActionId == 0)
+                    {
+                        listOfTask.Add(pa.Add());
+                    }
+                    else
+                    {
+                        listOfTask.Add(pa.Edit());
+                    }
+                }    
             }
 
             IEnumerable<string> results = await Task.WhenAll<string>(listOfTask);
