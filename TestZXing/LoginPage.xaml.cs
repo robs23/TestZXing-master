@@ -38,7 +38,7 @@ namespace TestZXing
             base.OnAppearing();
             try
             {
-                await PopupNavigation.Instance.PushAsync(new LoadingScreen(),true); // Show loading screen
+                await PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
                 string _Result = await keeper.Reload();
                 if (_Result == "OK")
                 {
@@ -59,7 +59,7 @@ namespace TestZXing
                     var closer = DependencyService.Get<ICloseApplication>();
                     closer?.closeApplication();
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -68,14 +68,14 @@ namespace TestZXing
             }
             finally
             {
-                
+
             }
             if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }
         }
 
         private async void btnLogin_Clicked(object sender, EventArgs e)
         {
-            if (cmbUsernames.SelectedItem==null || String.IsNullOrEmpty(txtPassword.Text) == true)
+            if (cmbUsernames.SelectedItem == null || String.IsNullOrEmpty(txtPassword.Text) == true)
             {
                 await DisplayAlert("Podaj dane", "Nie wybrano użytkownika z listy rozwijanej lub nie podano hasła!", "OK");
             }
@@ -96,8 +96,9 @@ namespace TestZXing
                     await DisplayAlert("Błędne dane", "Podano błędne hasło!", "OK");
                 }
             }
-            
+
         }
+
 
         private async Task CreateBackup()
         {

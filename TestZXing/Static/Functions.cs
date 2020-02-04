@@ -1,4 +1,6 @@
 ﻿using Microsoft.AppCenter.Crashes;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,6 +15,7 @@ using TestZXing.Interfaces;
 using TestZXing.Models;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using ZXing.Net.Mobile.Forms;
 
 namespace TestZXing.Static
 {
@@ -222,6 +225,7 @@ namespace TestZXing.Static
             }
         }
 
+        
 
     }
 }

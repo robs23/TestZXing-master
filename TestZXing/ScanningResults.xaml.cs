@@ -19,12 +19,14 @@ namespace TestZXing
         PlacesKeeper Keeper;
         ProcessInPlaceViewModel vm;
         List<Process> Pros;
+        bool IsQrConfirmed;
 
-        public ScanningResults (Place nPlace)
+        public ScanningResults (Place nPlace, bool isQrConfirmed=false)
 		{
 			InitializeComponent ();
             //Pros = Proses;
             Place = nPlace;
+            IsQrConfirmed = isQrConfirmed;
             Keeper = new PlacesKeeper();
             vm = new ProcessInPlaceViewModel();
             BindingContext = vm;
@@ -76,7 +78,7 @@ namespace TestZXing
                 if (vm.SelectedItem.Id == 0)
                 {
                     //create new
-                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId));
+                    await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId, IsQrConfirmed));
                 }
                 else
                 {
@@ -100,7 +102,7 @@ namespace TestZXing
                         Process process = Pros.Where(p => p.ProcessId == vm.SelectedItem.Id).FirstOrDefault();
                         if (process != null)
                         {
-                            await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId, process));
+                            await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(Place.PlaceId, process, IsQrConfirmed));
                         }
                     }                    
                 }

@@ -35,53 +35,61 @@ namespace TestZXing.ViewModels
             //get all the placeActions of this placeId and processActions for this process
             //and fill the list in
 
-            CheckedItems = new ObservableCollection<ProcessAction>();
-            Items = new ObservableCollection<IActionKeeper>();
-
-            if (ProcessId != 0)
+            try
             {
-                var processReload = Task.Run(() => ProcessActionKeeper.Reload($"ProcessId={ProcessId}"));
-                var placeReload = Task.Run(() => PlaceActionKeeper.Reload($"PlaceId={PlaceId}"));
+                CheckedItems = new ObservableCollection<ProcessAction>();
+                Items = new ObservableCollection<IActionKeeper>();
 
-                //go no further till both tasks complete
-                await Task.WhenAll(processReload, placeReload);
-
-                CheckedItems = new ObservableCollection<ProcessAction>(ProcessActionKeeper.Items);
-                Items = new ObservableCollection<IActionKeeper>(CheckedItems);
-                foreach(var item in Items)
+                if (ProcessId != 0)
                 {
-                    if ((bool)item.IsChecked)
+                    var processReload = Task.Run(() => ProcessActionKeeper.Reload($"ProcessId={ProcessId}"));
+                    var placeReload = Task.Run(() => PlaceActionKeeper.Reload($"PlaceId={PlaceId}"));
+
+                    //go no further till both tasks complete
+                    await Task.WhenAll(processReload, placeReload);
+
+                    CheckedItems = new ObservableCollection<ProcessAction>(ProcessActionKeeper.Items);
+                    Items = new ObservableCollection<IActionKeeper>(CheckedItems);
+                    foreach (var item in Items)
                     {
-                        //if item has been saved as checked, don't let anyone change it
-                        item.IsMutable = false;
+                        if ((bool)item.IsChecked)
+                        {
+                            //if item has been saved as checked, don't let anyone change it
+                            item.IsMutable = false;
+                        }
                     }
                 }
-            }
-            else
-            {
-                var placeReload = Task.Run(() => PlaceActionKeeper.Reload($"PlaceId={PlaceId}"));
-
-                //go no further till task complete
-                await Task.WhenAll(placeReload);
-            }
-
-            
-            foreach(PlaceAction p in PlaceActionKeeper.Items)
-            {
-                if (!CheckedItems.Any(i => i.ActionId == p.ActionId))
+                else
                 {
-                    Items.Add(p);
+                    var placeReload = Task.Run(() => PlaceActionKeeper.Reload($"PlaceId={PlaceId}"));
+
+                    //go no further till task complete
+                    await Task.WhenAll(placeReload);
                 }
-                
+
+
+                foreach (PlaceAction p in PlaceActionKeeper.Items)
+                {
+                    if (!CheckedItems.Any(i => i.ActionId == p.ActionId))
+                    {
+                        Items.Add(p);
+                    }
+
+                }
+                IsInitialized = true;
+                if (Items.Any())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            IsInitialized = true;
-            if (Items.Any())
+            catch (Exception ex)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+
+                throw;
             }
             
         }

@@ -17,19 +17,19 @@ namespace TestZXing
     public partial class ProcessPage : ContentPage
     {
         ProcessPageViewModel vm;
-        public ProcessPage(int PlaceId)
+        public ProcessPage(int PlaceId, bool IsQrConfirmed=false)
         {
             //new one
             InitializeComponent();
-            vm = new ProcessPageViewModel(PlaceId);
+            vm = new ProcessPageViewModel(PlaceId, IsQrConfirmed);
             BindingContext = vm;
         }
 
-        public ProcessPage(int PlaceId, Models.Process Process)
+        public ProcessPage(int PlaceId, Models.Process Process, bool IsQrConfirmed=false)
         {
             //existing
             InitializeComponent();
-            vm = new ProcessPageViewModel(PlaceId, Process);
+            vm = new ProcessPageViewModel(PlaceId, Process, IsQrConfirmed);
             BindingContext = vm;
         }
 
@@ -41,11 +41,11 @@ namespace TestZXing
             BindingContext = vm;
         }
 
-        public ProcessPage(MesString ms, Models.Process Process)
+        public ProcessPage(MesString ms, Models.Process Process, bool IsQrConfirmed=false)
         {
             //From MES, existing
             InitializeComponent();
-            vm = new ProcessPageViewModel(ms, Process);
+            vm = new ProcessPageViewModel(ms, Process, IsQrConfirmed);
             BindingContext = vm;
         }
 
@@ -56,7 +56,7 @@ namespace TestZXing
         {
             bool _ToClose = false;
             bool _toPause = false;
-            string _Res = vm.Validate(true);
+            string _Res = await vm.Validate(true);
             if (_Res=="OK")
             {
                 if(true)//await vm.AreThereOpenHandlingsLeft() == "No")
@@ -98,7 +98,8 @@ namespace TestZXing
 
         private async void btnChangeState_Clicked(object sender, EventArgs e)
         {
-            string _Res = vm.Validate();
+            string _Res = await vm.Validate();
+
             if (_Res == "OK")
             {
                 string _Result = await vm.Save();
@@ -115,6 +116,7 @@ namespace TestZXing
             {
                 await DisplayAlert("Dane niepełne", _Res, "OK");
             }
+
         }
 
         protected async override void OnAppearing()

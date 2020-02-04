@@ -106,7 +106,7 @@ namespace TestZXing
                                         }
                                         else
                                         {
-                                            await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms, nProcess));
+                                            await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms, nProcess, true));
                                         }
                                     }catch(Exception ex)
                                     {
@@ -127,7 +127,7 @@ namespace TestZXing
                                         try
                                         {
                                             //await DisplayAlert("Czas", $"Zajęło {(DateTime.Now - _start).TotalMilliseconds} sekund", "Ok");
-                                            await Navigation.PushAsync(new ScanningResults(Place));
+                                            await Navigation.PushAsync(new ScanningResults(Place, true));
 
                                         }
                                         catch (Exception ex)

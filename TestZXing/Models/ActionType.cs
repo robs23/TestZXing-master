@@ -20,6 +20,9 @@ namespace TestZXing.Models
         public bool? MesSync { get; set; }
         public bool? RequireInitialDiagnosis { get; set; }
         public bool? AllowDuplicates { get; set; }
+        public bool? RequireQrToStart { get; set; }
+        public bool? RequireQrToFinish { get; set; }
+        public bool? ClosePreviousInSamePlace { get; set; }
 
         public override string ToString()
         {

@@ -42,7 +42,23 @@ namespace TestZXing.Models
             }
         }
 
-        public bool? IsMutable { get; set; }
+        public bool? _IsMutable { get; set; } = true;
+
+        public bool? IsMutable
+        {
+            get
+            {
+                return _IsMutable;
+            }
+            set
+            {
+                if (value != _IsMutable)
+                {
+                    _IsMutable = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public List<DateTime?> LastChecks { get; set; }
 

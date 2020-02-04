@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using TestZXing.Models;
 using TestZXing.Interfaces;
 using TestZXing.Static;
+using TestZXing.Classes;
+using ZXing.Mobile;
 
 namespace TestZXing.ViewModels
 {
@@ -53,22 +55,25 @@ namespace TestZXing.ViewModels
         public ActionListViewModel ActionListVm { get; set; }
         public ProcessKeeper Processes = new ProcessKeeper();
 
-        public ProcessPageViewModel(int PlaceId)
+        public ProcessPageViewModel(int PlaceId, bool isQrConfirmed)
         {
             _thisProcess = new Process();
             _thisProcess.PlaceId = PlaceId;
+            IsQrConfirmed = isQrConfirmed;
             _this = new Handling();
             IsNew = true;
             IsProcessOpen = false; //not known till we have it checked
+            
             //Initialize();
 
 
         }
 
-        public ProcessPageViewModel(int PlaceId, Process Process)
+        public ProcessPageViewModel(int PlaceId, Process Process, bool isQrConfirmed)
         {
             _thisProcess = Process;
             _thisProcess.PlaceId = PlaceId;
+            IsQrConfirmed = isQrConfirmed;
             _this = new Handling();
             IsProcessOpen = true;
             if (!_thisProcess.IsActive && !_thisProcess.IsFrozen)
@@ -99,6 +104,7 @@ namespace TestZXing.ViewModels
             _thisProcess.Reason = ms.Reason;
             _thisProcess.MesDate = ms.MesDate;
             _thisProcess.MesId = ms.MesId;
+            IsQrConfirmed = true;
             _this = new Handling();
             IsNew = true;
             IsProcessOpen = false;
@@ -106,11 +112,12 @@ namespace TestZXing.ViewModels
             MesString = ms;
         }
 
-        public ProcessPageViewModel(MesString ms, Process process)
+        public ProcessPageViewModel(MesString ms, Process process, bool isQrConfirmed)
         {
             _thisProcess = process;
             _thisProcess.Reason = ms.Reason;
             _thisProcess.MesDate = ms.MesDate;
+            IsQrConfirmed = isQrConfirmed;
             _this = new Handling();
             IsNew = false;
             IsProcessOpen = true;
@@ -229,6 +236,22 @@ namespace TestZXing.ViewModels
             
         }
 
+        public bool _IsQrConfirmed { get; set; }
+        public bool IsQrConfirmed
+        {
+            get
+            {
+                return _IsQrConfirmed;
+            }
+            set
+            {
+                if (value != _IsQrConfirmed)
+                {
+                    _IsQrConfirmed = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public int ChangeStateButtonCount
         {
@@ -314,13 +337,15 @@ namespace TestZXing.ViewModels
                     if (value == false)
                     {
                         //PopupNavigation.Instance.PopAsync(true); // Hide loading screen
-                        if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); } 
+                        if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }
+                        _IsWorking = value;
                     }
                     else
                     {
                         PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
+                        _IsWorking = value;
                     }
-                    _IsWorking = value;
+                    
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsIdle));
                     OnPropertyChanged(nameof(IsOpen));
@@ -692,86 +717,128 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public async Task<string> ValidateQr()
+        {
+            bool qrToStart = false;
+            string _Result = "OK";
+
+            try
+            {
+                if (ActionTypes.Where(a => a.ActionTypeId == _thisProcess.ActionTypeId).FirstOrDefault().RequireQrToStart != null)
+                {
+                    qrToStart = (bool)ActionTypes.Where(a => a.ActionTypeId == _thisProcess.ActionTypeId).FirstOrDefault().RequireQrToStart;
+                }
+
+
+                if (qrToStart)
+                {
+                    //qr is required to start, but maybe we're already scanned
+                    if (!IsQrConfirmed)
+                    {
+                        //no, we're not scanned yet
+                        //Scan
+                        QrHandler qrHandler = new QrHandler();
+                        _Result = await qrHandler.Scan();
+                        
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return _Result;
+        }
+
         public async Task<string> Save()
         {
             string _Result = "OK";
 
             IsWorking = true;
+            
+
             try
             {
-                // Taking care of process
-                
-                if (!this.IsProcessOpen)
-                {
-                    //if the process doesn't exist yet, open it now
-                    _thisProcess.CreatedBy = RuntimeSettings.UserId;
-                    _thisProcess.TenantId = RuntimeSettings.TenantId;
-                    _thisProcess.StartedBy = RuntimeSettings.UserId;
-                    _thisProcess.StartedOn = DateTime.Now;
-                    _thisProcess.Status = "Rozpoczęty";
-                    _thisProcess.CreatedOn = DateTime.Now;
-                    _Result = await _thisProcess.Add();
-                    IsProcessOpen = true;
-                }
-                else
-                {
-                    // There must be new process edit logic..
-                    if (_thisProcess.Status == "Wstrzymany" || _thisProcess.Status == "Planowany")
-                    {
-                        _thisProcess.Status = "Rozpoczęty";
-                    }
-                    if (_thisProcess.StartedOn == null)
-                    {
-                        //it's planned process, open but NOT started yet..
-                        _thisProcess.StartedOn = DateTime.Now;
-                        _thisProcess.StartedBy = RuntimeSettings.CurrentUser.UserId;
-                    }
-                    _Result = await _thisProcess.Edit();
-                }
 
-                // Taking care of handling
-                if (_Result == "OK")
+                // Taking care of process
+
+                if(_Result == "OK")
                 {
-                    if (this.IsNew)
+                    if (!this.IsProcessOpen)
                     {
-                        //this handling is completely new, create it
-                        //But first, let's make sure User don't have any other open handligs elsewhere. If he does, let's complete them first
-                        HandlingKeeper Handlings = new HandlingKeeper();
-                        _Result = await Handlings.CompleteUsersHandlings();
-                        if (_Result == "OK")
-                        {
-                            _this.StartedOn = DateTime.Now;
-                            _this.UserId = RuntimeSettings.UserId;
-                            _this.TenantId = RuntimeSettings.TenantId;
-                            _this.Status = "Rozpoczęty";
-                            _this.ProcessId = _thisProcess.ProcessId;
-                            _Result = await _this.Add();
-                            IsNew = false;
-                            OnPropertyChanged(nameof(NextState));
-                        }
+                        //if the process doesn't exist yet, open it now
+                        _thisProcess.CreatedBy = RuntimeSettings.UserId;
+                        _thisProcess.TenantId = RuntimeSettings.TenantId;
+                        _thisProcess.StartedBy = RuntimeSettings.UserId;
+                        _thisProcess.StartedOn = DateTime.Now;
+                        _thisProcess.Status = "Rozpoczęty";
+                        _thisProcess.CreatedOn = DateTime.Now;
+                        _Result = await _thisProcess.Add();
+                        IsProcessOpen = true;
                     }
                     else
                     {
-                        if (_this.Status == "Rozpoczęty")
+                        // There must be new process edit logic..
+                        if (_thisProcess.Status == "Wstrzymany" || _thisProcess.Status == "Planowany")
                         {
-                            _this.Status = "Wstrzymany";
+                            _thisProcess.Status = "Rozpoczęty";
                         }
-                        else if (_this.Status == "Wstrzymany" || _this.Status == "Planowany")
+                        if (_thisProcess.StartedOn == null)
                         {
-                            _this.Status = "Rozpoczęty";
+                            //it's planned process, open but NOT started yet..
+                            _thisProcess.StartedOn = DateTime.Now;
+                            _thisProcess.StartedBy = RuntimeSettings.CurrentUser.UserId;
                         }
-                        _Result = await _this.Edit();
-                        OnPropertyChanged(nameof(NextState));
+                        _Result = await _thisProcess.Edit();
                     }
-                    if (_Result == "OK" && ActionsApplicable && HasActions)
-                    {
-                        //Save actions if there are any
 
-                        _Result = await ActionListVm.Save(_this.HandlingId, _thisProcess.ProcessId);
+                    // Taking care of handling
+                    if (_Result == "OK")
+                    {
+                        if (this.IsNew)
+                        {
+                            //this handling is completely new, create it
+                            //But first, let's make sure User don't have any other open handligs elsewhere. If he does, let's complete them first
+                            HandlingKeeper Handlings = new HandlingKeeper();
+                            _Result = await Handlings.CompleteUsersHandlings();
+                            if (_Result == "OK")
+                            {
+                                _this.StartedOn = DateTime.Now;
+                                _this.UserId = RuntimeSettings.UserId;
+                                _this.TenantId = RuntimeSettings.TenantId;
+                                _this.Status = "Rozpoczęty";
+                                _this.ProcessId = _thisProcess.ProcessId;
+                                _Result = await _this.Add();
+                                IsNew = false;
+                                OnPropertyChanged(nameof(NextState));
+                            }
+                        }
+                        else
+                        {
+                            if (_this.Status == "Rozpoczęty")
+                            {
+                                _this.Status = "Wstrzymany";
+                            }
+                            else if (_this.Status == "Wstrzymany" || _this.Status == "Planowany")
+                            {
+                                _this.Status = "Rozpoczęty";
+                            }
+                            _Result = await _this.Edit();
+                            OnPropertyChanged(nameof(NextState));
+                        }
+                        if (_Result == "OK" && ActionsApplicable && HasActions)
+                        {
+                            //Save actions if there are any
+
+                            _Result = await ActionListVm.Save(_this.HandlingId, _thisProcess.ProcessId);
+                        }
+                        RuntimeSettings.CurrentUser.IsWorking = true;
+                        OnPropertyChanged(nameof(Icon));
                     }
-                    RuntimeSettings.CurrentUser.IsWorking = true;
-                    OnPropertyChanged(nameof(Icon));
                 }
+                
+                
             }
             catch (Exception ex)
             {
@@ -784,7 +851,7 @@ namespace TestZXing.ViewModels
 
         
 
-        public string Validate(bool EndValidation = false)
+        public async Task<string> Validate(bool EndValidation = false)
         {
             string _res = "OK";
             if (EndValidation)
@@ -840,6 +907,7 @@ namespace TestZXing.ViewModels
                     _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
                 }
             }
+            _res = await ValidateQr();
             
             if(_res=="OK" && EndValidation && ActionsApplicable)
             {
