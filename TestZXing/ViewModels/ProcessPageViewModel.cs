@@ -13,6 +13,7 @@ using TestZXing.Interfaces;
 using TestZXing.Static;
 using TestZXing.Classes;
 using ZXing.Mobile;
+using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
 {
@@ -52,6 +53,7 @@ namespace TestZXing.ViewModels
         public MesString MesString { get; set; }
         public Process _thisProcess { get; set; }
         public Handling _this { get; set; }
+        public Place CurrentPlace { get; set; }
         public ActionListViewModel ActionListVm { get; set; }
         public ProcessKeeper Processes = new ProcessKeeper();
 
@@ -159,6 +161,25 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public async Task InitializeCurrentPlace()
+        {
+            try
+            {
+                if(_thisProcess.PlaceId != 0 && !IsQrConfirmed)
+                {
+                    PlacesKeeper placesKeeper = new PlacesKeeper();
+
+                    Task<Place> CurrentPlaceTask = Task.Run(() => placesKeeper.GetPlace(_thisProcess.PlaceId));
+                    CurrentPlace = await CurrentPlaceTask;
+                }
+                
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task Initialize(int AtId = -1)
         {
             try
@@ -199,7 +220,8 @@ namespace TestZXing.ViewModels
                     SelectedIndex = index;
                 }
 
-                Task.Run(() => InitializeActions());
+                Task.Run(() => InitializeActions()); //get actions associated with this process
+                Task.Run(() => InitializeCurrentPlace()); //get current place data
                 //load places to combobox
                 if (_IsMesRelated)
                 {
@@ -717,28 +739,59 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public async Task<string> ValidateQr()
+        public async Task<string> ValidateQr(bool EndValidation = false)
         {
             bool qrToStart = false;
+            bool qrToFinish = false;
             string _Result = "OK";
 
             try
             {
+                
                 if (ActionTypes.Where(a => a.ActionTypeId == _thisProcess.ActionTypeId).FirstOrDefault().RequireQrToStart != null)
                 {
                     qrToStart = (bool)ActionTypes.Where(a => a.ActionTypeId == _thisProcess.ActionTypeId).FirstOrDefault().RequireQrToStart;
                 }
+                if (ActionTypes.Where(a => a.ActionTypeId == _thisProcess.ActionTypeId).FirstOrDefault().RequireQrToFinish != null)
+                {
+                    qrToStart = (bool)ActionTypes.Where(a => a.ActionTypeId == _thisProcess.ActionTypeId).FirstOrDefault().RequireQrToFinish;
+                }
 
 
-                if (qrToStart)
+                if ((qrToStart && !EndValidation) || (qrToFinish && EndValidation))
                 {
                     //qr is required to start, but maybe we're already scanned
                     if (!IsQrConfirmed)
                     {
                         //no, we're not scanned yet
                         //Scan
+                        //what QR text should it be?
+                        //download asynchronously
+                        DependencyService.Get<IToaster>().LongAlert($"Zmiana statusu wymaga zeskanowania kodu QR zasobu..");
                         QrHandler qrHandler = new QrHandler();
-                        _Result = await qrHandler.Scan();
+                        try
+                        {
+                            string qrToken = await qrHandler.Scan();
+                            if (CurrentPlace == null)
+                            {
+                                DependencyService.Get<IToaster>().LongAlert($"Próbuje pobrać kod zasobu..");
+                                await InitializeCurrentPlace();
+                            }
+                            if (qrToken == CurrentPlace.PlaceToken)
+                            {
+                                //scanned code matches
+                                IsQrConfirmed = true;
+                                _Result = "OK";
+                            }
+                            else
+                            {
+                                _Result = "Zeskanowany kod nie odpowiada kodowi zasobu.. Spróbuj jeszcze raz";
+                            }
+                        }catch(Exception ex)
+                        {
+                            _Result = ex.Message;
+                        }
+                        
                         
                     }
                 }
@@ -907,7 +960,7 @@ namespace TestZXing.ViewModels
                     _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
                 }
             }
-            _res = await ValidateQr();
+            _res = await ValidateQr(EndValidation);
             
             if(_res=="OK" && EndValidation && ActionsApplicable)
             {

@@ -92,7 +92,7 @@ namespace TestZXing
             else
             {
 
-                await DisplayAlert("Dane niepełne", _Res , "OK");
+                await DisplayAlert("Uups.. Coś poszło nie tak..", _Res , "OK");
             }
         }
 
@@ -114,7 +114,7 @@ namespace TestZXing
             }
             else
             {
-                await DisplayAlert("Dane niepełne", _Res, "OK");
+                await DisplayAlert("Uups.. Coś poszło nie tak..", _Res, "OK");
             }
 
         }

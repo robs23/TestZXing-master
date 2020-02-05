@@ -72,6 +72,36 @@ namespace TestZXing.Models
             return nPlace;
         }
 
+        public async Task<Place> GetPlace(int id)
+        {
+            string url = Secrets.ApiAddress + "GetPlace?token=" + Secrets.TenantToken + "&id=" + id;
+            DataService ds = new DataService();
+            Place nPlace = new Place();
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    string output = await ds.readStream(responseMsg);
+                    nPlace = JsonConvert.DeserializeObject<Place>(output);
+                }
+                else
+                {
+                    nPlace = null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                nPlace = null;
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetPlace), this.GetType().Name);
+                throw;
+            }
+            return nPlace;
+        }
+
         public async Task<List<Place>> GetPlacesBySetName(string name)
         {
             string url = Secrets.ApiAddress + "GetPlacesBySetName?token=" + Secrets.TenantToken + "&name=" + name + "&UserId=" + RuntimeSettings.UserId;
