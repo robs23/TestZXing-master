@@ -269,6 +269,32 @@ namespace TestZXing.Models
             return _Result;
         }
 
+        public async Task<string> CompleteAllProcessesOfTheTypeInThePlace(string reason)
+        {
+            string url = Secrets.ApiAddress + "CompleteAllProcessesOfTheTypeInThePlace?token=" + Secrets.TenantToken + $"&thePlace={this.PlaceId}&theType={this.ActionTypeId}&excludeProcess={this.ProcessId}&UserId={RuntimeSettings.CurrentUser.UserId}&reasonForClosure={reason}";
+            string _Result = "OK";
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                var serializedProduct = JsonConvert.SerializeObject(this);
+                var content = new StringContent(serializedProduct, Encoding.UTF8, "application/json");
+                HttpResponseMessage result = await Static.Functions.GetPostRetryAsync(() => httpClient.PutAsync(url, content), TimeSpan.FromSeconds(3));
+                //var result = await httpClient.PutAsync(String.Format(url, this.ProcessId, RuntimeSettings.UserId), content);
+                if (!result.IsSuccessStatusCode)
+                {
+                    _Result = result.ReasonPhrase;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Result = ex.Message;
+                Static.Functions.CreateError(ex, "No connection", nameof(this.CompleteAllProcessesOfTheTypeInThePlace), this.GetType().Name);
+            }
+
+            return _Result;
+        }
+
         private async Task<string> CreateTpmEntry()
         {
             string url = Secrets.MesApiAddress + "CreateTpmEntry";

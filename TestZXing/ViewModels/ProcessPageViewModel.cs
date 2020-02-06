@@ -557,7 +557,8 @@ namespace TestZXing.ViewModels
                         _thisProcess.ActionTypeId = ActionTypes[value].ActionTypeId;
                         _thisProcess.ActionTypeName = ActionTypes[value].Name;
                         Type = ActionTypes[value];
-                        if ((bool)!Type.AllowDuplicates) //check if there's open process of this type ONLY if AllowDuplicates property = false
+                        if (Type.ClosePreviousInSamePlace == null) { Type.ClosePreviousInSamePlace = false; }
+                        if ((bool)!Type.AllowDuplicates && !(bool)Type.ClosePreviousInSamePlace) //check if there's open process of this type ONLY if AllowDuplicates property = false and ClosePreviousInSamePlace <> true
                         {
                             Process nProcess = null;
                             Task.Run(async () =>
@@ -842,6 +843,10 @@ namespace TestZXing.ViewModels
                             //it's planned process, open but NOT started yet..
                             _thisProcess.StartedOn = DateTime.Now;
                             _thisProcess.StartedBy = RuntimeSettings.CurrentUser.UserId;
+                            if ((bool)Type.ClosePreviousInSamePlace)
+                            {
+                                Task.Run(() => _thisProcess.CompleteAllProcessesOfTheTypeInThePlace("Zamknięte ponieważ nowsze zgłoszenie tego typu zostało rozpoczęte"));
+                            }
                         }
                         _Result = await _thisProcess.Edit();
                     }
