@@ -755,7 +755,7 @@ namespace TestZXing.ViewModels
                 }
                 if (ActionTypes.Where(a => a.ActionTypeId == _thisProcess.ActionTypeId).FirstOrDefault().RequireQrToFinish != null)
                 {
-                    qrToStart = (bool)ActionTypes.Where(a => a.ActionTypeId == _thisProcess.ActionTypeId).FirstOrDefault().RequireQrToFinish;
+                    qrToFinish = (bool)ActionTypes.Where(a => a.ActionTypeId == _thisProcess.ActionTypeId).FirstOrDefault().RequireQrToFinish;
                 }
 
 
