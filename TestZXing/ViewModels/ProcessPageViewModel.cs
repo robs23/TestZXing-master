@@ -843,9 +843,12 @@ namespace TestZXing.ViewModels
                             //it's planned process, open but NOT started yet..
                             _thisProcess.StartedOn = DateTime.Now;
                             _thisProcess.StartedBy = RuntimeSettings.CurrentUser.UserId;
-                            if ((bool)Type.ClosePreviousInSamePlace)
+                            if (Type.ClosePreviousInSamePlace != null)
                             {
-                                Task.Run(() => _thisProcess.CompleteAllProcessesOfTheTypeInThePlace("Zamknięte ponieważ nowsze zgłoszenie tego typu zostało rozpoczęte"));
+                                if ((bool)Type.ClosePreviousInSamePlace)
+                                {
+                                    Task.Run(() => _thisProcess.CompleteAllProcessesOfTheTypeInThePlace("Zamknięte ponieważ nowsze zgłoszenie tego typu zostało rozpoczęte"));
+                                }
                             }
                         }
                         _Result = await _thisProcess.Edit();
