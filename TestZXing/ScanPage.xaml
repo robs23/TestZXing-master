@@ -32,6 +32,11 @@
                      Priority="2"
                      Order="Secondary"
                      Clicked="BtnWifiStatus_Clicked"/>
+        <ToolbarItem Name="btnVersion"
+                     Text="Wersja aplikacji"
+                     Priority="2"
+                     Order="Secondary"
+                     Clicked="btnVersion_Clicked"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="15,20">

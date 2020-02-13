@@ -23,12 +23,14 @@ namespace TestZXing
         public App()
         {
             MainPage = new NavigationPage(new LoginPage());
+            Xamarin.Essentials.VersionTracking.Track();
         }
 
         public App(string filePath)
         {
             MainPage = new NavigationPage(new LoginPage());
             Static.RuntimeSettings.LocalDbPath = filePath;
+            Xamarin.Essentials.VersionTracking.Track();
         }
 
         protected override void OnStart()

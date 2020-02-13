@@ -241,5 +241,12 @@ namespace TestZXing
             Application.Current.MainPage.Navigation.PushAsync(new SearchPage());
             //Application.Current.MainPage.Navigation.PushAsync(new ActionList(4359,10));
         }
+
+        private void btnVersion_Clicked(object sender, EventArgs e)
+        {
+            string ver = "";
+            ver = VersionTracking.CurrentVersion;
+            DependencyService.Get<IToaster>().LongAlert($"Zainstalowana wersja: {ver}");
+        }
     }
 }
