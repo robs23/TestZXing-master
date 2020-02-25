@@ -5,19 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
+using TestZXing.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace TestZXing
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SearchPage : ContentPage
+    public partial class PartsPage : ContentPage
     {
-        SQLiteConnection db = new SQLiteConnection(Static.RuntimeSettings.LocalDbPath);
+        //SQLiteConnection db = new SQLiteConnection(Static.RuntimeSettings.LocalDbPath);
+        PartsPageViewModel vm;
 
-        public SearchPage()
+        public PartsPage()
         {
             InitializeComponent();
+            vm = new PartsPageViewModel();
+            BindingContext = vm;
         }
 
 
@@ -25,9 +29,9 @@ namespace TestZXing
         {
             var keyword = txtSearch.Text.ToLower();
 
-            var suggestions = db.Table<Part>().Where(v => v.Name.ToLower().Contains(keyword) || v.Symbol.ToLower().Contains(keyword)).Select(v=>v.Name);
+            //var suggestions = db.Table<Part>().Where(v => v.Name.ToLower().Contains(keyword) || v.Symbol.ToLower().Contains(keyword)).Select(v=>v.Name);
 
-            lstSuggestions.ItemsSource = suggestions;
+            //lstSuggestions.ItemsSource = suggestions;
         }
 
         protected async override void OnAppearing()

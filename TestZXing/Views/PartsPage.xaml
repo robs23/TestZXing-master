@@ -2,8 +2,9 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:testzxing="clr-namespace:TestZXing"
-             x:Class="TestZXing.SearchPage"
-             Title="Szukaj">
+             x:Class="TestZXing.PartsPage"
+             Title="Części"
+             Appearing="{Binding ReloadCommand}">
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
             <SearchBar x:Name="txtSearch" 
@@ -12,9 +13,9 @@
                    HorizontalTextAlignment="Center" 
                    TextColor="CadetBlue"
                    TextChanged="TxtSearch_TextChanged"></SearchBar>
-            <ListView x:Name="lstSuggestions">
-                
-            </ListView>
+            <CollectionView x:Name="lstSuggestions"
+                            ItemsSource="{Binding Items}">
+            </CollectionView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

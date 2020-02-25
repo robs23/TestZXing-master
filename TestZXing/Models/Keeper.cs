@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -14,31 +15,29 @@ namespace TestZXing.Models
 {
     public abstract class Keeper<T>
     {
-        public List<T> Items { get; set; }
+        public ObservableCollection<T> Items { get; set; }
         protected abstract string ObjectName { get; }
         protected abstract string PluralizedObjectName { get; }
 
         public Keeper()
         {
-            Items = new List<T>();
+            Items = new ObservableCollection<T>();
         }
 
-        public async Task Reload(string query=null)
+        public async Task Reload(string query = null, int? page = null, int? pageSize=null)
         {
             string url = Secrets.ApiAddress + $"Get{PluralizedObjectName}?token=" + Secrets.TenantToken;
             DataService ds = new DataService();
-            if (query != null)
-            {
-                url += $"&query={query}";
-            }
-            
+            if (page != null){ url += $"&page={page}"; }
+            if (pageSize != null) { url += $"&pageSize={pageSize}"; }
+            if (query != null){ url += $"&query={query}"; }
 
             try
             {
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
                 string output = await ds.readStream(responseMsg);
-                Items = JsonConvert.DeserializeObject<List<T>>(output);
+                Items = JsonConvert.DeserializeObject<ObservableCollection<T>>(output);
             }
             catch (Exception ex)
             {
