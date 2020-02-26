@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using MvvmHelpers;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;

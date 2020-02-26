@@ -37,6 +37,7 @@ namespace TestZXing
         protected async override void OnAppearing()
         {
             base.OnAppearing();
+            vm.Reload();
             txtSearch.Focus();
         }
     }

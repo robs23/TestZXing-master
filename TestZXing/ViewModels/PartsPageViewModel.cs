@@ -1,4 +1,5 @@
-﻿using MvvmHelpers.Commands;
+﻿using MvvmHelpers;
+using MvvmHelpers.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,32 +8,59 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TestZXing.Interfaces;
 using TestZXing.Models;
 using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
 {
-    public class PartsPageViewModel : INotifyPropertyChanged
+    public class PartsPageViewModel : ObservableObject
     {
         public PartKeeper Keeper { get; set; }
 
-        public ICommand ReloadCommand { get; }
+        
 
         public PartsPageViewModel()
         {
             Keeper = new PartKeeper();
-            ReloadCommand = new AsyncCommand(Reload);
+            ItemTreshold = 5;
+            PageSize = 15;
+            ReloadCommand = new AsyncCommand<string>(Reload);
+            ItemTresholdReachedCommand = new AsyncCommand(ItemTresholdReached);
         }
 
-        private async Task Reload()
+        public int CurrentPage { get; set; }
+        public int PageSize { get; set; }
+
+        public ICommand ReloadCommand { get; }
+        public async Task Reload(string query = null)
         {
-            await Keeper.Reload(null, 1, 50);
+            CurrentPage = 1;
+            Items = new ObservableRangeCollection<Part>();
+            await Keeper.Reload(query, 1, PageSize);
+            Items.AddRange(Keeper.Items);
+        }
+
+        public ICommand ItemTresholdReachedCommand { get; }
+        public async Task ItemTresholdReached()
+        {
+            try
+            {
+                CurrentPage++;
+                await Keeper.Reload(null, CurrentPage, PageSize);
+                Items.AddRange(Keeper.Items);
+            }catch(Exception ex)
+            {
+                //Show IsWorking here
+                DependencyService.Get<IToaster>().LongAlert($"Error: {ex.Message}");
+            }
+            
 
         }
 
-        private  ObservableCollection<Part> _Items { get; set; }
+        ObservableRangeCollection<Part> _Items;
 
-        public ObservableCollection<Part> Items
+        public ObservableRangeCollection<Part> Items
         {
             get
             {
@@ -40,6 +68,7 @@ namespace TestZXing.ViewModels
             }
             set
             {
+                SetProperty(ref _Items, value);
                 if (value != _Items)
                 {
                     _Items = value;
@@ -47,11 +76,18 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        int _ItemTreshold;
 
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        public int ItemTreshold
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            get
+            {
+                return _ItemTreshold;
+            }
+            set
+            {
+                SetProperty(ref _ItemTreshold, value);
+            }
         }
     }
 }
