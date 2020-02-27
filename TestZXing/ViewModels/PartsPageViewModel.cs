@@ -52,7 +52,7 @@ namespace TestZXing.ViewModels
             }catch(Exception ex)
             {
                 //Show IsWorking here
-                DependencyService.Get<IToaster>().LongAlert($"Error: {ex.Message}");
+                DependencyService.Get<IToaster>().ShortAlert($"Error: {ex.Message}");
             }
             
 
@@ -75,6 +75,7 @@ namespace TestZXing.ViewModels
                 }
             }
         }
+
 
         int _ItemTreshold;
 

@@ -30,6 +30,8 @@ namespace TestZXing.Models
         public string Appliance { get; set; }
         public string UsedOn { get; set; }
         public string Token { get; set; }
+
+        public string Image { get; set; }
         public string Identifier
         {
             get
@@ -50,6 +52,21 @@ namespace TestZXing.Models
                 {
                     return $"ID: {this.PartId}";
                 }
+            }
+        }
+
+        public string ImageUrl
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(this.Image))
+                {
+                    return Static.Secrets.ApiAddress + Static.RuntimeSettings.ThumbnailsPath + this.Image;
+                }
+                else
+                {
+                    return "Image_placeholder_128.png";
+                }  
             }
         }
     }

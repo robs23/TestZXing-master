@@ -15,5 +15,7 @@ namespace TestZXing.Static
         public static string LocalDbPath { get; set; }
         public static string ConnectionErrorText { get { return "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz"; } }
         public static string ConnectionErrorTitle { get { return "Brak połączenia"; } }
+
+        public static string ThumbnailsPath { get { return "Files/Thumbnails/"; } }
     }
 }
