@@ -25,18 +25,36 @@ namespace TestZXing.ViewModels
             Keeper = new PartKeeper();
             ItemTreshold = 5;
             PageSize = 15;
-            ReloadCommand = new AsyncCommand<string>(Reload);
+            ReloadCommand = new AsyncCommand(Reload);
             ItemTresholdReachedCommand = new AsyncCommand(ItemTresholdReached);
         }
 
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }
 
-        public ICommand ReloadCommand { get; }
-        public async Task Reload(string query = null)
+        string _SearchQuery;
+        public string SearchQuery
         {
+            get
+            {
+                return _SearchQuery;
+            }
+            set
+            {
+                SetProperty(ref _SearchQuery, value);
+            }
+        }
+        public ICommand ReloadCommand { get; }
+
+        public async Task Reload()
+        {
+            string query = null;
             CurrentPage = 1;
             Items = new ObservableRangeCollection<Part>();
+            if (!string.IsNullOrWhiteSpace(SearchQuery))
+            {
+                query = $"Name.ToLower().Contains(\"{SearchQuery.ToLower()}\")";
+            }
             await Keeper.Reload(query, 1, PageSize);
             Items.AddRange(Keeper.Items);
         }
@@ -69,10 +87,6 @@ namespace TestZXing.ViewModels
             set
             {
                 SetProperty(ref _Items, value);
-                if (value != _Items)
-                {
-                    _Items = value;
-                }
             }
         }
 
