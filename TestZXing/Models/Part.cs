@@ -59,13 +59,13 @@ namespace TestZXing.Models
         {
             get
             {
-                if (!string.IsNullOrEmpty(this.Image))
+                if (!string.IsNullOrWhiteSpace(this.Image))
                 {
                     return Static.Secrets.ApiAddress + Static.RuntimeSettings.ThumbnailsPath + this.Image;
                 }
                 else
                 {
-                    return "Image_placeholder_128.png";
+                    return "image_placeholder_128.png";
                 }  
             }
         }

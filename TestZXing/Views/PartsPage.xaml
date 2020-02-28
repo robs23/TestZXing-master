@@ -35,7 +35,7 @@
                                     <ColumnDefinition Width="7*"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <StackLayout Padding="10" Grid.Column="0">
-                                    <Image Source="{Binding ImageUrl}"/>
+                                    <Image HeightRequest="100" Source="{Binding ImageUrl}"/>
                                 </StackLayout>
                                 <StackLayout Padding="10" Grid.Column="1">
                                     <Grid>
