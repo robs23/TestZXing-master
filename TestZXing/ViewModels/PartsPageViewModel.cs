@@ -53,10 +53,32 @@ namespace TestZXing.ViewModels
             Items = new ObservableRangeCollection<Part>();
             if (!string.IsNullOrWhiteSpace(SearchQuery))
             {
-                query = $"Name.ToLower().Contains(\"{SearchQuery.ToLower()}\")";
+                query = "";
+                string[] keys = SearchQuery.Split(' ');
+                for (int i = 0; i < keys.Length; i++)
+                {
+                    if (!string.IsNullOrWhiteSpace(query))
+                    {
+                        query += " AND ";
+                        query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\"))";
+                    }
+                    else
+                    {
+                        query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\"))";
+                    }
+
+                }
             }
             await Keeper.Reload(query, 1, PageSize);
-            Items.AddRange(Keeper.Items);
+            if(Keeper.Items.Count > 0)
+            {
+                Items.AddRange(Keeper.Items);
+            }
+            else
+            {
+                DependencyService.Get<IToaster>().ShortAlert("Brak wyników");
+            }
+            
         }
 
         public ICommand ItemTresholdReachedCommand { get; }
@@ -64,9 +86,31 @@ namespace TestZXing.ViewModels
         {
             try
             {
+                string query = null;
                 CurrentPage++;
-                await Keeper.Reload(null, CurrentPage, PageSize);
-                Items.AddRange(Keeper.Items);
+                if (!string.IsNullOrWhiteSpace(SearchQuery))
+                {
+                    query = "";
+                    string[] keys = SearchQuery.Split(' ');
+                    for (int i = 0; i < keys.Length; i++)
+                    {
+                        if (!string.IsNullOrWhiteSpace(query)) 
+                        { 
+                            query += " AND ";
+                            query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\"))";
+                        }
+                        else
+                        {
+                            query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\"))";
+                        }
+                        
+                    }
+                }
+                await Keeper.Reload(query, CurrentPage, PageSize);
+                if(Keeper.Items.Count > 0)
+                {
+                    Items.AddRange(Keeper.Items);
+                }
             }catch(Exception ex)
             {
                 //Show IsWorking here
