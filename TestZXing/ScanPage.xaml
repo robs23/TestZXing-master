@@ -45,12 +45,12 @@
                     TextColor="White"
                     BackgroundColor="DeepSkyBlue"
                     Clicked="btnScan_Clicked"/>
-            <testzxing:RoundedButton x:Name="btnSearch"
+            <testzxing:RoundedButton x:Name="btnParts"
                     Margin="0,20,0,0"
-                    Text="Szukaj"
+                    Text="Części"
                     TextColor="White"
                     BackgroundColor="DeepSkyBlue"
-                    Clicked="BtnSearch_Clicked"/>
+                    Clicked="BtnParts_Clicked"/>
             <testzxing:RoundedButton x:Name="btnOpenProcesses"
                     Margin="0,20,0,0"
                     Text="Otwarte zgłoszenia"

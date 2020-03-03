@@ -24,13 +24,6 @@ namespace TestZXing
             BindingContext = vm;
         }
 
-
-        private void TxtSearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            var keyword = txtSearch.Text.ToLower();
-
-        }
-
         protected async override void OnAppearing()
         {
             base.OnAppearing();

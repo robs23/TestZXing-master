@@ -236,10 +236,9 @@ namespace TestZXing
             Application.Current.MainPage.Navigation.PushAsync(new DiaryPage());
         }
 
-        private void BtnSearch_Clicked(object sender, EventArgs e)
+        private void BtnParts_Clicked(object sender, EventArgs e)
         {
             Application.Current.MainPage.Navigation.PushAsync(new PartsPage());
-            //Application.Current.MainPage.Navigation.PushAsync(new ActionList(4359,10));
         }
 
         private void btnVersion_Clicked(object sender, EventArgs e)

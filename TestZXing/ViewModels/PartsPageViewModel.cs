@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TestZXing.Classes;
 using TestZXing.Interfaces;
 using TestZXing.Models;
 using Xamarin.Forms;
@@ -26,11 +27,26 @@ namespace TestZXing.ViewModels
             ItemTreshold = 5;
             PageSize = 15;
             ReloadCommand = new AsyncCommand(Reload);
+            ScanCommand = new AsyncCommand(Scan);
             ItemTresholdReachedCommand = new AsyncCommand(ItemTresholdReached);
         }
 
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }
+
+        bool _IsWorking;
+        public bool IsWorking
+        {
+            get { return _IsWorking; }
+            set
+            {
+                bool isChanged = SetProperty(ref _IsWorking, value);
+                if (isChanged)
+                {
+                    OnPropertyChanged(nameof(EmptyViewCaption));
+                }
+            }
+        }
 
         string _SearchQuery;
         public string SearchQuery
@@ -44,12 +60,46 @@ namespace TestZXing.ViewModels
                 SetProperty(ref _SearchQuery, value);
             }
         }
+
+        public string EmptyViewCaption
+        {
+            get
+            {
+                if (IsWorking)
+                {
+                    return "Trwa wczytywanie..";
+                }
+                else
+                {
+                    return "Brak danych spełniających kryteria.";
+                }
+            }
+        }
+
+        public ICommand ScanCommand { get; }
+
+        public async Task Scan()
+        {
+            try
+            {
+                QrHandler qr = new QrHandler();
+                string res = await qr.Scan();
+                res = res.Replace("<Part>", "");
+                SearchQuery = res;
+            }
+            catch(Exception ex)
+            {
+
+            }
+        }
+
         public ICommand ReloadCommand { get; }
 
         public async Task Reload()
         {
             try
             {
+                IsWorking = true;
                 string query = null;
                 CurrentPage = 1;
                 Items = new ObservableRangeCollection<Part>();
@@ -65,6 +115,7 @@ namespace TestZXing.ViewModels
             {
                 DependencyService.Get<IToaster>().ShortAlert($"Error: {ex.Message}");
             }
+            IsWorking = false;
         }
 
         private string GetQueryString()
@@ -80,7 +131,7 @@ namespace TestZXing.ViewModels
                     {
                         query += " AND ";
                     }
-                    query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\"))";
+                    query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\") OR Token==\"{keys[i]}\")";
                 }
             }
             return query;
@@ -91,6 +142,7 @@ namespace TestZXing.ViewModels
         {
             try
             {
+                IsWorking = true;
                 string query = null;
                 CurrentPage++;
 
@@ -106,6 +158,7 @@ namespace TestZXing.ViewModels
             {
                 DependencyService.Get<IToaster>().ShortAlert($"Error: {ex.Message}");
             }
+            IsWorking = false;
 
         }
 
