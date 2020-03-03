@@ -48,9 +48,28 @@ namespace TestZXing.ViewModels
 
         public async Task Reload()
         {
+            try
+            {
+                string query = null;
+                CurrentPage = 1;
+                Items = new ObservableRangeCollection<Part>();
+
+                query = GetQueryString();
+                
+                await Keeper.Reload(query, CurrentPage, PageSize);
+                if (Keeper.Items.Count > 0)
+                {
+                    Items.AddRange(Keeper.Items);
+                }
+            }catch(Exception ex)
+            {
+                DependencyService.Get<IToaster>().ShortAlert($"Error: {ex.Message}");
+            }
+        }
+
+        private string GetQueryString()
+        {
             string query = null;
-            CurrentPage = 1;
-            Items = new ObservableRangeCollection<Part>();
             if (!string.IsNullOrWhiteSpace(SearchQuery))
             {
                 query = "";
@@ -60,25 +79,11 @@ namespace TestZXing.ViewModels
                     if (!string.IsNullOrWhiteSpace(query))
                     {
                         query += " AND ";
-                        query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\"))";
                     }
-                    else
-                    {
-                        query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\"))";
-                    }
-
+                    query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\"))";
                 }
             }
-            await Keeper.Reload(query, 1, PageSize);
-            if(Keeper.Items.Count > 0)
-            {
-                Items.AddRange(Keeper.Items);
-            }
-            else
-            {
-                DependencyService.Get<IToaster>().ShortAlert("Brak wyników");
-            }
-            
+            return query;
         }
 
         public ICommand ItemTresholdReachedCommand { get; }
@@ -88,35 +93,19 @@ namespace TestZXing.ViewModels
             {
                 string query = null;
                 CurrentPage++;
-                if (!string.IsNullOrWhiteSpace(SearchQuery))
-                {
-                    query = "";
-                    string[] keys = SearchQuery.Split(' ');
-                    for (int i = 0; i < keys.Length; i++)
-                    {
-                        if (!string.IsNullOrWhiteSpace(query)) 
-                        { 
-                            query += " AND ";
-                            query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\"))";
-                        }
-                        else
-                        {
-                            query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\"))";
-                        }
-                        
-                    }
-                }
+
+                query = GetQueryString();
+
                 await Keeper.Reload(query, CurrentPage, PageSize);
-                if(Keeper.Items.Count > 0)
+                if (Keeper.Items.Count > 0)
                 {
                     Items.AddRange(Keeper.Items);
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                //Show IsWorking here
                 DependencyService.Get<IToaster>().ShortAlert($"Error: {ex.Message}");
             }
-            
 
         }
 

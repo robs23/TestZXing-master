@@ -29,9 +29,6 @@ namespace TestZXing
         {
             var keyword = txtSearch.Text.ToLower();
 
-            //var suggestions = db.Table<Part>().Where(v => v.Name.ToLower().Contains(keyword) || v.Symbol.ToLower().Contains(keyword)).Select(v=>v.Name);
-
-            //lstSuggestions.ItemsSource = suggestions;
         }
 
         protected async override void OnAppearing()

@@ -22,7 +22,8 @@
                             ItemsSource="{Binding Items}"
                             VerticalOptions="FillAndExpand"
                             RemainingItemsThresholdReachedCommand="{Binding ItemTresholdReachedCommand}"
-                            RemainingItemsThreshold="{Binding ItemTreshold}">
+                            RemainingItemsThreshold="{Binding ItemTreshold}"
+                            EmptyView="Brak danych spełniających kryteria">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Padding="10">
