@@ -1,50 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:testzxing="clr-namespace:TestZXing"
-             xmlns:Behaviors="clr-namespace:TestZXing.Behaviors"
-             x:Class="TestZXing.PartsPage"
-             Title="Części">
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="TestZXing.Views.AssignedPartsPage">
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
-            <Grid Margin="5,10,5,10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="70"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="8*"></ColumnDefinition>
-                    <ColumnDefinition Width="2*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <SearchBar x:Name="txtSearch" 
-                   PlaceholderColor="Black"
-                   Placeholder="Wpisz nazwę, symbol lub producenta.." 
-                   HorizontalTextAlignment="Center" 
-                   TextColor="CadetBlue"
-                   Grid.Row="0"
-                   Grid.Column="0"
-                   SearchCommand="{Binding SearchCommand}"
-                   Text="{Binding SearchQuery}">
-                    <SearchBar.Behaviors>
-                        <Behaviors:SearchAsYouTypeBehavior SearchCommand="{Binding ReloadCommand}" />
-                    </SearchBar.Behaviors>
-                </SearchBar>
-                <testzxing:RoundedButton
-                    ImageSource="qrIcon.png"
-                    BackgroundColor="Green"
-                    x:Name="btnClose"
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Command="{Binding ScanCommand}"/>
-            </Grid>
-            
             <CollectionView x:Name="lstSuggestions"
                             ItemsSource="{Binding Items}"
                             VerticalOptions="FillAndExpand"
                             RemainingItemsThresholdReachedCommand="{Binding ItemTresholdReachedCommand}"
                             RemainingItemsThreshold="{Binding ItemTreshold}"
-                            EmptyView="{Binding EmptyViewCaption}"
-                            SelectionMode="Single"
-                            SelectionChanged="lstSuggestions_SelectionChanged">
+                            EmptyView="{Binding EmptyViewCaption}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Padding="10">
@@ -102,15 +70,35 @@
                                            Grid.Row="2"
                                            Grid.Column="1"/>
                                     </Grid>
-                                    
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Button BackgroundColor="DeepSkyBlue" 
+                                                x:Name="btnSearch" 
+                                                ImageSource="search.png"
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                Command="SearchCommand"/>
+                                        <Button BackgroundColor="Green" 
+                                                x:Name="btnScan" 
+                                                ImageSource="qrIcon.png"
+                                                Grid.Row="0"
+                                                Grid.Column="2"
+                                                Command="ScanCommand"/>
+
+                                    </Grid>
                                 </StackLayout>
                             </Grid>
                         </StackLayout>
-                        
-                        
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </StackLayout>
     </ContentPage.Content>
-</ContentPage>  
+</ContentPage>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,9 +11,18 @@ namespace TestZXing.Behaviors
 {
     public class SearchAsYouTypeBehavior : BehaviorBase<SearchBar>
     {
+        //private readonly IObservable<System.Reactive.EventPattern<Xamarin.Forms.TextChangedEventArgs>> _subscription;
+
         public const int DefaultMinimumSearchIntervalMiliseconds = 300;
 
         private CancellationTokenSource _cancellationTokenSource;
+
+        //public SearchAsYouTypeBehavior()
+        //{
+        //    _subscription = Observable.FromEventPattern<TextChangedEventArgs>(
+        //    handler => AssociatedObject.TextChanged += handler,
+        //    handler => AssociatedObject.TextChanged -= handler);
+        //}
 
         public static readonly BindableProperty SearchCommandProperty =
             BindableProperty.Create(nameof(SearchCommand), typeof(ICommand), typeof(SearchAsYouTypeBehavior),
@@ -56,6 +66,12 @@ namespace TestZXing.Behaviors
 
         private async void Search(object sender, TextChangedEventArgs textChangedEventArgs)
         {
+            //_subscription.Throttle(TimeSpan.FromMilliseconds(MinimumSearchIntervalMiliseconds));
+
+            //_subscription.ObserveOn(SynchronizationContext.Current);
+
+            //_subscription.Select(eventPattern => AssociatedObject.Text)
+            // .DistinctUntilChanged();
             _cancellationTokenSource?.Cancel();
 
             _cancellationTokenSource = new CancellationTokenSource();
@@ -74,10 +90,15 @@ namespace TestZXing.Behaviors
             {
                 // swallow
             }
-        }
+}
 
         private void ExecuteSearch()
         {
+            //_subscription.Subscribe(query => Device.BeginInvokeOnMainThread(() =>
+            //{
+            //    SearchCommand?.Execute(query);
+            //})
+            //);
             Device.BeginInvokeOnMainThread(() =>
             {
                 SearchCommand?.Execute(null);
@@ -86,5 +107,7 @@ namespace TestZXing.Behaviors
                     AssociatedObject.Focus();
             });
         }
+
+
     }
 }

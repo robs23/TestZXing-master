@@ -24,11 +24,39 @@ namespace TestZXing
             BindingContext = vm;
         }
 
+        public PartsPage(PartsPageViewModel _vm)
+        {
+            InitializeComponent();
+            vm = _vm;
+            BindingContext = vm;
+        }
+
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            vm.Reload();
+            if (!vm.IsInitilized)
+            {
+                vm.Initialize();
+            }
+            
             txtSearch.Focus();
+        }
+
+        private void lstSuggestions_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.CurrentSelection.FirstOrDefault() != null)
+            {
+                vm.SelectedItems.Add((Part)e.CurrentSelection.FirstOrDefault());
+                if(vm.Mode== PartsPageMode.PartsBrowser)
+                {
+                    //Open Part form
+                }
+                else
+                {
+                    Navigation.PopAsync();
+                }
+            }
+            lstSuggestions.SelectedItem = null;
         }
     }
 }

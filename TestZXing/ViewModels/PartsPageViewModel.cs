@@ -15,7 +15,7 @@ using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
 {
-    public class PartsPageViewModel : ObservableObject
+    public class PartsPageViewModel : BaseViewModel
     {
         public PartKeeper Keeper { get; set; }
 
@@ -31,11 +31,18 @@ namespace TestZXing.ViewModels
             ItemTresholdReachedCommand = new AsyncCommand(ItemTresholdReached);
         }
 
+        public async Task Initialize()
+        {
+            base.Initialize();
+            Reload();
+            SelectedItems = new ObservableRangeCollection<Part>();
+        }
+
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }
 
         bool _IsWorking;
-        public bool IsWorking
+        public override bool IsWorking
         {
             get { return _IsWorking; }
             set
@@ -76,6 +83,7 @@ namespace TestZXing.ViewModels
             }
         }
 
+
         public ICommand ScanCommand { get; }
 
         public async Task Scan()
@@ -85,7 +93,7 @@ namespace TestZXing.ViewModels
                 QrHandler qr = new QrHandler();
                 string res = await qr.Scan();
                 res = res.Replace("<Part>", "");
-                SearchQuery = res;
+                _SearchQuery = res;
             }
             catch(Exception ex)
             {
@@ -176,6 +184,20 @@ namespace TestZXing.ViewModels
             }
         }
 
+        ObservableRangeCollection<Part> _SelectedItems;
+
+        public ObservableRangeCollection<Part> SelectedItems
+        {
+            get
+            {
+                return _SelectedItems;
+            }
+            set
+            {
+                SetProperty(ref _SelectedItems, value);
+            }
+        }
+
 
         int _ItemTreshold;
 
@@ -190,5 +212,15 @@ namespace TestZXing.ViewModels
                 SetProperty(ref _ItemTreshold, value);
             }
         }
+
+
+
+        public PartsPageMode Mode { get; set; } = PartsPageMode.PartsBrowser;
+    }
+
+    public enum PartsPageMode
+    {
+        PartsBrowser,
+        PartsPicker
     }
 }
