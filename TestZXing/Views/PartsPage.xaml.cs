@@ -46,13 +46,14 @@ namespace TestZXing
         {
             if (e.CurrentSelection.FirstOrDefault() != null)
             {
-                vm.SelectedItems.Add((Part)e.CurrentSelection.FirstOrDefault());
+                
                 if(vm.Mode== PartsPageMode.PartsBrowser)
                 {
                     //Open Part form
                 }
                 else
                 {
+                    vm.SelectedItems.Add((Part)e.CurrentSelection.FirstOrDefault());
                     Navigation.PopAsync();
                 }
             }

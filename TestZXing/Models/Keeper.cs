@@ -63,5 +63,32 @@ namespace TestZXing.Models
             db.InsertOrReplaceAll(Items);
 
         }
+
+        public async Task<T> GetByToken(string Token)
+        {
+            string url = Secrets.ApiAddress + $"Get{ObjectName}?token=" + Secrets.TenantToken + $"&{ObjectName}sToken=" + Token;
+            DataService ds = new DataService();
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    string output = await ds.readStream(responseMsg);
+                    return JsonConvert.DeserializeObject<T>(output);
+                }
+                else
+                {
+                    return default(T);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetByToken), this.GetType().Name);
+                throw;
+            }
+        }
     }
 }

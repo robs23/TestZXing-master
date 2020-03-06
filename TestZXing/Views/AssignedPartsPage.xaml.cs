@@ -20,10 +20,23 @@ namespace TestZXing.Views
             BindingContext = vm;
         }
 
+        public AssignedPartsPage(AssignedPartsViewModel _vm)
+        {
+            InitializeComponent();
+            vm = _vm;
+            BindingContext = vm;
+        }
+
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            vm.Initialize();
+            if (!vm.IsInitilized)
+            {
+                vm.Initialize();
+            }
+            vm.Update();
+
+
         }
     }
 }

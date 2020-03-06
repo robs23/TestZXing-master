@@ -55,6 +55,7 @@ namespace TestZXing.ViewModels
         public Handling _this { get; set; }
         public Place CurrentPlace { get; set; }
         public ActionListViewModel ActionListVm { get; set; }
+        public AssignedPartsViewModel AssignedPartsVm { get; set; }
         public ProcessKeeper Processes = new ProcessKeeper();
 
         public ProcessPageViewModel(int PlaceId, bool isQrConfirmed)
@@ -161,6 +162,31 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public async Task InitializeParts()
+        {
+            try
+            {
+                if (_thisProcess.ProcessId > 0)
+                {
+                    //AssignedPartsVm = new AssignedPartsViewModel(_thisProcess.ProcessId);
+                    //check and download parts used to this process
+                    //functionality to be added later
+                    AssignedPartsVm = new AssignedPartsViewModel();
+                }
+                else
+                {
+                    AssignedPartsVm = new AssignedPartsViewModel();
+                }
+
+                Task<bool> AssignedPartsInitialization = null;
+                Task.Run(() => AssignedPartsVm.Initialize());
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task InitializeCurrentPlace()
         {
             try
@@ -221,6 +247,7 @@ namespace TestZXing.ViewModels
                 }
 
                 Task.Run(() => InitializeActions()); //get actions associated with this process
+                Task.Run(() => InitializeParts()); //get parts associated with this process
                 Task.Run(() => InitializeCurrentPlace()); //get current place data
                 //load places to combobox
                 if (_IsMesRelated)

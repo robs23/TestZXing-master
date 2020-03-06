@@ -4,101 +4,119 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="TestZXing.Views.AssignedPartsPage">
-    <ContentPage.Content>
-        <StackLayout Orientation="Vertical">
-            <CollectionView x:Name="lstSuggestions"
+             x:Class="TestZXing.Views.AssignedPartsPage"
+             Title="Użyte części">
+    <StackLayout Margin="12"
+                 Padding="18"
+                 Spacing="0"
+                 BackgroundColor="White"
+                 HorizontalOptions="Center"
+                 VerticalOptions="Center">
+        <CollectionView x:Name="lstSuggestions"
                             ItemsSource="{Binding Items}"
                             VerticalOptions="FillAndExpand"
-                            RemainingItemsThresholdReachedCommand="{Binding ItemTresholdReachedCommand}"
-                            RemainingItemsThreshold="{Binding ItemTreshold}"
-                            EmptyView="{Binding EmptyViewCaption}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout Padding="10">
-                            <Label Text="{Binding Name}"
+                            EmptyView="{Binding EmptyViewCaption}"
+                            Margin="0,5,0,20"
+                            SelectionMode="Multiple">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="5">
+                        <Label Text="{Binding Name}"
                                    FontAttributes="Bold"
                                    FontSize="Title"
                                    TextColor="Black"
                                    LineBreakMode="WordWrap"
                                    />
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="3*"></ColumnDefinition>
-                                    <ColumnDefinition Width="7*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <StackLayout Padding="10" Grid.Column="0">
-                                    <Image HeightRequest="100" Source="{Binding ImageUrl}"/>
-                                </StackLayout>
-                                <StackLayout Padding="10" Grid.Column="1">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"></RowDefinition>
-                                            <RowDefinition Height="Auto"></RowDefinition>
-                                            <RowDefinition Height="Auto"></RowDefinition>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Text="Producent: "
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"></ColumnDefinition>
+                                <ColumnDefinition Width="5*"></ColumnDefinition>
+                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <StackLayout Padding="10" Grid.Column="0">
+                                <Image HeightRequest="100" Source="{Binding ImageUrl}"/>
+                            </StackLayout>
+                            <StackLayout Padding="10" Grid.Column="1">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="Producent: "
                                            FontAttributes="Bold"
                                            Grid.Row="0"
                                            Grid.Column="0"
                                            />
-                                        <Label Text="{Binding ProducerName}"
+                                    <Label Text="{Binding ProducerName}"
                                            Grid.Row="0"
                                            Grid.Column="1"
                                            />
-                                        <Label Text="Symbol: "
+                                    <Label Text="Symbol: "
                                            FontAttributes="Bold"
                                            Grid.Row="1"
                                            Grid.Column="0"
                                            />
-                                        <Label Text="{Binding Symbol}"
+                                    <Label Text="{Binding Symbol}"
                                            Grid.Row="1"
                                            Grid.Column="1"/>
-                                        <Label Text="Opis: "
+                                    <Label Text="Opis: "
                                            FontAttributes="Bold"
                                            Grid.Row="2"
                                            Grid.Column="0"
                                            />
-                                        <Label Text="{Binding Description}"
+                                    <Label Text="{Binding Description}"
                                            Grid.Row="2"
                                            Grid.Column="1"/>
-                                    </Grid>
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"></RowDefinition>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="3*"></ColumnDefinition>
-                                            <ColumnDefinition Width="3*"></ColumnDefinition>
-                                            <ColumnDefinition Width="3*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <Button BackgroundColor="DeepSkyBlue" 
-                                                x:Name="btnSearch" 
-                                                ImageSource="search.png"
-                                                Grid.Row="0"
-                                                Grid.Column="1"
-                                                Command="SearchCommand"/>
-                                        <Button BackgroundColor="Green" 
-                                                x:Name="btnScan" 
-                                                ImageSource="qrIcon.png"
-                                                Grid.Row="0"
-                                                Grid.Column="2"
-                                                Command="ScanCommand"/>
-
-                                    </Grid>
-                                </StackLayout>
-                            </Grid>
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </StackLayout>
-    </ContentPage.Content>
+                                </Grid>
+                            </StackLayout>
+                            <Entry x:Name="txtAmount"
+                                   Text="{Binding Amount}"
+                                   Grid.Row="0"
+                                   Grid.Column="2"
+                                   HorizontalTextAlignment="Center"
+                                   FontAttributes="Bold"
+                                   />
+                            
+                       </Grid>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button BackgroundColor="Red"
+                    ImageSource="delete.png"
+                    Command="{Binding RemoveItemCommand}"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    IsVisible="{Binding AreItemsSelected}"/>
+            <Button BackgroundColor="DeepSkyBlue" 
+                    x:Name="btnSearch" 
+                    ImageSource="search.png"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Command="{Binding SearchCommand}"/>
+            <Button BackgroundColor="Green" 
+                    x:Name="btnScan" 
+                    ImageSource="qrIcon.png"
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Command="{Binding ScanCommand}"/>
+        </Grid>
+    </StackLayout>
 </ContentPage>

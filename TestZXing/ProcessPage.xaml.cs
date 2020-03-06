@@ -222,5 +222,10 @@ namespace TestZXing
                 }
             }
         }
+
+        private async void btnParts_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.MainPage.Navigation.PushAsync(new AssignedPartsPage(vm.AssignedPartsVm));
+        }
     }
 }

@@ -177,12 +177,15 @@ namespace TestZXing.Static
                     {
                         DependencyService.Get<IToaster>().LongAlert($"Próba {attempted}");
                     }
+
+
                     WiFiInfo w = await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
                     var formattedSsid = $"\"{Static.Secrets.PreferredWifi}\"";
                     if (w.SSID == formattedSsid)
                     {
                         tryCount = 1;
                     }
+                    
                     PingCts = new CancellationTokenSource();
                     var ping = Task.Run(() => DependencyService.Get<IWifiHandler>().PingHost(),PingCts.Token);
                     actionCts = new CancellationTokenSource();

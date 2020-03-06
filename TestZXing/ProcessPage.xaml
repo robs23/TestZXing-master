@@ -91,7 +91,8 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
                 <testzxing:RoundedButton
@@ -115,6 +116,15 @@
                 Clicked="BtnActions_Clicked"
                 Grid.Row="0"
                 Grid.Column="1"
+                />
+                <testzxing:RoundedButton
+                Margin="0,10,0,0"
+                x:Name="btnParts"
+                BackgroundColor="Green"
+                Image="spanner.png"
+                Clicked="btnParts_Clicked"
+                Grid.Row="0"
+                Grid.Column="2"
                 />
             </Grid>
             <testzxing:RoundedButton
