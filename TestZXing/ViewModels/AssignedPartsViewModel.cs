@@ -21,10 +21,13 @@ namespace TestZXing.ViewModels
         {
             ScanCommand = new AsyncCommand(Scan);
             SearchCommand = new AsyncCommand(Search);
-            RemoveItemCommand = new AsyncCommand(RemoveIem);
+            RemoveItemsCommand = new AsyncCommand(RemoveItems);
             Items = new ObservableRangeCollection<PartUsage>();
+            SelectedItems = new ObservableRangeCollection<PartUsage>();
             PartKeeper = new PartKeeper();
         }
+
+        
 
         public async Task Initialize()
         {
@@ -61,6 +64,7 @@ namespace TestZXing.ViewModels
         }
 
         public PartsPageViewModel PartsPageViewModel { get; set; }
+
 
         public async Task Scan()
         {
@@ -108,11 +112,32 @@ namespace TestZXing.ViewModels
             Application.Current.MainPage.Navigation.PushAsync(new PartsPage(PartsPageViewModel));
         }
 
-        public ICommand RemoveItemCommand { get; }
+        public ICommand RemoveItemsCommand { get; }
 
-        private Task RemoveIem()
+        private async Task RemoveItems()
         {
-            throw new NotImplementedException();
+            if(SelectedItems.Count > 0)
+            {
+                for (int i = SelectedItems.Count; i>0; i--)
+                {
+                    Items.Remove(SelectedItems[i - 1]);
+                    SelectedItems.Remove(SelectedItems[i-1]);
+                }
+            }
+        }
+
+        bool _RemovableSelected;
+
+        public bool RemovableSelected
+        {
+            get
+            {
+                return _RemovableSelected;
+            }
+            set
+            {
+                SetProperty(ref _RemovableSelected, value);
+            }
         }
 
 
@@ -130,11 +155,18 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public bool AreItemsSelected
+        ObservableRangeCollection<PartUsage> _SelectedItems = new ObservableRangeCollection<PartUsage>();
+
+        public ObservableRangeCollection<PartUsage> SelectedItems
         {
-            get
+            get { return _SelectedItems; }
+            set 
             {
-                return false;
+                bool changed = SetProperty(ref _SelectedItems, value);
+                if (changed)
+                {
+                    OnPropertyChanged(nameof(RemovableSelected));
+                }
             }
         }
 

@@ -17,7 +17,8 @@
                             VerticalOptions="FillAndExpand"
                             EmptyView="{Binding EmptyViewCaption}"
                             Margin="0,5,0,20"
-                            SelectionMode="Multiple">
+                            SelectionMode="Multiple"
+                            SelectionChanged="lstSuggestions_SelectionChanged">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <StackLayout Padding="5">
@@ -101,10 +102,10 @@
             </Grid.ColumnDefinitions>
             <Button BackgroundColor="Red"
                     ImageSource="delete.png"
-                    Command="{Binding RemoveItemCommand}"
+                    Command="{Binding RemoveItemsCommand}"
                     Grid.Row="0"
                     Grid.Column="0"
-                    IsVisible="{Binding AreItemsSelected}"/>
+                    IsVisible="{Binding RemovableSelected}"/>
             <Button BackgroundColor="DeepSkyBlue" 
                     x:Name="btnSearch" 
                     ImageSource="search.png"
