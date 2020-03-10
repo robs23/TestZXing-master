@@ -48,6 +48,7 @@
                                 Source="tick_green.png"
                                 Grid.Row="0"
                                 Grid.Column="0"
+                                HeightRequest="50"
                                 IsVisible="{Binding IsChecked}"
                                 IsEnabled="{Binding IsMutable}"/>
                                 <Label
@@ -63,6 +64,7 @@
                                 Source="exclamation_red.png"
                                 Grid.Row="0"
                                 Grid.Column="2"
+                                HeightRequest="50"
                                 IsVisible="{Binding IsRequired}"/>
                             </Grid>
 

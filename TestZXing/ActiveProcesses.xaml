@@ -80,6 +80,7 @@
                             <RelativeLayout Padding="16,8,8,16" HorizontalOptions="FillAndExpand" BackgroundColor="GhostWhite">
                                 <Image x:Name="StateImage" PropertyChanged="StateImage_PropertyChanged"
                                     Source="{Binding StateIcon}" 
+                                    HeightRequest="40"
                                     RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.8}"
                                     RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.3}"/>
                                 <StackLayout Padding="16,8,8,16" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HeightRequest="140">
