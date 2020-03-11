@@ -65,6 +65,7 @@ namespace TestZXing.ViewModels
 
         public PartsPageViewModel PartsPageViewModel { get; set; }
 
+        
 
         public async Task Scan()
         {

@@ -78,15 +78,41 @@
                                            Grid.Column="1"/>
                                 </Grid>
                             </StackLayout>
-                            <Entry x:Name="txtAmount"
+                            <Grid Grid.Row="0"
+                                  Grid.Column="2"
+                                  HeightRequest="120">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="3*"/>
+                                    <RowDefinition Height="4*"/>
+                                    <RowDefinition Height="3*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="btnIncreaseAmount"
+                                        BackgroundColor="Black"
+                                        TextColor="White"
+                                        Text="+"
+                                        Command="{Binding IncreaseAmountCommand}"
+                                        Grid.Row="0"
+                                        Grid.Column="0"/>
+                                <Button x:Name="btnDecreaseAmount" 
+                                        BackgroundColor="Black"
+                                        TextColor="White"
+                                        Text="-"
+                                        Command="{Binding DecreaseAmountCommand}"
+                                        Grid.Row="2"
+                                        Grid.Column="0"/>
+                                <Entry x:Name="txtAmount"
                                    Text="{Binding Amount}"
-                                   Grid.Row="0"
-                                   Grid.Column="2"
+                                   Grid.Row="1"
+                                   Grid.Column="0"
                                    HorizontalTextAlignment="Center"
                                    FontAttributes="Bold"
+
                                    />
-                            
-                       </Grid>
+                            </Grid>
+                        </Grid>
                     </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
