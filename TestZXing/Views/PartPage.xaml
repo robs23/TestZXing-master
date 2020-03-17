@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="TestZXing.Views.PartPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="6*"/>
+                    <RowDefinition Height="4*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image HeightRequest="300" Source="{Binding ImageUrl}" Grid.Row="0" Grid.Column="0"/>
+                <Grid Grid.Row="1" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="8*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="0" Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="5*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Text="{Binding Name}"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               Grid.ColumnSpan="2"
+                               FontAttributes="Bold"/>
+                        <Label Text="Symbol"
+                               FontAttributes="Bold"
+                               Grid.Row="1"
+                               Grid.Column="0"/>
+                        <Label Text="{Binding Symbol}"
+                               Grid.Row="1"
+                               Grid.Column="1"/>
+                        <Label Text="Producent"
+                               FontAttributes="Bold"
+                               Grid.Row="2"
+                               Grid.Column="0"/>
+                        <Label Text="{Binding ProducerName}"
+                               Grid.Row="2"
+                               Grid.Column="1"/>
+                        <Label Text="Opis"
+                               FontAttributes="Bold"
+                               Grid.Row="3"
+                               Grid.Column="0"/>
+                        <Label Text="{Binding Description}"
+                               Grid.Row="3"
+                               Grid.Column="1"/>
+                               
+                    </Grid>
+                    <Button x:Name="btnChangeImage"
+                            BackgroundColor="DeepSkyBlue"
+                            TextColor="White"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Command="{Binding ChangeImageCommand}"/>
+                </Grid>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
