@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
 using TestZXing.ViewModels;
+using TestZXing.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -50,6 +51,7 @@ namespace TestZXing
                 if(vm.Mode== PartsPageMode.PartsBrowser)
                 {
                     //Open Part form
+                    Navigation.PushAsync(new PartPage((Part)e.CurrentSelection.FirstOrDefault()));
                 }
                 else
                 {

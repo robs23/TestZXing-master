@@ -11,6 +11,7 @@ using System.Windows.Input;
 using TestZXing.Classes;
 using TestZXing.Interfaces;
 using TestZXing.Models;
+using TestZXing.Views;
 using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
@@ -93,7 +94,15 @@ namespace TestZXing.ViewModels
                 QrHandler qr = new QrHandler();
                 string res = await qr.Scan();
                 res = res.Replace("<Part>", "");
-                _SearchQuery = res;
+                Part Part = await Keeper.GetByToken(res);
+                if (Part != null)
+                {
+                    Application.Current.MainPage = new NavigationPage(new PartPage(Part));
+                }
+                else
+                {
+                    DependencyService.Get<IToaster>().ShortAlert($"Nie znaleziono części oznaczonej kodem {res}..");
+                }
             }
             catch(Exception ex)
             {
