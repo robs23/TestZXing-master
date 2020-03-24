@@ -23,6 +23,26 @@
                    HorizontalTextAlignment="Center" 
                    IsPassword="True"
                    TextColor="CadetBlue"></testzxing:BorderfulEntry>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Label Text="Pamiętaj mnie"
+                   TextColor="DarkSeaGreen"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Start"
+                   Grid.Row="0"
+                   Grid.Column="0"/>
+                <CheckBox Color="DarkSeaGreen"
+                      IsChecked="{Binding RememberMe}" 
+                      Grid.Row="0"
+                      Grid.Column="1"/>
+            </Grid>
+            
             <testzxing:RoundedButton x:Name="btnLogin"
                     Margin="0,20,0,0"
                     Text="Zaloguj"

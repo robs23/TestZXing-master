@@ -18,6 +18,6 @@ namespace TestZXing.Static
 
         public static string ThumbnailsPath { get { return "Files/Thumbnails/"; } }
 
-        public static bool IsVpnConnection { get; set; } = true;
+        public static bool IsVpnConnection { get; set; } = false;
     }
 }

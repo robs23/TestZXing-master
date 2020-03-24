@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using TestZXing.Classes;
 using TestZXing.Static;
 using TestZXing.ViewModels;
+using Xamarin.Forms;
 
 namespace TestZXing.Models
 {
@@ -129,6 +130,8 @@ namespace TestZXing.Models
             }
 
         }
+
+        
 
     }
 }
