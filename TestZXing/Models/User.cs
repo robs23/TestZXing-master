@@ -131,7 +131,11 @@ namespace TestZXing.Models
 
         }
 
-        
+        public void RemoveUserCredentials()
+        {
+            Application.Current.Properties["RememberedUser"] = string.Empty;
+            Application.Current.Properties["UserRememberedAt"] = string.Empty;
+        }
 
     }
 }

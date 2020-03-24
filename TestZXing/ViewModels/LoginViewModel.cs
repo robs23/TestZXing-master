@@ -45,11 +45,7 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public async Task SaveUserCredentials()
-        {
-            Application.Current.Properties["RememberedUser"] = JsonConvert.SerializeObject(SelectedUser);
-            Application.Current.Properties["UserRememberedAt"] = DateTime.Now.ToLongDateString();
-        }
+        
 
         private User _selectedUser { get; set; }
         public User SelectedUser

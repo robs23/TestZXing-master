@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using TestZXing.Classes;
 using ModernHttpClient;
 using Microsoft.AppCenter.Crashes;
+using Xamarin.Forms;
 
 namespace TestZXing.Models
 {
@@ -76,6 +77,26 @@ namespace TestZXing.Models
                 throw;
             }
             return nUser;
+        }
+
+        public async Task SaveUserCredentials(User user)
+        {
+            Application.Current.Properties["RememberedUser"] = JsonConvert.SerializeObject(user);
+            Application.Current.Properties["UserRememberedAt"] = DateTime.Now.ToLongDateString();
+        }
+
+        public User GetUserFromCredentials()
+        {
+            User User = null;
+            if (Application.Current.Properties.ContainsKey("RememberedUser"))
+            {
+                if (!string.IsNullOrWhiteSpace(Application.Current.Properties["RememberedUser"].ToString()))
+                {
+                    User = JsonConvert.DeserializeObject<User>(Application.Current.Properties["RememberedUser"].ToString());
+                }
+            }
+            
+            return User;
         }
 
     }

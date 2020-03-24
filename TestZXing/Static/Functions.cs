@@ -178,7 +178,7 @@ namespace TestZXing.Static
                         DependencyService.Get<IToaster>().LongAlert($"Próba {attempted}");
                     }
 
-                    if (RuntimeSettings.IsVpnConnection)
+                    if (RuntimeSettings.IsVpnConnection || Secrets.ApiAddress==Secrets.WebioApiAddress)
                     {
                         tryCount = 1;
                     }

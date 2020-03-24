@@ -184,6 +184,7 @@ namespace TestZXing
         {
             RuntimeSettings.UserId = 0;
             RuntimeSettings.CurrentUser = null;
+            RuntimeSettings.CurrentUser.RemoveUserCredentials();
             LoginPage page = new LoginPage();
             NavigationPage.SetHasBackButton(page, false);
             Navigation.PushAsync(page);
