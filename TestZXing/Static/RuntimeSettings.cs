@@ -17,7 +17,8 @@ namespace TestZXing.Static
         public static string ConnectionErrorTitle { get { return "Brak połączenia"; } }
 
         public static string ThumbnailsPath { get { return "Files/Thumbnails/"; } }
+        public static string FilesPath { get { return "Files/"; } }
 
-        public static bool IsVpnConnection { get; set; } = false;
+        public static bool IsVpnConnection { get; set; } = true;
     }
 }

@@ -72,7 +72,7 @@ namespace TestZXing.ViewModels
             {
                 if (!string.IsNullOrWhiteSpace(_this.Image))
                 {
-                    return Static.Secrets.ApiAddress + Static.RuntimeSettings.ThumbnailsPath + _this.Image;
+                    return Static.Secrets.ApiAddress + Static.RuntimeSettings.FilesPath + _this.Image;
                 }
                 else
                 {

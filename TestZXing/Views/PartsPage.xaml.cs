@@ -38,9 +38,10 @@ namespace TestZXing
             if (!vm.IsInitilized)
             {
                 vm.Initialize();
+                txtSearch.Focus();
             }
             
-            txtSearch.Focus();
+            
         }
 
         private void lstSuggestions_SelectionChanged(object sender, SelectionChangedEventArgs e)

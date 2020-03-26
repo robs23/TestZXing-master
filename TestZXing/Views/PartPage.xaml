@@ -4,7 +4,8 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="TestZXing.Views.PartPage">
+             x:Class="TestZXing.Views.PartPage"
+             Title="Szczegóły części">
     <ContentPage.Content>
         <StackLayout Margin="10">
             <Grid>
@@ -13,56 +14,66 @@
                     <RowDefinition Height="4*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10*" />
                 </Grid.ColumnDefinitions>
-                <Image HeightRequest="300" Source="{Binding ImageUrl}" Grid.Row="0" Grid.Column="0"/>
-                <Grid Grid.Row="1" Grid.Column="0">
+                <Image HeightRequest="400" Source="{Binding ImageUrl}"  Grid.Row="0" Grid.Column="0"/>
+                <Grid Grid.Row="1" Grid.Column="0" Margin="0,20,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="8*"/>
                         <RowDefinition Height="2*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid Grid.Row="0" Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="5*"/>
-                            <ColumnDefinition Width="5*"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Text="{Binding Name}"
+                    <ScrollView>
+                        <Grid Grid.Row="0" Grid.Column="0" RowSpacing="15">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="7*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Text="{Binding Name}"
                                Grid.Row="0"
                                Grid.Column="0"
                                Grid.ColumnSpan="2"
-                               FontAttributes="Bold"/>
-                        <Label Text="Symbol"
+                               FontAttributes="Bold"
+                               FontSize="Title"/>
+                            <Label Text="Symbol"
                                FontAttributes="Bold"
                                Grid.Row="1"
-                               Grid.Column="0"/>
-                        <Label Text="{Binding Symbol}"
+                               Grid.Column="0"
+                               FontSize="Medium"/>
+                            <Label Text="{Binding Symbol}"
                                Grid.Row="1"
-                               Grid.Column="1"/>
-                        <Label Text="Producent"
+                               Grid.Column="1"
+                               FontSize="Medium"/>
+                            <Label Text="Producent"
                                FontAttributes="Bold"
                                Grid.Row="2"
-                               Grid.Column="0"/>
-                        <Label Text="{Binding ProducerName}"
+                               Grid.Column="0"
+                               FontSize="Medium"/>
+                            <Label Text="{Binding ProducerName}"
                                Grid.Row="2"
-                               Grid.Column="1"/>
-                        <Label Text="Opis"
+                               Grid.Column="1"
+                               FontSize="Medium"/>
+                            <Label Text="Opis"
                                FontAttributes="Bold"
                                Grid.Row="3"
-                               Grid.Column="0"/>
-                        <Label Text="{Binding Description}"
+                               Grid.Column="0"
+                               FontSize="Medium"/>
+                            <Label Text="{Binding Description}"
                                Grid.Row="3"
-                               Grid.Column="1"/>
+                               Grid.Column="1"
+                               FontSize="Medium"/>
 
-                    </Grid>
+                        </Grid>
+                    </ScrollView>
+                    
                     <Button x:Name="btnChangeImage"
                             BackgroundColor="DeepSkyBlue"
                             TextColor="White"
