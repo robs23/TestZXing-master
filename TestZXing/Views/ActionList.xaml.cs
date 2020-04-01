@@ -66,7 +66,7 @@ namespace TestZXing.Views
         {
             ProcessAction pa = new ProcessAction();
             pa.ActionId = item.ActionId;
-            pa.ProcessActionId = item.Id;
+            pa.ProcessActionId = 0;
             pa.ActionName = item.ActionName;
             pa.GivenTime = item.GivenTime;
             pa.IsChecked = item.IsChecked;

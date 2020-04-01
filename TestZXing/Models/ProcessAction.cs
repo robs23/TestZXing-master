@@ -79,6 +79,7 @@ namespace TestZXing.Models
                     _IsChecked = value;
                     OnPropertyChanged();
                 }
+                
             }
         }
 
