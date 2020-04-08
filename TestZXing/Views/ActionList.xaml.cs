@@ -73,6 +73,7 @@ namespace TestZXing.Views
             pa.LastChecks = item.LastChecks;
             pa.PlaceId = item.PlaceId;
             pa.PlaceName = item.PlaceName;
+            pa.CreatedOn = DateTime.Now;
             pa.CreatedBy = RuntimeSettings.CurrentUser.UserId;
             return pa;
         }

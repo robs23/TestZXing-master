@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -28,6 +29,30 @@ namespace TestZXing.Models
         public int? HandlingId { get; set; }
         public string Type { get; set; }
         public int? PlaceId { get; set; }
+
+        public async override Task<string> Add()
+        {
+            string res = "";
+            res = await base.Add();
+            if (res == "OK")
+            {
+                try
+                {
+                    ProcessAction _this = JsonConvert.DeserializeObject<ProcessAction>(AddedItem);
+                    this.ProcessActionId = _this.ProcessActionId;
+                    return res;
+                }catch(Exception ex)
+                {
+                    res = "Błąd przy próbie pobrania utworzonej czynności z bazy danych. Szczegóły: " + ex.Message;
+                    return res;
+                }
+            }
+            else
+            {
+                return res;
+            }
+        }
+
         public bool? _IsMutable { get; set; } = true;
 
         public bool? IsMutable

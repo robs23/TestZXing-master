@@ -23,7 +23,7 @@
                    HorizontalTextAlignment="Center" 
                    IsPassword="True"
                    TextColor="CadetBlue"></testzxing:BorderfulEntry>
-            <Grid Margin="0,20,0,0">
+            <Grid IsVisible="False" Margin="0,20,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>

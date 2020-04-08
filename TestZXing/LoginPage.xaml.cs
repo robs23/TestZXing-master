@@ -39,7 +39,7 @@ namespace TestZXing
             try
             {
                 await PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
-                User SavedUser = keeper.GetUserFromCredentials();
+                User SavedUser = null; //keeper.GetUserFromCredentials();
                 if (SavedUser == null)
                 {
                     //there are no saved user credentials

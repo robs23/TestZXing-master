@@ -122,6 +122,7 @@
                 x:Name="btnParts"
                 BackgroundColor="Green"
                 Image="spanner.png"
+                IsEnabled="False"
                 Clicked="btnParts_Clicked"
                 Grid.Row="0"
                 Grid.Column="2"
