@@ -13,7 +13,7 @@ namespace TestZXing.Behaviors
     {
         //private readonly IObservable<System.Reactive.EventPattern<Xamarin.Forms.TextChangedEventArgs>> _subscription;
 
-        public const int DefaultMinimumSearchIntervalMiliseconds = 300;
+        public const int DefaultMinimumSearchIntervalMiliseconds = 600;
 
         private CancellationTokenSource _cancellationTokenSource;
 

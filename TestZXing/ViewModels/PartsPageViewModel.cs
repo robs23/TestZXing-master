@@ -69,6 +69,13 @@ namespace TestZXing.ViewModels
             }
         }
 
+        string _PrevSearchQuery;
+        public string PrevSearchQuery
+        {
+            get { return _PrevSearchQuery; }
+            set { SetProperty(ref _PrevSearchQuery, value); }
+        }
+
         public string EmptyViewCaption
         {
             get
@@ -97,7 +104,7 @@ namespace TestZXing.ViewModels
                 Part Part = await Keeper.GetByToken(res);
                 if (Part != null)
                 {
-                    Application.Current.MainPage = new NavigationPage(new PartPage(Part));
+                    await Application.Current.MainPage.Navigation.PushAsync(new PartPage(Part));
                 }
                 else
                 {
@@ -130,6 +137,7 @@ namespace TestZXing.ViewModels
                 }
             }catch(Exception ex)
             {
+                Static.Functions.CreateError(ex, ex.GetType().ToString(), nameof(this.Reload), this.GetType().Name);
                 DependencyService.Get<IToaster>().ShortAlert($"Error: {ex.Message}");
             }
             IsWorking = false;
@@ -148,7 +156,7 @@ namespace TestZXing.ViewModels
                     {
                         query += " AND ";
                     }
-                    query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\") OR Token==\"{keys[i]}\")";
+                    query += $"(Name.ToLower().Contains(\"{keys[i].ToLower()}\") OR Symbol.ToLower().Contains(\"{keys[i].ToLower()}\") OR ProducerName.ToLower().Contains(\"{keys[i].ToLower()}\"))";
                 }
             }
             return query;
@@ -173,6 +181,7 @@ namespace TestZXing.ViewModels
             }
             catch (Exception ex)
             {
+                Static.Functions.CreateError(ex, ex.GetType().ToString(), nameof(this.Reload), this.GetType().Name);
                 DependencyService.Get<IToaster>().ShortAlert($"Error: {ex.Message}");
             }
             IsWorking = false;

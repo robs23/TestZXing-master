@@ -46,8 +46,8 @@ namespace TestZXing
             }
             catch (Exception ex)
             {
+                Static.Functions.CreateError(ex, "No connection", nameof(this.UpdateList), this.GetType().Name);
                 await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
-                Crashes.TrackError(ex);
             }
             finally
             {

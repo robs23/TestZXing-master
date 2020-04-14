@@ -16,6 +16,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing.Net.Mobile.Forms;
+using PermissionStatus = Plugin.Permissions.Abstractions.PermissionStatus;
 
 namespace TestZXing
 {
@@ -75,69 +76,85 @@ namespace TestZXing
                         try
                         {
 
-                                //check if this is MES process string
-                                string[] mesStr = Regex.Split(result.Text, ";");
-                                if (mesStr.Length == 7)
+                            //check if this is MES process string
+                            string[] mesStr = Regex.Split(result.Text, ";");
+                            if (mesStr.Length == 7)
+                            {
+                                //there are 7 fields split by ; in the string, there's good chance it comes from MES
+                                MesString ms = new MesString();
+                                try
                                 {
-                                    //there are 7 fields split by ; in the string, there's good chance it comes from MES
-                                    MesString ms = new MesString();
-                                    try
-                                    {
-                                        ms.MesId = mesStr[0];
-                                        ms.MesDate = DateTime.Parse(mesStr[1]);
-                                        ms.SetName = mesStr[2];
-                                        ms.ActionTypeName = mesStr[3];
-                                        ms.Reason = mesStr[5];
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        await DisplayAlert("Problem z kodem", string.Format("Coś poszło nie tak podczas deserializacji kodu {0}", result.Text) + ". Opis błędu: " + ex.Message, "OK");
-                                    }
-                                    try
-                                    {
-                                        //check if such a mesId exists before creating new one
-                                        ProcessKeeper pKeeper = new ProcessKeeper();
-                                        Process nProcess = await pKeeper.GetProcess(ms.MesId);
-
-                                        //pass everything to ProcessPage.xaml
-                                        if (nProcess == null)
-                                        {
-                                            await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms));
-                                        }
-                                        else
-                                        {
-                                            await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms, nProcess, true));
-                                        }
-                                    }catch(Exception ex)
-                                    {
-                                        Static.Functions.CreateError(ex, "No connection", nameof(scanPage.OnScanResult), this.GetType().Name);
-                                    }  
-
+                                    ms.MesId = mesStr[0];
+                                    ms.MesDate = DateTime.Parse(mesStr[1]);
+                                    ms.SetName = mesStr[2];
+                                    ms.ActionTypeName = mesStr[3];
+                                    ms.Reason = mesStr[5];
                                 }
-                                else
+                                catch (Exception ex)
                                 {
-                                    //try to find place of such token
-                                    Place = await Keeper.GetPlace(result.Text);
-                                    if (Place == null)
+                                    await DisplayAlert("Problem z kodem", string.Format("Coś poszło nie tak podczas deserializacji kodu {0}", result.Text) + ". Opis błędu: " + ex.Message, "OK");
+                                }
+                                try
+                                {
+                                    //check if such a mesId exists before creating new one
+                                    ProcessKeeper pKeeper = new ProcessKeeper();
+                                    Process nProcess = await pKeeper.GetProcess(ms.MesId);
+
+                                    //pass everything to ProcessPage.xaml
+                                    if (nProcess == null)
                                     {
-                                        await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", result.Text), "OK");
+                                        await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms));
                                     }
                                     else
                                     {
-                                        try
-                                        {
-                                            //await DisplayAlert("Czas", $"Zajęło {(DateTime.Now - _start).TotalMilliseconds} sekund", "Ok");
-                                            await Navigation.PushAsync(new ScanningResults(Place, true));
-
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                        if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
-                                        await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
-                                        }
+                                        await Application.Current.MainPage.Navigation.PushAsync(new ProcessPage(ms, nProcess, true));
                                     }
-                                        
                                 }
+                                catch (Exception ex)
+                                {
+                                    Static.Functions.CreateError(ex, "No connection", nameof(scanPage.OnScanResult), this.GetType().Name);
+                                }
+
+                            }
+                            else if (result.Text.Contains("<Part>"))
+                            {
+                                //it's a part
+                                string res = result.Text.Replace("<Part>", "");
+                                
+                                Part Part = await new PartKeeper().GetByToken(res);
+                                if (Part != null)
+                                {
+                                    await Application.Current.MainPage.Navigation.PushAsync(new PartPage(Part));
+                                }
+                                else
+                                {
+                                    DependencyService.Get<IToaster>().ShortAlert($"Nie znaleziono części oznaczonej kodem {res}..");
+                                }
+                            }
+                            else
+                            {
+                                //try to find place of such token
+                                Place = await Keeper.GetPlace(result.Text);
+                                if (Place == null)
+                                {
+                                    await DisplayAlert("Brak dopasowań", string.Format("Zeskanowany kod: {0} nie odpowiada żadnemu istniejącemu zasobowi. Spróbuj zeskanować kod jeszcze raz.", result.Text), "OK");
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        //await DisplayAlert("Czas", $"Zajęło {(DateTime.Now - _start).TotalMilliseconds} sekund", "Ok");
+                                        await Navigation.PushAsync(new ScanningResults(Place, true));
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                    if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
+                                    await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                                    }
+                                }
+                                        
+                            }
                             
        
                         }
@@ -184,7 +201,7 @@ namespace TestZXing
         {
             RuntimeSettings.UserId = 0;
             RuntimeSettings.CurrentUser = null;
-            RuntimeSettings.CurrentUser.RemoveUserCredentials();
+            //RuntimeSettings.CurrentUser.RemoveUserCredentials();
             LoginPage page = new LoginPage();
             NavigationPage.SetHasBackButton(page, false);
             Navigation.PushAsync(page);
