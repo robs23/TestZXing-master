@@ -21,10 +21,15 @@ namespace TestZXing.ViewModels
 {
     public class ActiveProcessesViewModel : INotifyPropertyChanged
     {
+        public ActiveProcessesViewModel()
+        {
+                
+        }
         public ObservableRangeCollection<PlaceViewModel> List { get; private set; }
         = new ObservableRangeCollection<PlaceViewModel>();
 
         public List<Process> Items { get; set; } = new List<Process>();
+        public List<ActionType> ActionTypeFilterItems { get; set; } = new List<ActionType>();
 
         public ICommand HeaderClickCommand { get; private set; }
         private bool _IsWorking { get; set; }

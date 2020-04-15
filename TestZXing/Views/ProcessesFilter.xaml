@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:testzxing="clr-namespace:TestZXing"
+             mc:Ignorable="d"
+             x:Class="TestZXing.Views.ProcessesFilter">
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid Margin="0,20,0,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <testzxing:BorderfulPicker
+                    x:Name="cmbType"
+                    TextColor="CadetBlue"
+                    Title="Typ zgłoszenia"
+                    ItemsSource="{Binding ActionTypeFilterItems}"
+                    ItemDisplayBinding="{Binding Text}"
+                    SelectedItem="{Binding SelectedActionType}"
+                    SelectedIndex="{Binding SelectedActionTypeIndex}"
+                    Grid.Row="0"
+                    Grid.Column="0"/>
+                <testzxing:RoundedButton
+                    ImageSource="delete.png"
+                    Command="{Binding ClearFilterCommand}"
+                    BackgroundColor="Red"
+                    Grid.Row="0"
+                    Grid.Column="1"/>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

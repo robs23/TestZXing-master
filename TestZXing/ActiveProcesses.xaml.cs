@@ -69,5 +69,10 @@ namespace TestZXing
         {
             vm.HidePlannedToggled();
         }
+
+        private void Filter_Clicked(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -4,6 +4,11 @@
              x:Class="TestZXing.ProcessesPage"
             Title="Otwarte zgłoszenia">
     <TabbedPage.ToolbarItems>
+        <ToolbarItem Name="Filter"
+                     Priority="0"
+                     Order="Default"
+                     IconImageSource="{Binding FilterIcon}"
+                     Clicked="Filter_Clicked"/>
         <ToolbarItem Name="UserStatus"
                      Priority="0"
                      Order="Default"

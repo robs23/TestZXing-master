@@ -69,6 +69,9 @@
     <Compile Update="ScanPage.xaml.cs">
       <DependentUpon>ScanPage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\ProcessesFilter.xaml.cs">
+      <DependentUpon>ProcessesFilter.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\PartsPage.xaml.cs">
       <DependentUpon>PartsPage.xaml</DependentUpon>
     </Compile>
@@ -76,6 +79,9 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Views\AssignedPartsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\ProcessesFilter.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\PartPage.xaml">

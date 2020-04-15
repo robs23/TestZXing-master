@@ -6,6 +6,10 @@
              x:Class="TestZXing.ActiveProcesses"
              x:Name="currentPage"
              Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        
+
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
             <Grid Margin="0,20,0,20">

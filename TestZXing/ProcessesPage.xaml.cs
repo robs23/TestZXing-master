@@ -13,14 +13,18 @@ namespace TestZXing
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ProcessesPage : TabbedPage
     {
-        User vm;
+        ProcessesPageViewModel vm;
+
 
         public ProcessesPage()
         {
             InitializeComponent();
-            Children.Add(new ActiveProcesses(new ActiveProcessesViewModel(true)));
-            Children.Add(new ActiveProcesses(new ActiveProcessesViewModel()));
-            vm = Static.RuntimeSettings.CurrentUser;
+            
+            vm = new ProcessesPageViewModel();
+            vm.UserProcesses = new ActiveProcessesViewModel(true);
+            vm.AllProcesses = new ActiveProcessesViewModel();
+            Children.Add(new ActiveProcesses(vm.UserProcesses));
+            Children.Add(new ActiveProcesses(vm.AllProcesses));
             BindingContext = vm;
         }
 
@@ -32,6 +36,10 @@ namespace TestZXing
         protected async override void OnAppearing()
         {
             base.OnAppearing();
+        }
+
+        private void Filter_Clicked(object sender, EventArgs e)
+        {
 
         }
     }
