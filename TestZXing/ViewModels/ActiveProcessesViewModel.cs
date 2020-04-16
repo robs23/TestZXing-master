@@ -21,10 +21,10 @@ namespace TestZXing.ViewModels
 {
     public class ActiveProcessesViewModel : INotifyPropertyChanged
     {
-        public ActiveProcessesViewModel()
-        {
-                
-        }
+
+        public string FilterString { get; set; } = null;
+
+
         public ObservableRangeCollection<PlaceViewModel> List { get; private set; }
         = new ObservableRangeCollection<PlaceViewModel>();
 
@@ -72,14 +72,32 @@ namespace TestZXing.ViewModels
         {
             string _Result = "OK";
             string url = "";
+            string baseUrl = "";
+
 
             if (UProcesses)
             {
-                url = Secrets.ApiAddress + "GetUsersOpenProcesses?token=" + Secrets.TenantToken + $"&UserId={RuntimeSettings.UserId}";
+                baseUrl = Secrets.ApiAddress + "GetUsersOpenProcesses?token=" + Secrets.TenantToken + $"&UserId={RuntimeSettings.UserId}";
+                if (FilterString != null)
+                {
+                    url = $"{baseUrl}&query={FilterString}";
+                }
+                else
+                {
+                    url = baseUrl;
+                }
             }
             else
             {
-                url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "&query=IsCompleted=false and IsSuccessfull=false";
+                baseUrl = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "&query=IsCompleted=false and IsSuccessfull=false";
+                if (FilterString != null)
+                {
+                    url = $"{baseUrl} and {FilterString}";
+                }
+                else
+                {
+                    url = baseUrl;
+                }
             }
             
             DataService ds = new DataService();

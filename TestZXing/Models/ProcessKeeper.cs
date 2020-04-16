@@ -3,6 +3,7 @@ using ModernHttpClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -13,38 +14,17 @@ using TestZXing.Static;
 
 namespace TestZXing.Models
 {
-    public class ProcessKeeper
+    public class ProcessKeeper : Keeper<Process>
     {
-        public List<Process> Items { get; set; }
+        protected override string ObjectName => "Process";
+
+        protected override string PluralizedObjectName => "Processes";
 
         public ProcessKeeper()
         {
-            Items = new List<Process>();
+            
         }
 
-        public async Task Reload()
-        {
-            string url = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken;
-            DataService ds = new DataService();
-
-            try
-            {
-                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
-                string output = await ds.readStream(responseMsg);
-                if (responseMsg.IsSuccessStatusCode)
-                {
-                    Items = JsonConvert.DeserializeObject<List<Process>>(output);
-                }
-                
-            }
-            catch (Exception ex)
-            {
-                Static.Functions.CreateError(ex, "No connection", nameof(this.Reload), this.GetType().Name);
-                throw;
-            }
-        }
 
         public async Task GetUsersOpenProcesses(string query = null)
         {
@@ -64,7 +44,7 @@ namespace TestZXing.Models
                 string output = await ds.readStream(responseMsg);
                 if (responseMsg.IsSuccessStatusCode)
                 {
-                    Items = JsonConvert.DeserializeObject<List<Process>>(output);
+                    Items = JsonConvert.DeserializeObject<ObservableCollection<Process>>(output);
                 }
 
             }

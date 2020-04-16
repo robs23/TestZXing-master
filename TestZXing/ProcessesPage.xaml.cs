@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
 using TestZXing.ViewModels;
+using TestZXing.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -36,11 +37,32 @@ namespace TestZXing
         protected async override void OnAppearing()
         {
             base.OnAppearing();
+            if (!vm.IsInitilized)
+            {
+                vm.Initialize();
+            }
+        }
+
+        private async void TabbedPage_CurrentPageChanged(object sender, EventArgs e)
+        {
+            string _Res;
+
+            if (this.CurrentPage.Title.ToLower() == "moje")
+            {
+                _Res = await vm.UserProcesses.ExecuteLoadDataCommand();
+            }else if(this.CurrentPage.Title.ToLower() == "wszystkie")
+            {
+                _Res = await vm.AllProcesses.ExecuteLoadDataCommand();
+            }
+            else
+            {
+
+            }
         }
 
         private void Filter_Clicked(object sender, EventArgs e)
         {
-
+            Navigation.PushAsync(new ProcessesFilter(vm.Filter));
         }
     }
 }

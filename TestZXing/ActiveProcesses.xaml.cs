@@ -28,17 +28,17 @@ namespace TestZXing
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            string _Result;
+            //string _Result;
 
-            try
-            {
-                _Result = await vm.ExecuteLoadDataCommand();
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
-                Navigation.PopAsync();
-            }
+            //try
+            //{
+            //    _Result = await vm.ExecuteLoadDataCommand();
+            //}
+            //catch (Exception ex)
+            //{
+            //    await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+            //    Navigation.PopAsync();
+            //}
             
         }
 
@@ -70,9 +70,5 @@ namespace TestZXing
             vm.HidePlannedToggled();
         }
 
-        private void Filter_Clicked(object sender, EventArgs e)
-        {
-
-        }
     }
 }

@@ -2,7 +2,8 @@
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TestZXing.ProcessesPage"
-            Title="Otwarte zgłoszenia">
+            Title="Otwarte zgłoszenia"
+            CurrentPageChanged="TabbedPage_CurrentPageChanged">
     <TabbedPage.ToolbarItems>
         <ToolbarItem Name="Filter"
                      Priority="0"
@@ -13,6 +14,7 @@
                      Priority="0"
                      Order="Default"
                      Icon="{Binding Icon}"
+
                      Clicked="UserStatus_Clicked"
                      />
     </TabbedPage.ToolbarItems>

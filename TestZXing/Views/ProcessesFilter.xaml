@@ -12,6 +12,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="8*"/>
@@ -21,16 +22,68 @@
                     x:Name="cmbType"
                     TextColor="CadetBlue"
                     Title="Typ zgłoszenia"
-                    ItemsSource="{Binding ActionTypeFilterItems}"
-                    ItemDisplayBinding="{Binding Text}"
+                    ItemsSource="{Binding ActionTypes}"
+                    ItemDisplayBinding="{Binding Name}"
                     SelectedItem="{Binding SelectedActionType}"
-                    SelectedIndex="{Binding SelectedActionTypeIndex}"
                     Grid.Row="0"
                     Grid.Column="0"/>
                 <testzxing:RoundedButton
                     ImageSource="delete.png"
-                    Command="{Binding ClearFilterCommand}"
+                    Command="{Binding ClearActionTypeCommand}"
                     BackgroundColor="Red"
+                    Grid.Row="0"
+                    Grid.Column="1"/>
+                <testzxing:BorderfulPicker
+                    x:Name="cmbPlace"
+                    TextColor="CadetBlue"
+                    Title="Zasób"
+                    ItemsSource="{Binding Places}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedPlace}"
+                    Grid.Row="1"
+                    Grid.Column="0"/>
+                <testzxing:RoundedButton
+                    ImageSource="delete.png"
+                    Command="{Binding ClearPlaceCommand}"
+                    BackgroundColor="Red"
+                    Grid.Row="1"
+                    Grid.Column="1"/>
+                <testzxing:BorderfulPicker
+                    x:Name="cmbArea"
+                    TextColor="CadetBlue"
+                    Title="Obszar"
+                    ItemsSource="{Binding Areas}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedArea}"
+                    Grid.Row="2"
+                    Grid.Column="0"/>
+                <testzxing:RoundedButton
+                    ImageSource="delete.png"
+                    Command="{Binding ClearAreaCommand}"
+                    BackgroundColor="Red"
+                    Grid.Row="2"
+                    Grid.Column="1"/>
+            </Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+                <testzxing:RoundedButton
+                    Text="Wyczyść"
+                    TextColor="White"
+                    Command="{Binding ClearAllCommand}"
+                    BackgroundColor="Red"
+                    Grid.Row="0"
+                    Grid.Column="0"/>
+                <testzxing:RoundedButton
+                    Text="OK"
+                    TextColor="White"
+                    Command="{Binding SetFilterCommand}"
+                    BackgroundColor="Green"
                     Grid.Row="0"
                     Grid.Column="1"/>
             </Grid>
