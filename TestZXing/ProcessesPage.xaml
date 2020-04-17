@@ -9,7 +9,7 @@
                      Priority="0"
                      Order="Default"
                      IconImageSource="{Binding FilterIcon}"
-                     Clicked="Filter_Clicked"/>
+                     Command="{Binding OpenFilterPageCommand}"/>
         <ToolbarItem Name="UserStatus"
                      Priority="0"
                      Order="Default"

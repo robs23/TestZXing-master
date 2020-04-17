@@ -92,6 +92,7 @@ namespace TestZXing.ViewModels
                 baseUrl = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "&query=IsCompleted=false and IsSuccessfull=false";
                 if (FilterString != null)
                 {
+                    HidePlanned = false;
                     url = $"{baseUrl} and {FilterString}";
                 }
                 else

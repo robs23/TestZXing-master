@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rg.Plugins.Popup.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,20 +50,19 @@ namespace TestZXing
 
             if (this.CurrentPage.Title.ToLower() == "moje")
             {
+                vm.ActiveVm = vm.UserProcesses;
                 _Res = await vm.UserProcesses.ExecuteLoadDataCommand();
-            }else if(this.CurrentPage.Title.ToLower() == "wszystkie")
+
+            }
+            else if (this.CurrentPage.Title.ToLower() == "wszystkie")
             {
+                vm.ActiveVm = vm.AllProcesses;
                 _Res = await vm.AllProcesses.ExecuteLoadDataCommand();
             }
             else
             {
 
             }
-        }
-
-        private void Filter_Clicked(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(new ProcessesFilter(vm.Filter));
         }
     }
 }

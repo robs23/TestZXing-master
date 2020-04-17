@@ -19,11 +19,11 @@
     </pages:PopupPage.Animation>
     <StackLayout
         Margin="12"
-                 Padding="18"
-                 Spacing="0"
-                 BackgroundColor="White"
-                 HorizontalOptions="Center"
-                 VerticalOptions="Center">
+        Padding="18"
+        Spacing="0"
+        BackgroundColor="White"
+        HorizontalOptions="Center"
+        VerticalOptions="Center">
         <ListView x:Name="lstActions"
             ItemsSource="{Binding Items}"
             ItemTapped="Handle_ItemTapped"

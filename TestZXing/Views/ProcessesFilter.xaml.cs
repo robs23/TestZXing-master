@@ -10,13 +10,14 @@ using Xamarin.Forms.Xaml;
 namespace TestZXing.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ProcessesFilter : ContentPage
+    public partial class ProcessesFilter : Rg.Plugins.Popup.Pages.PopupPage
     {
         ProcessesFilterViewModel vm;
         public ProcessesFilter(ProcessesFilterViewModel _vm)
         {
             InitializeComponent();
             vm = _vm;
+            BindingContext = vm;
         }
     }
 }

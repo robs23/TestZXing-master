@@ -4,6 +4,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
 using System.Linq;
+using Xamarin.Forms;
+using TestZXing.Interfaces;
+using System.Windows.Input;
+using Rg.Plugins.Popup.Services;
+using TestZXing.Views;
 
 namespace TestZXing.ViewModels
 {
@@ -14,8 +19,25 @@ namespace TestZXing.ViewModels
         public ProcessesFilterViewModel Filter { get; set; }
         public ProcessesPageViewModel()
         {
+            OpenFilterPageCommand = new Command(
+                execute: () =>
+                {
+                    if (IsFilterSetUp)
+                    {
+                        PopupNavigation.Instance.PushAsync(new ProcessesFilter(Filter));
+                    }
+                    else
+                    {
+                        DependencyService.Get<IToaster>().ShortAlert("Filtr nie jest jeszcze gotowy. Spróbuj za chwilę..");
+                    }
+                    
+                });
             Filter = new ProcessesFilterViewModel();
         }
+
+        public ActiveProcessesViewModel ActiveVm { get; set; }
+
+        public ICommand OpenFilterPageCommand { get; private set; }
 
         public async Task Initialize()
         {
@@ -23,13 +45,19 @@ namespace TestZXing.ViewModels
             Task.Run(() => SetUpFilter());
         }
 
+        public async Task OnFilterUpdate()
+        {
+            //called when FilterString of Filter has been updated
+            OnPropertyChanged(nameof(FilterIcon));
+            AllProcesses.FilterString = Filter.FilterString;
+            UserProcesses.FilterString = Filter.FilterString;
+            await ActiveVm.ExecuteLoadDataCommand();
+        }
+
         public async Task SetUpFilter()
         {
             ProcessKeeper pk = new ProcessKeeper();
             await pk.Reload("IsCompleted = false and IsSuccessfull = false");
-            List<Place> places = new List<Place>();
-            List<ActionType> actionTypes = new List<ActionType>();
-            List<Area> areas = new List<Area>();
 
             foreach(Process p in pk.Items)
             {
@@ -46,7 +74,17 @@ namespace TestZXing.ViewModels
                     Filter.Areas.Add(new Area() { AreaId = (int)p.AreaId, Name = p.AreaName });
                 }
             }
+            Filter.SetCaller(this);
+            IsFilterSetUp = true;
         }
+
+        bool _IsFilterSetUp = false;
+        public bool IsFilterSetUp
+        {
+            get { return _IsFilterSetUp; }
+            set { SetProperty(ref _IsFilterSetUp, value); }
+        }
+
 
         public string Icon
         {

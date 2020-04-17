@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rg.Plugins.Popup.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -6,12 +7,13 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using TestZXing.Models;
 using Xamarin.Forms;
+using AsyncCommand = MvvmHelpers.Commands.AsyncCommand;
 
 namespace TestZXing.ViewModels
 {
     public class ProcessesFilterViewModel : BaseViewModel
     {
-
+        public ProcessesPageViewModel CallerVm;
         public ProcessesFilterViewModel()
         {
             ActionTypes = new ObservableCollection<ActionType>();
@@ -45,26 +47,60 @@ namespace TestZXing.ViewModels
                 {
                     return !IsWorking;
                 });
-            ClearAllCommand = new Command(
-                execute: () =>
-                {
-                    SelectedArea = null;
-                    SelectedPlace = null;
-                    SelectedArea = null;
-                },
-                canExecute: () =>
-                {
-                    return !IsWorking;
-                });
-            SetFilterCommand = new Command(
-                execute: () =>
-                {
+            ClearAllCommand = new AsyncCommand(ClearAll);
+            SetFilterCommand = new AsyncCommand(SetFilter);
+        }
 
-                },
-                canExecute: () =>
+        public string FilterString
+        {
+            get
+            {
+                string res = null;
+                if (SelectedActionType != null || SelectedArea !=null || SelectedPlace !=null)
                 {
-                    return !IsWorking;
-                });
+                    //There is at least 1 condition in the filter
+                    res = "";
+                    if (SelectedActionType != null)
+                    {
+                        res += $"ActionTypeId={SelectedActionType.ActionTypeId}";
+                    }
+                    if(SelectedPlace != null)
+                    {
+                        if (!string.IsNullOrEmpty(res)) { res += " and "; }
+                        res += $"PlaceId={SelectedPlace.PlaceId}";
+                    }
+                    if (SelectedArea != null)
+                    {
+                        if (!string.IsNullOrEmpty(res)) { res += " and "; }
+                        res += $"AreaId={SelectedArea.AreaId}";
+                    }
+                }
+                return res;
+            }
+        }
+
+        public void SetCaller(ProcessesPageViewModel _CallerVm)
+        {
+            CallerVm = _CallerVm;
+        }
+
+        public async Task ClearAll()
+        {
+            SelectedArea = null;
+            SelectedPlace = null;
+            SelectedArea = null;
+            IsSet = false;
+            if (PopupNavigation.Instance.PopupStack.Count > 0) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide handlings screen
+            CallerVm.OnFilterUpdate();
+            
+        }
+
+        public async Task SetFilter()
+        {
+            IsSet = !string.IsNullOrEmpty(FilterString);
+            if (PopupNavigation.Instance.PopupStack.Count > 0) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide handlings screen
+            CallerVm.OnFilterUpdate();
+            
         }
 
         bool _IsSet=false;
@@ -95,18 +131,6 @@ namespace TestZXing.ViewModels
             set { SetProperty(ref _Areas, value); }
         }
 
-        //int _SelectedActionTypeIndex;
-
-        //public int SelectedActionTypeIndex
-        //{
-        //    get{ return _SelectedActionTypeIndex; }
-        //    set
-        //    {
-        //        bool changed = SetProperty(ref _SelectedActionTypeIndex, value);
-        //        if (changed) { SelectedActionType = ActionTypes[value]; }
-        //    }
-        //}
-
         ActionType _SelectedActionType;
 
         public ActionType SelectedActionType
@@ -115,18 +139,6 @@ namespace TestZXing.ViewModels
             set { SetProperty(ref _SelectedActionType, value); }
         }
 
-        //int _SelectedPlaceIndex;
-
-        //public int SelectedPlaceIndex
-        //{
-        //    get { return _SelectedPlaceIndex; }
-        //    set
-        //    {
-        //        bool changed = SetProperty(ref _SelectedPlaceIndex, value);
-        //        if (changed) { _SelectedPlace = Places[value]; }
-        //    }
-        //}
-
         Place _SelectedPlace;
 
         public Place SelectedPlace
@@ -134,18 +146,6 @@ namespace TestZXing.ViewModels
             get { return _SelectedPlace; }
             set { SetProperty(ref _SelectedPlace, value); }
         }
-
-        //int _SelectedAreaIndex;
-
-        //public int SelectedAreaIndex
-        //{
-        //    get { return _SelectedAreaIndex; }
-        //    set
-        //    {
-        //        bool changed = SetProperty(ref _SelectedAreaIndex, value);
-        //        if (changed) { SelectedArea = Areas[value]; }
-        //    }
-        //}
 
         Area _SelectedArea;
 
