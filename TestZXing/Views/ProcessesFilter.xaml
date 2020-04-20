@@ -53,34 +53,49 @@
                     Grid.Row="0"
                     Grid.Column="1"/>
             <testzxing:BorderfulPicker
-                    x:Name="cmbPlace"
-                    TextColor="CadetBlue"
-                    Title="Zasób"
-                    ItemsSource="{Binding Places}"
-                    ItemDisplayBinding="{Binding Name}"
-                    SelectedItem="{Binding SelectedPlace}"
-                    Grid.Row="1"
-                    Grid.Column="0"/>
-            <testzxing:RoundedButton
-                    ImageSource="delete.png"
-                    Command="{Binding ClearPlaceCommand}"
-                    BackgroundColor="Red"
-                    Grid.Row="1"
-                    Grid.Column="1"/>
-            <testzxing:BorderfulPicker
                     x:Name="cmbArea"
                     TextColor="CadetBlue"
                     Title="Obszar"
                     ItemsSource="{Binding Areas}"
                     ItemDisplayBinding="{Binding Name}"
                     SelectedItem="{Binding SelectedArea}"
-                    Grid.Row="2"
+                    Grid.Row="1"
                     Grid.Column="0"/>
             <testzxing:RoundedButton
                     ImageSource="delete.png"
                     Command="{Binding ClearAreaCommand}"
                     BackgroundColor="Red"
+                    Grid.Row="1"
+                    Grid.Column="1"/>
+            <testzxing:BorderfulPicker
+                    x:Name="cmbSet"
+                    TextColor="CadetBlue"
+                    Title="Instalacja"
+                    ItemsSource="{Binding Sets}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedSet}"
                     Grid.Row="2"
+                    Grid.Column="0"/>
+            <testzxing:RoundedButton
+                    ImageSource="delete.png"
+                    Command="{Binding ClearSetCommand}"
+                    BackgroundColor="Red"
+                    Grid.Row="2"
+                    Grid.Column="1"/>
+            <testzxing:BorderfulPicker
+                    x:Name="cmbPlace"
+                    TextColor="CadetBlue"
+                    Title="Zasób"
+                    ItemsSource="{Binding Places}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedPlace}"
+                    Grid.Row="3"
+                    Grid.Column="0"/>
+            <testzxing:RoundedButton
+                    ImageSource="delete.png"
+                    Command="{Binding ClearPlaceCommand}"
+                    BackgroundColor="Red"
+                    Grid.Row="3"
                     Grid.Column="1"/>
         </Grid>
         <Grid Margin="0,30,0,0">

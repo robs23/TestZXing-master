@@ -33,7 +33,7 @@ namespace TestZXing.ViewModels
 
         public ICommand HeaderClickCommand { get; private set; }
         private bool _IsWorking { get; set; }
-        private bool UProcesses { get; set; }
+        private ActiveProcessesPageMode Mode { get; set; }
         private string _title { get; set; }
         public bool _HidePlanned { get; set; }
         public bool HidePlanned
@@ -52,18 +52,23 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public ActiveProcessesViewModel(bool UsersProcesses = false)
+        public ActiveProcessesViewModel(ActiveProcessesPageMode _mode)
         {
-            UProcesses = UsersProcesses;
-            if (UProcesses)
+            Mode = _mode;
+            if (Mode== ActiveProcessesPageMode.UsersProcesses)
             {
                 Title = "MOJE";
                 HidePlanned = false;
             }
-            else
+            else if(Mode == ActiveProcessesPageMode.AllProcesses)
             {
                 Title = "WSZYSTKIE";
                 HidePlanned = true;
+            }
+            else
+            {
+                Title = "KONSERWACJE";
+                HidePlanned = false;
             }
             this.HeaderClickCommand = new Command<PlaceViewModel>((item) => ExecuteHeaderClickCommand(item));
         }
@@ -75,7 +80,7 @@ namespace TestZXing.ViewModels
             string baseUrl = "";
 
 
-            if (UProcesses)
+            if (Mode == ActiveProcessesPageMode.UsersProcesses)
             {
                 baseUrl = Secrets.ApiAddress + "GetUsersOpenProcesses?token=" + Secrets.TenantToken + $"&UserId={RuntimeSettings.UserId}";
                 if (FilterString != null)
@@ -87,9 +92,22 @@ namespace TestZXing.ViewModels
                     url = baseUrl;
                 }
             }
-            else
+            else if(Mode == ActiveProcessesPageMode.AllProcesses)
             {
                 baseUrl = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "&query=IsCompleted=false and IsSuccessfull=false";
+                if (FilterString != null)
+                {
+                    HidePlanned = false;
+                    url = $"{baseUrl} and {FilterString}";
+                }
+                else
+                {
+                    url = baseUrl;
+                }
+            }
+            else
+            {
+                baseUrl = Secrets.ApiAddress + "GetProcesses?token=" + Secrets.TenantToken + "&query=ActionTypeId=2 and IsCompleted=false and IsSuccessfull=false";
                 if (FilterString != null)
                 {
                     HidePlanned = false;
@@ -304,5 +322,12 @@ namespace TestZXing.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+    }
+
+    public enum ActiveProcessesPageMode
+    {
+        UsersProcesses,
+        AllProcesses,
+        MaintenanceOnly
     }
 }

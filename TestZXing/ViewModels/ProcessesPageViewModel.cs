@@ -16,6 +16,8 @@ namespace TestZXing.ViewModels
     {
         public ActiveProcessesViewModel UserProcesses { get; set; }
         public ActiveProcessesViewModel AllProcesses { get; set; }
+
+        public ActiveProcessesViewModel MaintenanceOnly { get; set; }
         public ProcessesFilterViewModel Filter { get; set; }
         public ProcessesPageViewModel()
         {
@@ -51,6 +53,7 @@ namespace TestZXing.ViewModels
             OnPropertyChanged(nameof(FilterIcon));
             AllProcesses.FilterString = Filter.FilterString;
             UserProcesses.FilterString = Filter.FilterString;
+            MaintenanceOnly.FilterString = Filter.FilterString;
             await ActiveVm.ExecuteLoadDataCommand();
         }
 
@@ -72,6 +75,10 @@ namespace TestZXing.ViewModels
                 if (!Filter.Areas.Any(i => i.AreaId == p.AreaId))
                 {
                     Filter.Areas.Add(new Area() { AreaId = (int)p.AreaId, Name = p.AreaName });
+                }
+                if (!Filter.Sets.Any(i => i.SetId == p.SetId))
+                {
+                    Filter.Sets.Add(new Set() { SetId = (int)p.SetId, Name = p.SetName });
                 }
             }
             Filter.SetCaller(this);

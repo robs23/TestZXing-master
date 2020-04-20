@@ -23,10 +23,13 @@ namespace TestZXing
             InitializeComponent();
             
             vm = new ProcessesPageViewModel();
-            vm.UserProcesses = new ActiveProcessesViewModel(true);
-            vm.AllProcesses = new ActiveProcessesViewModel();
+            vm.UserProcesses = new ActiveProcessesViewModel(ActiveProcessesPageMode.UsersProcesses);
+            vm.AllProcesses = new ActiveProcessesViewModel(ActiveProcessesPageMode.AllProcesses);
+            vm.MaintenanceOnly = new ActiveProcessesViewModel(ActiveProcessesPageMode.MaintenanceOnly);
             Children.Add(new ActiveProcesses(vm.UserProcesses));
             Children.Add(new ActiveProcesses(vm.AllProcesses));
+            Children.Add(new ActiveProcesses(vm.MaintenanceOnly));
+
             BindingContext = vm;
         }
 
@@ -61,7 +64,8 @@ namespace TestZXing
             }
             else
             {
-
+                vm.ActiveVm = vm.MaintenanceOnly;
+                _Res = await vm.MaintenanceOnly.ExecuteLoadDataCommand();
             }
         }
     }

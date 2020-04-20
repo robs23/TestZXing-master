@@ -56,13 +56,24 @@ namespace TestZXing
         {
             bool _ToClose = false;
             bool _toPause = false;
+            bool _Continue = true;
             string _Res = await vm.Validate(true);
-            if (_Res=="OK")
+            if (_Res=="OK" || _Res.Contains("Skippable"))
             {
-                if(true)//await vm.AreThereOpenHandlingsLeft() == "No")
+                if(_Res == "ActionListViewModelSkippable")
                 {
-                    //if (vm.IsMesRelated)
-                    //{
+                    if (!await DisplayAlert("Niezaznaczone czynności", "Nie wszystkie wymagane czynności zostały zaznaczone. Czy na pewno chcesz zakończyć zgłoszenie?" , "Zamknij", "Anuluj, chcę poprawić"))
+                    {
+                        _Continue = false;
+                    }
+                }
+                if (_Continue)
+                {
+                    //User accepted that not all required actions have been checked and wants to end anyway
+                    if (true)//await vm.AreThereOpenHandlingsLeft() == "No")
+                    {
+                        //if (vm.IsMesRelated)
+                        //{
                         //prompt user if to close the process
                         if (await DisplayAlert("Zamknąć zgłoszenie?", "Jesteś ostatnią osobą obsługującą to zgłoszenie. Możesz pozostawić to zgłoszenie otwarte lub zamknąć je. Co mam zrobić?", "Zamknij", "Pozostaw"))
                         {
@@ -72,22 +83,22 @@ namespace TestZXing
                         {
                             _toPause = true;
                         }
-                    //}
-                    //else
-                    //{
-                    //    _ToClose = true;
-                    //}
+                        //}
+                        //else
+                        //{
+                        //    _ToClose = true;
+                        //}
+                    }
+                    string _Result = await vm.End(_ToClose, _toPause);
+                    if (_Result == "OK")
+                    {
+                        await DisplayAlert("Powodzenie", "Obsługa zgłoszenia została zakończona!", "OK");
+                    }
+                    else
+                    {
+                        await DisplayAlert("Wystąpił błąd", _Result, "OK");
+                    }
                 }
-                string _Result = await vm.End(_ToClose, _toPause);
-                if (_Result == "OK")
-                {
-                    await DisplayAlert("Powodzenie", "Obsługa zgłoszenia została zakończona!", "OK");
-                }
-                else
-                {
-                    await DisplayAlert("Wystąpił błąd", _Result, "OK");
-                }
-
             }
             else
             {

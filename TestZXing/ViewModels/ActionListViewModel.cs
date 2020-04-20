@@ -216,7 +216,7 @@ namespace TestZXing.ViewModels
                 if (i.IsRequired && !(bool)i.IsChecked)
                 {
                     //at least 1 required action hasn't been checked
-                    _res = $"Czynność {i.ActionName} jest wymagana!";
+                    _res = "ActionListViewModelSkippable";
                     break;
                 }
             }

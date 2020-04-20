@@ -47,6 +47,15 @@ namespace TestZXing.ViewModels
                 {
                     return !IsWorking;
                 });
+            ClearSetCommand = new Command(
+                execute: () =>
+                {
+                    SelectedSet = null;
+                },
+                canExecute: () =>
+                {
+                    return !IsWorking;
+                });
             ClearAllCommand = new AsyncCommand(ClearAll);
             SetFilterCommand = new AsyncCommand(SetFilter);
         }
@@ -56,7 +65,7 @@ namespace TestZXing.ViewModels
             get
             {
                 string res = null;
-                if (SelectedActionType != null || SelectedArea !=null || SelectedPlace !=null)
+                if (SelectedActionType != null || SelectedArea != null || SelectedPlace != null || SelectedSet !=null)
                 {
                     //There is at least 1 condition in the filter
                     res = "";
@@ -64,16 +73,21 @@ namespace TestZXing.ViewModels
                     {
                         res += $"ActionTypeId={SelectedActionType.ActionTypeId}";
                     }
-                    if(SelectedPlace != null)
-                    {
-                        if (!string.IsNullOrEmpty(res)) { res += " and "; }
-                        res += $"PlaceId={SelectedPlace.PlaceId}";
-                    }
                     if (SelectedArea != null)
                     {
                         if (!string.IsNullOrEmpty(res)) { res += " and "; }
                         res += $"AreaId={SelectedArea.AreaId}";
                     }
+                    if (SelectedSet != null)
+                    {
+                        if (!string.IsNullOrEmpty(res)) { res += " and "; }
+                        res += $"SetId={SelectedSet.SetId}";
+                    }
+                    if (SelectedPlace != null)
+                    {
+                        if (!string.IsNullOrEmpty(res)) { res += " and "; }
+                        res += $"PlaceId={SelectedPlace.PlaceId}";
+                    } 
                 }
                 return res;
             }
@@ -86,9 +100,10 @@ namespace TestZXing.ViewModels
 
         public async Task ClearAll()
         {
-            SelectedArea = null;
+            SelectedActionType = null;
             SelectedPlace = null;
             SelectedArea = null;
+            SelectedSet = null;
             IsSet = false;
             if (PopupNavigation.Instance.PopupStack.Count > 0) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide handlings screen
             CallerVm.OnFilterUpdate();
@@ -131,6 +146,13 @@ namespace TestZXing.ViewModels
             set { SetProperty(ref _Areas, value); }
         }
 
+        ObservableCollection<Set> _Sets = new ObservableCollection<Set>();
+        public ObservableCollection<Set> Sets
+        {
+            get { return _Sets; }
+            set { SetProperty(ref _Sets, value); }
+        }
+
         ActionType _SelectedActionType;
 
         public ActionType SelectedActionType
@@ -155,10 +177,20 @@ namespace TestZXing.ViewModels
             set { SetProperty(ref _SelectedArea, value); }
         }
 
+        Set _SelectedSet;
+
+        public Set SelectedSet
+        {
+            get { return _SelectedSet; }
+            set { SetProperty(ref _SelectedSet, value); }
+        }
+
+
         public ICommand SetFilterCommand { get; private set; }
         public ICommand ClearAllCommand { get; private set; }
         public ICommand ClearActionTypeCommand { get; private set; }
         public ICommand ClearPlaceCommand { get; private set; }
         public ICommand ClearAreaCommand { get; private set; }
+        public ICommand ClearSetCommand { get; private set; }
     }
 }
