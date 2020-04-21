@@ -70,7 +70,7 @@ namespace TestZXing
                 if (_Continue)
                 {
                     //User accepted that not all required actions have been checked and wants to end anyway
-                    if (true)//await vm.AreThereOpenHandlingsLeft() == "No")
+                    if (await vm.AreThereOpenHandlingsLeft() == "No")
                     {
                         //if (vm.IsMesRelated)
                         //{
