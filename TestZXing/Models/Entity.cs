@@ -6,11 +6,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using TestZXing.Interfaces;
 using TestZXing.Static;
 
 namespace TestZXing.Models
 {
-    public abstract class Entity<T>
+    public abstract class Entity<T> 
     {
         public abstract int Id { get; set; }
         public int CreatedBy { get; set; }
@@ -22,6 +23,8 @@ namespace TestZXing.Models
         public int TenantId { get; set; }
         public string TenantName { get; set; }
         public string AddedItem { get; set; }
+
+        public bool IsModified { get; set; } = true;
 
         public virtual async Task<string> Add()
         {
@@ -38,10 +41,12 @@ namespace TestZXing.Models
                     HttpResponseMessage httpResponse = await Static.Functions.GetPostRetryAsync(() => httpClient.PostAsync(new Uri(url), content), TimeSpan.FromSeconds(3));
                     if (!httpResponse.IsSuccessStatusCode)
                     {
+                        IsModified = true;//hasn't been saved
                         _Result = httpResponse.ReasonPhrase;
                     }
                     else
                     {
+                        IsModified = false;//has been saved successfully
                         var rString = await httpResponse.Content.ReadAsStringAsync();
                         AddedItem = rString;
                     }
@@ -70,7 +75,12 @@ namespace TestZXing.Models
                 HttpResponseMessage result = await Static.Functions.GetPostRetryAsync(() => httpClient.PutAsync(new Uri(url), content), TimeSpan.FromSeconds(3));
                 if (!result.IsSuccessStatusCode)
                 {
+                    IsModified = true; //hasn't been saved
                     _Result = result.ReasonPhrase;
+                }
+                else
+                {
+                    IsModified = false;//has been saved successfully
                 }
             }
             catch (Exception ex)

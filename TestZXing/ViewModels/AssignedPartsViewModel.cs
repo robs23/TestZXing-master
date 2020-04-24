@@ -3,6 +3,7 @@ using MvvmHelpers.Commands;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -111,6 +112,53 @@ namespace TestZXing.ViewModels
         private async Task Search()
         {
             Application.Current.MainPage.Navigation.PushAsync(new PartsPage(PartsPageViewModel));
+        }
+
+        public async Task<string> Save(int handlingId, int processId, int placeId)
+        {
+            string res = "OK";
+
+            if (res=="OK")
+            {
+                List<Task<string>> SaveTasks = new List<Task<string>>();
+                foreach (PartUsage pu in Items)
+                {
+                    pu.HandlingId = handlingId;
+                    pu.ProcessId = processId;
+                    pu.PlaceId = placeId;
+                    if (pu.PartUsageId == 0)
+                    {
+                        SaveTasks.Add(pu.Add());
+                        pu.IsModified = false;
+                    }
+                    else
+                    {
+                        if (pu.IsModified)
+                        {
+                            SaveTasks.Add(pu.Edit());
+                            pu.IsModified = false;
+                        }
+                        
+                    }
+                }
+
+                IEnumerable<string> results = await Task.WhenAll<string>(SaveTasks);
+                if (results.Where(r => r != "OK").Any())
+                {
+                    return string.Join("; ", results.Where(r => r != "OK"));
+                }
+                else
+                {
+                    return "OK";
+                }
+            }
+            return res;
+        }
+
+        public string Validate()
+        {
+            string res = "OK";
+            return res;
         }
 
         public ICommand RemoveItemsCommand { get; }

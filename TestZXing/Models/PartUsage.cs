@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Input;
+using TestZXing.Interfaces;
 using Xamarin.Forms;
 
 namespace TestZXing.Models
@@ -22,6 +23,17 @@ namespace TestZXing.Models
             IncreaseAmountCommand = new Command(IncreaseAmount);
             DecreaseAmountCommand = new Command(DecreaseAmount);
         }
+
+        public int PartUsageId { get; set; }
+        public override int Id
+        {
+            set => value = PartUsageId;
+            get => PartUsageId;
+        }
+
+        public int? HandlingId { get; set; }
+        public int? ProcessId { get; set; }
+        public int? PlaceId { get; set; }
 
         public int Amount { get; set; } = 0;
 
