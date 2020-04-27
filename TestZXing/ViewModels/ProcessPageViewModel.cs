@@ -285,6 +285,8 @@ namespace TestZXing.ViewModels
             
         }
 
+
+
         public bool _IsQrConfirmed { get; set; }
         public bool IsQrConfirmed
         {
@@ -805,15 +807,22 @@ namespace TestZXing.ViewModels
                                 DependencyService.Get<IToaster>().LongAlert($"Próbuje pobrać kod zasobu..");
                                 await InitializeCurrentPlace();
                             }
-                            if (qrToken == CurrentPlace.PlaceToken)
+                            if (CurrentPlace == null)
                             {
-                                //scanned code matches
-                                IsQrConfirmed = true;
-                                _Result = "OK";
+                                _Result = $"Nie znaleziono zasobu o ID {_thisProcess.PlaceId} dla którego jest to zgłoszenie..";
                             }
                             else
                             {
-                                _Result = "Zeskanowany kod nie odpowiada kodowi zasobu.. Spróbuj jeszcze raz";
+                                if (qrToken == CurrentPlace.PlaceToken)
+                                {
+                                    //scanned code matches
+                                    IsQrConfirmed = true;
+                                    _Result = "OK";
+                                }
+                                else
+                                {
+                                    _Result = "Zeskanowany kod nie odpowiada kodowi zasobu.. Spróbuj jeszcze raz";
+                                }
                             }
                         }catch(Exception ex)
                         {

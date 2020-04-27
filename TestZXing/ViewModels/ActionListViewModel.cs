@@ -258,6 +258,14 @@ namespace TestZXing.ViewModels
             
         }
 
+        public bool IsSaved
+        {
+            get
+            {
+                return CheckedItems.Any(i => i.IsSaved == false);//if any item is not saved, then whole ViewModel is not saved
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

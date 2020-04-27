@@ -129,14 +129,12 @@ namespace TestZXing.ViewModels
                     if (pu.PartUsageId == 0)
                     {
                         SaveTasks.Add(pu.Add());
-                        pu.IsModified = false;
                     }
                     else
                     {
-                        if (pu.IsModified)
+                        if (!pu.IsSaved)
                         {
                             SaveTasks.Add(pu.Edit());
-                            pu.IsModified = false;
                         }
                         
                     }
@@ -231,6 +229,14 @@ namespace TestZXing.ViewModels
                 {
                     return "Nie użyto żadnej części do tego zgłoszenia. Użyj pierwszą część korzystając z przycisków poniżej. Przycisk LUPY pozwala wyszukać część po nazwie/symbolu, przycisk QR pozwala dodać część skanując jej kod QR";
                 }
+            }
+        }
+
+        public bool IsSaved
+        {
+            get
+            {
+                return Items.Any(i => i.IsSaved == false);//if any item is not saved, then whole ViewModel is not saved
             }
         }
     }
