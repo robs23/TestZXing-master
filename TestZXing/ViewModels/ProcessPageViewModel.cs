@@ -375,6 +375,25 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public bool PartsApplicable
+        {
+            get
+            {
+                if (Type == null || Type.PartsApplicable == null)
+                {
+                    return false;
+                }
+                else if ((bool)Type.PartsApplicable)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
         public bool IsWorking
         {
             get
@@ -626,6 +645,7 @@ namespace TestZXing.ViewModels
                         OnPropertyChanged();
                         OnPropertyChanged(nameof(NextState));
                         OnPropertyChanged(nameof(ActionsApplicable));
+                        OnPropertyChanged(nameof(PartsApplicable));
                         OnPropertyChanged(nameof(ChangeStateButtonCount));
                     }
                 }catch(Exception ex)
@@ -930,6 +950,10 @@ namespace TestZXing.ViewModels
 
                             _Result = await ActionListVm.Save(_this.HandlingId, _thisProcess.ProcessId);
                         }
+                        if(_Result=="OK" && PartsApplicable)
+                        {
+                            _Result = await AssignedPartsVm.Save(_this.HandlingId, _this.ProcessId, _this.PlaceId);
+                        }
                         RuntimeSettings.CurrentUser.IsWorking = true;
                         OnPropertyChanged(nameof(Icon));
                     }
@@ -1067,6 +1091,10 @@ namespace TestZXing.ViewModels
                         //Save actions if there are any
 
                         _Result = await ActionListVm.Save(_this.HandlingId, _thisProcess.ProcessId);
+                    }
+                    if (_Result == "OK" && PartsApplicable)
+                    {
+                        _Result = await AssignedPartsVm.Save(_this.HandlingId, _this.ProcessId, _this.PlaceId);
                     }
 
                     RuntimeSettings.CurrentUser.IsWorking = false;

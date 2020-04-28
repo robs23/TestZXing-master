@@ -24,6 +24,8 @@ namespace TestZXing.Models
         public bool? RequireQrToFinish { get; set; }
         public bool? ClosePreviousInSamePlace { get; set; }
 
+        public bool? PartsApplicable { get; set; }
+
         public override string ToString()
         {
             string str = "";
