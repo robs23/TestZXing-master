@@ -10,6 +10,7 @@ using System.Windows.Input;
 using TestZXing.Classes;
 using TestZXing.Interfaces;
 using TestZXing.Models;
+using TestZXing.Static;
 using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
@@ -128,6 +129,7 @@ namespace TestZXing.ViewModels
                     pu.PlaceId = placeId;
                     if (pu.PartUsageId == 0)
                     {
+                        pu.CreatedBy = RuntimeSettings.CurrentUser.UserId;
                         SaveTasks.Add(pu.Add());
                     }
                     else

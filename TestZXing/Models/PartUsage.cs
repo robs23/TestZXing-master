@@ -9,7 +9,7 @@ using Xamarin.Forms;
 
 namespace TestZXing.Models
 {
-    public class PartUsage : Part, INotifyPropertyChanged
+    public class PartUsage : Entity<PartUsage>, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -36,6 +36,16 @@ namespace TestZXing.Models
         public int? PlaceId { get; set; }
 
         public int Amount { get; set; } = 0;
+
+        public int PartId { get; set; }
+
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public Nullable<int> ProducerId { get; set; }
+        public string ProducerName { get; set; }
+        public string Symbol { get; set; }
+
+        public string Image { get; set; }
 
         public ICommand IncreaseAmountCommand { private set; get; }
 
