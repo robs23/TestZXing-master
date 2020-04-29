@@ -30,12 +30,10 @@ namespace TestZXing.Models
             set => value = PartUsageId;
             get => PartUsageId;
         }
-
-        public int? HandlingId { get; set; }
         public int? ProcessId { get; set; }
         public int? PlaceId { get; set; }
 
-        public int Amount { get; set; } = 0;
+        public float Amount { get; set; } = 0;
 
         public int PartId { get; set; }
 
@@ -46,6 +44,21 @@ namespace TestZXing.Models
         public string Symbol { get; set; }
 
         public string Image { get; set; }
+
+        public string ImageUrl
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(this.Image))
+                {
+                    return Static.Secrets.ApiAddress + Static.RuntimeSettings.ThumbnailsPath + this.Image;
+                }
+                else
+                {
+                    return "image_placeholder_128.png";
+                }
+            }
+        }
 
         public ICommand IncreaseAmountCommand { private set; get; }
 

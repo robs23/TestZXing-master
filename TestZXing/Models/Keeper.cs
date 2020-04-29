@@ -54,6 +54,44 @@ namespace TestZXing.Models
             }
         }
 
+        public async Task Remove(List<int> ids)
+        {
+            string result = "OK";
+            if (result == "OK")
+            {
+                List<Task<string>> ListsOfTasks = new List<Task<string>>();
+
+                foreach (int id in ids)
+                {
+                    ListsOfTasks.Add(_Remomve(id));
+                }
+
+                string response = "";
+                IEnumerable<string> res = await Task.WhenAll<string>(ListsOfTasks);
+                if (res.Any())
+                {
+                    if (res.Where(r => r != "OK").Any())
+                    {
+                        response = string.Join("; ", res.Where(r => r != "OK"));
+                    }
+                }
+            }
+        }
+
+        private async Task<string> _Remomve(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                string url = Secrets.ApiAddress + $"Delete{ObjectName}?token=" + Secrets.TenantToken + "&id={0}&UserId={1}";
+                var result = await client.DeleteAsync(String.Format(url, id, RuntimeSettings.UserId));
+                if (!result.IsSuccessStatusCode)
+                {
+                    return String.Format("Serwer zwrócił błąd przy próbie usunięcia pozycji {0}. Wiadomość: " + result.ReasonPhrase, id);
+                }
+                return "OK";
+            }
+        }
+
         public async Task CreateLocalBackup()
         {
             var db = new SQLiteConnection(Static.RuntimeSettings.LocalDbPath);

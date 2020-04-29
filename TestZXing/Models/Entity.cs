@@ -93,5 +93,32 @@ namespace TestZXing.Models
             return _Result;
         }
 
+        public async Task<string> Remomve()
+        {
+            string _Result = "OK";
+            string url = Secrets.ApiAddress + $"Delete{typeof(T).Name}?token=" + Secrets.TenantToken + $"&id={this.Id}&UserId={RuntimeSettings.CurrentUser.UserId}";
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                HttpResponseMessage result = await Static.Functions.GetPostRetryAsync(() => httpClient.DeleteAsync(new Uri(url)), TimeSpan.FromSeconds(3));
+                if (!result.IsSuccessStatusCode)
+                {
+                    IsSaved = false;
+                    _Result = String.Format("Serwer zwrócił błąd przy próbie usunięcia pozycji {0}. Wiadomość: " + result.ReasonPhrase, this.Id);
+                }
+                else
+                {
+                    IsSaved = true;
+                }
+            }catch(Exception ex)
+            {
+                _Result = ex.Message;
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Remomve), this.GetType().Name);
+            }
+
+            return _Result;
+        }
+
     }
 }

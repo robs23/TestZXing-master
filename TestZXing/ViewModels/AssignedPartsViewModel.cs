@@ -18,6 +18,7 @@ namespace TestZXing.ViewModels
     public class AssignedPartsViewModel : BaseViewModel
     {
         public PartKeeper PartKeeper { get; set; }
+        public PartUsageKeeper PartUsageKeeper { get; set; }
 
         public AssignedPartsViewModel()
         {
@@ -27,16 +28,20 @@ namespace TestZXing.ViewModels
             Items = new ObservableRangeCollection<PartUsage>();
             SelectedItems = new ObservableRangeCollection<PartUsage>();
             PartKeeper = new PartKeeper();
+            PartUsageKeeper = new PartUsageKeeper();
         }
 
-        
-
-        public async Task Initialize()
+        public async Task Initialize(int? processId=null)
         {
             base.Initialize();
             PartsPageViewModel = new PartsPageViewModel();
             PartsPageViewModel.Initialize();
             PartsPageViewModel.Mode = PartsPageMode.PartsPicker;
+            if (processId != null)
+            {
+                await PartUsageKeeper.Reload($"ProcessId={processId} and CreatedBy={RuntimeSettings.CurrentUser.UserId}");
+                Items = new ObservableRangeCollection<PartUsage>(PartUsageKeeper.Items);
+            }
         }
 
         public async Task Update()
@@ -115,16 +120,16 @@ namespace TestZXing.ViewModels
             Application.Current.MainPage.Navigation.PushAsync(new PartsPage(PartsPageViewModel));
         }
 
-        public async Task<string> Save(int handlingId, int processId, int placeId)
+        public async Task<string> Save(int processId, int placeId)
         {
             string res = "OK";
 
             if (res=="OK")
             {
                 List<Task<string>> SaveTasks = new List<Task<string>>();
+
                 foreach (PartUsage pu in Items)
                 {
-                    pu.HandlingId = handlingId;
                     pu.ProcessId = processId;
                     pu.PlaceId = placeId;
                     if (pu.PartUsageId == 0)
@@ -138,11 +143,26 @@ namespace TestZXing.ViewModels
                         {
                             SaveTasks.Add(pu.Edit());
                         }
-                        
+
+                    }
+                }
+                if (RemovedItems.Any())
+                {
+                    foreach (PartUsage pu in RemovedItems)
+                    {
+                        SaveTasks.Add(pu.Remomve());
                     }
                 }
 
                 IEnumerable<string> results = await Task.WhenAll<string>(SaveTasks);
+                for (int i = RemovedItems.Count; i > 0; i--)
+                {
+                    if (RemovedItems[i-1].IsSaved)
+                    {
+                        RemovedItems.Remove(RemovedItems[i - 1]);
+                    }
+                }
+
                 if (results.Where(r => r != "OK").Any())
                 {
                     return string.Join("; ", results.Where(r => r != "OK"));
@@ -169,6 +189,11 @@ namespace TestZXing.ViewModels
             {
                 for (int i = SelectedItems.Count; i>0; i--)
                 {
+                    if (SelectedItems[i - 1].PartUsageId >0)
+                    {
+                        //if saved, add it to RemovedItems collection for further removal
+                        RemovedItems.Add(SelectedItems[i - 1]);
+                    }
                     Items.Remove(SelectedItems[i - 1]);
                     SelectedItems.Remove(SelectedItems[i-1]);
                 }
@@ -188,7 +213,6 @@ namespace TestZXing.ViewModels
                 SetProperty(ref _RemovableSelected, value);
             }
         }
-
 
         ObservableRangeCollection<PartUsage> _Items;
 
@@ -219,6 +243,14 @@ namespace TestZXing.ViewModels
             }
         }
 
+        ObservableRangeCollection<PartUsage> _RemovedItems = new ObservableRangeCollection<PartUsage>();
+
+        public ObservableRangeCollection<PartUsage> RemovedItems
+        {
+            get { return _RemovedItems; }
+            set { SetProperty(ref _RemovedItems, value); }
+        }
+
         public string EmptyViewCaption
         {
             get
@@ -229,7 +261,7 @@ namespace TestZXing.ViewModels
                 }
                 else
                 {
-                    return "Nie użyto żadnej części do tego zgłoszenia. Użyj pierwszą część korzystając z przycisków poniżej. Przycisk LUPY pozwala wyszukać część po nazwie/symbolu, przycisk QR pozwala dodać część skanując jej kod QR";
+                    return "Nie użyto żadnej części do tego zgłoszenia. Dodaj pierwszą część korzystając z przycisków poniżej. Przycisk LUPY pozwala wyszukać część po nazwie/symbolu, przycisk QR pozwala dodać część skanując jej kod QR";
                 }
             }
         }
