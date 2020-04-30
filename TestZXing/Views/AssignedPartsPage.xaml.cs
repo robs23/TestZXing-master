@@ -15,12 +15,6 @@ namespace TestZXing.Views
     public partial class AssignedPartsPage : ContentPage
     {
         AssignedPartsViewModel vm;
-        public AssignedPartsPage()
-        {
-            InitializeComponent();
-            vm = new AssignedPartsViewModel();
-            BindingContext = vm;
-        }
 
         public AssignedPartsPage(AssignedPartsViewModel _vm)
         {

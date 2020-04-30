@@ -950,7 +950,7 @@ namespace TestZXing.ViewModels
                         }
                         if(_Result=="OK" && PartsApplicable)
                         {
-                            _Result = await AssignedPartsVm.Save(_this.ProcessId, _this.PlaceId);
+                            _Result = await AssignedPartsVm.Save(_thisProcess.ProcessId, _thisProcess.PlaceId);
                         }
                         RuntimeSettings.CurrentUser.IsWorking = true;
                         OnPropertyChanged(nameof(Icon));

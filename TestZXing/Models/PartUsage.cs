@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TestZXing.Interfaces;
 using Xamarin.Forms;
@@ -59,6 +61,30 @@ namespace TestZXing.Models
                 }
             }
         }
+
+        public async override Task<string> Add()
+        {
+            string res="OK";
+
+            res = await base.Add();
+
+
+            if (res=="OK")
+            {
+                try
+                {
+                    PartUsage _this = JsonConvert.DeserializeObject<PartUsage>(AddedItem);
+                    this.PartUsageId = _this.PartUsageId;
+                    this.TenantId = _this.TenantId;
+                }
+                catch (Exception ex)
+                {
+                    res = ex.Message;
+                }
+            }
+            return res;
+
+        }   
 
         public ICommand IncreaseAmountCommand { private set; get; }
 
