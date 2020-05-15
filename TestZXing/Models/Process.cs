@@ -154,13 +154,28 @@ namespace TestZXing.Models
                 }
                 else
                 {
-                    if (PlannedStart < DateTime.Now.AddDays(-7))
+                    if (PlannedFinish != null)
                     {
-                        return "Zaległe";
+                        if (PlannedFinish < DateTime.Now)
+                        {
+                            return "Zaległe";
+                        }
+                        else
+                        {
+                            return "Bieżące";
+                        }
+
                     }
                     else
                     {
-                        return "Bieżące";
+                        if (PlannedStart < DateTime.Now.AddDays(-7))
+                        {
+                            return "Zaległe";
+                        }
+                        else
+                        {
+                            return "Bieżące";
+                        }
                     }
                 }
             }
@@ -175,13 +190,28 @@ namespace TestZXing.Models
                 }
                 else
                 {
-                    if (PlannedStart < DateTime.Now.AddDays(-7))
+                    if (PlannedFinish != null)
                     {
-                        return Color.Red;
+                        if (PlannedFinish < DateTime.Now)
+                        {
+                            return Color.Red;
+                        }
+                        else
+                        {
+                            return Color.Green;
+                        }
+
                     }
                     else
                     {
-                        return Color.Green;
+                        if (PlannedStart < DateTime.Now.AddDays(-7))
+                        {
+                            return Color.Red;
+                        }
+                        else
+                        {
+                            return Color.Green;
+                        }
                     }
                 }
             }
