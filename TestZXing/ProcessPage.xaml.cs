@@ -50,19 +50,43 @@ namespace TestZXing
         }
 
 
-
-
-        private async void btnEnd_Clicked(object sender, EventArgs e)
+        private async Task Start()
         {
+            //starting handling
+            string _Res = string.Empty;
+            _Res = await vm.Validate();
+
+            if (_Res == "OK")
+            {
+                string _Result = await vm.Save();
+                if (_Result == "OK")
+                {
+                    await DisplayAlert("Powodzenie", "Zapis zakończony powodzeniem!", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Wystąpił błąd", _Result, "OK");
+                }
+            }
+            else
+            {
+                await DisplayAlert("Uups.. Coś poszło nie tak..", _Res, "OK");
+            }
+        }
+
+        private async Task End()
+        {
+            //finish handling
+            string _Res = string.Empty;
             bool _ToClose = false;
             bool _toPause = false;
             bool _Continue = true;
-            string _Res = await vm.Validate(true);
-            if (_Res=="OK" || _Res.Contains("Skippable"))
+            _Res = await vm.Validate(true);
+            if (_Res == "OK" || _Res.Contains("Skippable"))
             {
-                if(_Res == "ActionListViewModelSkippable")
+                if (_Res == "ActionListViewModelSkippable")
                 {
-                    if (!await DisplayAlert("Niezaznaczone czynności", "Nie wszystkie wymagane czynności zostały zaznaczone. Czy na pewno chcesz zakończyć zgłoszenie?" , "Zamknij", "Anuluj, chcę poprawić"))
+                    if (!await DisplayAlert("Niezaznaczone czynności", "Nie wszystkie wymagane czynności zostały zaznaczone. Czy na pewno chcesz zakończyć zgłoszenie?", "Zamknij", "Anuluj, chcę poprawić"))
                     {
                         _Continue = false;
                     }
@@ -103,30 +127,22 @@ namespace TestZXing
             else
             {
 
-                await DisplayAlert("Uups.. Coś poszło nie tak..", _Res , "OK");
+                await DisplayAlert("Uups.. Coś poszło nie tak..", _Res, "OK");
             }
         }
 
         private async void btnChangeState_Clicked(object sender, EventArgs e)
         {
-            string _Res = await vm.Validate();
-
-            if (_Res == "OK")
+            string _Res = string.Empty;
+            if (vm._this.Status == "Rozpoczęty")
             {
-                string _Result = await vm.Save();
-                if (_Result == "OK")
-                {
-                    await DisplayAlert("Powodzenie", "Zapis zakończony powodzeniem!", "OK");
-                }
-                else
-                {
-                    await DisplayAlert("Wystąpił błąd", _Result, "OK");
-                }
+                await End();
             }
             else
             {
-                await DisplayAlert("Uups.. Coś poszło nie tak..", _Res, "OK");
+                await Start();
             }
+            
 
         }
 
@@ -155,7 +171,6 @@ namespace TestZXing
             catch (Exception ex)
             {
                 btnChangeState.IsEnabled = false;
-                btnEnd.IsEnabled = false;
                 DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
             }
         }
@@ -164,7 +179,6 @@ namespace TestZXing
         {
             Dictionary<string, string> xProps = new Dictionary<string, string>
                 {
-                    {"Przycisk ZAKOŃCZ aktywny", btnEnd.IsEnabled.ToString() },
                     {"Status zgłoszenia", vm._thisProcess.Status },
                     {"Status obsługi", vm._this.Status }
                 };
@@ -237,6 +251,11 @@ namespace TestZXing
         private async void btnParts_Clicked(object sender, EventArgs e)
         {
             Application.Current.MainPage.Navigation.PushAsync(new AssignedPartsPage(vm.AssignedPartsVm));
+        }
+
+        private void btnSave_Clicked(object sender, EventArgs e)
+        {
+
         }
     }
 }

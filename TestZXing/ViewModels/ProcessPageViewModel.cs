@@ -94,6 +94,7 @@ namespace TestZXing.ViewModels
                 //process is closed and open from history
                 _this.Status = "Zakończony";
                 OnPropertyChanged(nameof(NextState));
+                OnPropertyChanged(nameof(NextStateColor));
                 OnPropertyChanged(nameof(IsOpen));
             }
             
@@ -131,6 +132,7 @@ namespace TestZXing.ViewModels
                 //process is closed and open from history
                 _this.Status = "Zakończony";
                 OnPropertyChanged(nameof(NextState));
+                OnPropertyChanged(nameof(NextStateColor));
                 OnPropertyChanged(nameof(IsOpen));
             }
         }
@@ -617,6 +619,7 @@ namespace TestZXing.ViewModels
                                     IsProcessOpen = true;
                                     _this = await GetHandling();
                                     OnPropertyChanged(nameof(NextState));
+                                    OnPropertyChanged(nameof(NextStateColor));
                                 }
                                 Task.Run(() => InitializeActions());
                             });
@@ -628,6 +631,7 @@ namespace TestZXing.ViewModels
                                 _this = await GetHandling();
                                 Task.Run(() => InitializeActions());
                                 OnPropertyChanged(nameof(NextState));
+                                OnPropertyChanged(nameof(NextStateColor));
                             });
                         }
 
@@ -642,6 +646,7 @@ namespace TestZXing.ViewModels
                         }
                         OnPropertyChanged();
                         OnPropertyChanged(nameof(NextState));
+                        OnPropertyChanged(nameof(NextStateColor));
                         OnPropertyChanged(nameof(ActionsApplicable));
                         OnPropertyChanged(nameof(PartsApplicable));
                         OnPropertyChanged(nameof(ChangeStateButtonCount));
@@ -744,13 +749,29 @@ namespace TestZXing.ViewModels
                     return "Rozpocznij obsługę";
                 }else if(_this.Status == "Rozpoczęty")
                 {
-                    return "Wstrzymaj obsługę";
-                }else if(_this.Status == "Wstrzymany")
-                {
-                    return "Wznów obsługę";
+                    return "Zakończ obsługę";
                 }else
                 {
-                    return "Zakończony";
+                    return "Zakończono";
+                }
+            }
+        }
+
+        public Color NextStateColor
+        {
+            get
+            {
+                if (_this.Status == "Planowany")
+                {
+                    //next will be "Rozpocznij" so green is the color
+                    return Color.Green;
+                }else if(_this.Status== "Rozpoczęty")
+                {
+                    return Color.Red;
+                }
+                else
+                {
+                    return Color.LightGray;
                 }
             }
         }
@@ -927,6 +948,7 @@ namespace TestZXing.ViewModels
                                 _Result = await _this.Add();
                                 IsNew = false;
                                 OnPropertyChanged(nameof(NextState));
+                                OnPropertyChanged(nameof(NextStateColor));
                             }
                         }
                         else
@@ -941,6 +963,7 @@ namespace TestZXing.ViewModels
                             }
                             _Result = await _this.Edit();
                             OnPropertyChanged(nameof(NextState));
+                            OnPropertyChanged(nameof(NextStateColor));
                         }
                         if (_Result == "OK" && ActionsApplicable && HasActions)
                         {
@@ -1104,6 +1127,7 @@ namespace TestZXing.ViewModels
                 }
 
                 OnPropertyChanged(nameof(NextState));
+                OnPropertyChanged(nameof(NextStateColor));
                 OnPropertyChanged(nameof(IsOpen));
                 OnPropertyChanged(nameof(IsClosable));
                 OnPropertyChanged(nameof(Icon));
