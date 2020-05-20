@@ -304,7 +304,22 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public int ChangeStateButtonCount
+        public bool IsSaveable
+        {
+            get
+            {
+                if (IsNew || !IsOpen)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;    
+                }
+            }
+        }
+
+        public int SaveButtonCount
         {
             //just because I can't refer to grid control from code behind (stupid XF intellisense issue)
             get
@@ -348,7 +363,7 @@ namespace TestZXing.ViewModels
                     _HasActions = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(ActionsApplicable));
-                    OnPropertyChanged(nameof(ChangeStateButtonCount));
+                    OnPropertyChanged(nameof(SaveButtonCount));
                 }
             }
 
@@ -520,6 +535,7 @@ namespace TestZXing.ViewModels
                     _IsNew = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsClosable));
+                    OnPropertyChanged(nameof(IsSaveable));
                 }
             }
         }
@@ -649,7 +665,7 @@ namespace TestZXing.ViewModels
                         OnPropertyChanged(nameof(NextStateColor));
                         OnPropertyChanged(nameof(ActionsApplicable));
                         OnPropertyChanged(nameof(PartsApplicable));
-                        OnPropertyChanged(nameof(ChangeStateButtonCount));
+                        OnPropertyChanged(nameof(SaveButtonCount));
                     }
                 }catch(Exception ex)
                 {
