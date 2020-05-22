@@ -435,6 +435,7 @@ namespace TestZXing.ViewModels
                     OnPropertyChanged(nameof(IsIdle));
                     OnPropertyChanged(nameof(IsOpen));
                     OnPropertyChanged(nameof(IsClosable));
+                    OnPropertyChanged(nameof(IsSaveable));
                 }
             }
         }
