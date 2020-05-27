@@ -139,10 +139,10 @@ namespace TestZXing.ViewModels
                     }
                     else
                     {
-                        if (!pu.IsSaved)
-                        {
+                        //if (!pu.IsSaved)
+                        //{
                             SaveTasks.Add(pu.Edit());
-                        }
+                        //}
 
                     }
                 }

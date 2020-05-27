@@ -970,11 +970,7 @@ namespace TestZXing.ViewModels
                         }
                         else
                         {
-                            if (_this.Status == "Rozpoczęty")
-                            {
-                                _this.Status = "Wstrzymany";
-                            }
-                            else if (_this.Status == "Wstrzymany" || _this.Status == "Planowany")
+                            if (_this.Status == "Wstrzymany" || _this.Status == "Planowany")
                             {
                                 _this.Status = "Rozpoczęty";
                             }

@@ -50,7 +50,7 @@ namespace TestZXing
         }
 
 
-        private async Task Start()
+        private async Task Save()
         {
             //starting handling
             string _Res = string.Empty;
@@ -140,7 +140,7 @@ namespace TestZXing
             }
             else
             {
-                await Start();
+                await Save();
             }
             
 
@@ -253,9 +253,9 @@ namespace TestZXing
             Application.Current.MainPage.Navigation.PushAsync(new AssignedPartsPage(vm.AssignedPartsVm));
         }
 
-        private void btnSave_Clicked(object sender, EventArgs e)
+        private async void btnSave_Clicked(object sender, EventArgs e)
         {
-
+            await Save();
         }
     }
 }
