@@ -374,11 +374,11 @@ namespace TestZXing.ViewModels
             // says if btnAction should be displayed or not
             get
             {
-                if (Type == null || Type.ShowInPlanning==null)
+                if (Type == null || Type.ActionsApplicable==null)
                 {
                     return false;
                 }
-                else if((bool)Type.ShowInPlanning)
+                else if((bool)Type.ActionsApplicable)
                 {
                     return true;
                 }
