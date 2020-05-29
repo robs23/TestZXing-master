@@ -32,6 +32,8 @@
                 <RowDefinition Height="55"/>
                 <RowDefinition Height="55"/>
                 <RowDefinition Height="55"/>
+                <RowDefinition Height="55"/>
+                <RowDefinition Height="55"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="8*"/>
@@ -83,19 +85,33 @@
                     Grid.Row="2"
                     Grid.Column="1"/>
             <testzxing:BorderfulPicker
+                    x:Name="cmbTimeVsPlan"
+                    TextColor="CadetBlue"
+                    Title="Termin"
+                    ItemsSource="{Binding TimeVsPlanStatuses}"
+                    SelectedItem="{Binding SelectedTimeVsPlanStatus}"
+                    Grid.Row="3"
+                    Grid.Column="0"/>
+            <testzxing:RoundedButton
+                    ImageSource="delete.png"
+                    Command="{Binding ClearTimeVsPlanCommand}"
+                    BackgroundColor="Red"
+                    Grid.Row="3"
+                    Grid.Column="1"/>
+            <testzxing:BorderfulPicker
                     x:Name="cmbPlace"
                     TextColor="CadetBlue"
                     Title="Zasób"
                     ItemsSource="{Binding Places}"
                     ItemDisplayBinding="{Binding Name}"
                     SelectedItem="{Binding SelectedPlace}"
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Grid.Column="0"/>
             <testzxing:RoundedButton
                     ImageSource="delete.png"
                     Command="{Binding ClearPlaceCommand}"
                     BackgroundColor="Red"
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Grid.Column="1"/>
         </Grid>
         <Grid Margin="0,30,0,0">

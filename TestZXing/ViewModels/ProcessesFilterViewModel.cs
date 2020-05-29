@@ -19,6 +19,7 @@ namespace TestZXing.ViewModels
             ActionTypes = new ObservableCollection<ActionType>();
             Places = new ObservableCollection<Place>();
             Areas = new ObservableCollection<Area>();
+            TimeVsPlanStatuses = new ObservableCollection<string>();
 
             ClearActionTypeCommand = new Command(
                 execute: () =>
@@ -56,6 +57,15 @@ namespace TestZXing.ViewModels
                 {
                     return !IsWorking;
                 });
+            ClearTimeVsPlanCommand = new Command(
+                execute: () =>
+                {
+                    SelectedTimeVsPlanStatus = null;
+                },
+                canExecute: () =>
+                {
+                    return !IsWorking;
+                });
             ClearAllCommand = new AsyncCommand(ClearAll);
             SetFilterCommand = new AsyncCommand(SetFilter);
         }
@@ -65,7 +75,7 @@ namespace TestZXing.ViewModels
             get
             {
                 string res = null;
-                if (SelectedActionType != null || SelectedArea != null || SelectedPlace != null || SelectedSet !=null)
+                if (SelectedActionType != null || SelectedArea != null || SelectedPlace != null || SelectedSet !=null || SelectedTimeVsPlanStatus!=null)
                 {
                     //There is at least 1 condition in the filter
                     res = "";
@@ -87,7 +97,12 @@ namespace TestZXing.ViewModels
                     {
                         if (!string.IsNullOrEmpty(res)) { res += " and "; }
                         res += $"PlaceId={SelectedPlace.PlaceId}";
-                    } 
+                    }
+                    if (SelectedTimeVsPlanStatus != null)
+                    {
+                        if (!string.IsNullOrEmpty(res)) { res += " and "; }
+                        res += $"TimeVsPlan==\"{SelectedTimeVsPlanStatus}\"";
+                    }
                 }
                 return res;
             }
@@ -104,6 +119,7 @@ namespace TestZXing.ViewModels
             SelectedPlace = null;
             SelectedArea = null;
             SelectedSet = null;
+            SelectedTimeVsPlanStatus = null;
             IsSet = false;
             if (PopupNavigation.Instance.PopupStack.Count > 0) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide handlings screen
             CallerVm.OnFilterUpdate();
@@ -153,6 +169,16 @@ namespace TestZXing.ViewModels
             set { SetProperty(ref _Sets, value); }
         }
 
+        ObservableCollection<string> _TimeVsPlanStatuses = new ObservableCollection<string>();
+
+        public ObservableCollection<string> TimeVsPlanStatuses
+        {
+            get { return _TimeVsPlanStatuses; }
+            set { SetProperty(ref _TimeVsPlanStatuses, value); }
+        }
+
+
+
         ActionType _SelectedActionType;
 
         public ActionType SelectedActionType
@@ -185,6 +211,14 @@ namespace TestZXing.ViewModels
             set { SetProperty(ref _SelectedSet, value); }
         }
 
+        string _SelectedTimeVsPlanStatus;
+
+        public string SelectedTimeVsPlanStatus
+        {
+            get { return _SelectedTimeVsPlanStatus; }
+            set { SetProperty(ref _SelectedTimeVsPlanStatus, value); }
+        }
+
 
         public ICommand SetFilterCommand { get; private set; }
         public ICommand ClearAllCommand { get; private set; }
@@ -192,5 +226,6 @@ namespace TestZXing.ViewModels
         public ICommand ClearPlaceCommand { get; private set; }
         public ICommand ClearAreaCommand { get; private set; }
         public ICommand ClearSetCommand { get; private set; }
+        public ICommand ClearTimeVsPlanCommand { get; private set; }
     }
 }

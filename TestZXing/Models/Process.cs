@@ -144,6 +144,35 @@ namespace TestZXing.Models
             }
         }
 
+        public bool TimingApplicable
+        {
+            get
+            {
+                bool res = false;
+                if(PlannedStart!=null && PlannedFinish != null)
+                {
+                    res = true;
+                }
+                return res;
+            }
+        }
+
+        public bool IsOverdue
+        {
+            get
+            {
+                bool res = false;
+                if (TimingApplicable)
+                {
+                    if(PlannedFinish < DateTime.Now)
+                    {
+                        res = true;
+                    }
+                }
+                return res;
+            }
+        }
+
         public string TimingVsPlan
         {
             get
@@ -154,7 +183,10 @@ namespace TestZXing.Models
                 }
                 else
                 {
-                    if (PlannedFinish != null)
+                    if(PlannedStart > DateTime.Now)
+                    {
+                        return "W przyszłości";
+                    }else if (PlannedFinish != null)
                     {
                         if (PlannedFinish < DateTime.Now)
                         {
@@ -190,7 +222,11 @@ namespace TestZXing.Models
                 }
                 else
                 {
-                    if (PlannedFinish != null)
+                    if(PlannedStart > DateTime.Now)
+                    {
+                        return Color.LightSteelBlue;
+                    }
+                    else if (PlannedFinish != null)
                     {
                         if (PlannedFinish < DateTime.Now)
                         {

@@ -80,6 +80,10 @@ namespace TestZXing.ViewModels
                 {
                     Filter.Sets.Add(new Set() { SetId = (int)p.SetId, Name = p.SetName });
                 }
+                if (!Filter.TimeVsPlanStatuses.Any(i => i == p.TimingVsPlan))
+                {
+                    Filter.TimeVsPlanStatuses.Add(p.TimingVsPlan);
+                }
             }
             Filter.SetCaller(this);
             IsFilterSetUp = true;

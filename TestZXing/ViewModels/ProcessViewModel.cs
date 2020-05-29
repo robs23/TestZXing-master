@@ -39,6 +39,24 @@ namespace TestZXing.ViewModels
                 }
             }
         }
+
+        public bool TimingApplicable
+        {
+            get
+            {
+                return _process.TimingApplicable;
+            }
+        }
+
+        public bool IsOverdue
+        {
+            get
+            {
+
+                return _process.IsOverdue;
+            }
+        }
+
         public string Status { get { return _process.Status; } }
         public Color StatusColor
         {
