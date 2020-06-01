@@ -100,8 +100,8 @@ namespace TestZXing.ViewModels
                     }
                     if (SelectedTimeVsPlanStatus != null)
                     {
-                        if (!string.IsNullOrEmpty(res)) { res += " and "; }
-                        res += $"TimeVsPlan==\"{SelectedTimeVsPlanStatus}\"";
+                        if (!string.IsNullOrEmpty(res)) { res += " AND "; }
+                        res += $"TimingVsPlan.ToLower().Contains(\"{SelectedTimeVsPlanStatus.ToLower()}\")";
                     }
                 }
                 return res;

@@ -98,7 +98,7 @@ namespace TestZXing.ViewModels
                 if (FilterString != null)
                 {
                     HidePlanned = false;
-                    url = $"{baseUrl} and {FilterString}";
+                    url = $"{baseUrl} AND {FilterString}";
                 }
                 else
                 {
@@ -111,7 +111,7 @@ namespace TestZXing.ViewModels
                 if (FilterString != null)
                 {
                     HidePlanned = false;
-                    url = $"{baseUrl} and {FilterString}";
+                    url = $"{baseUrl} AND {FilterString}";
                 }
                 else
                 {
