@@ -123,6 +123,10 @@ namespace TestZXing.Models
         public int? AllHandlings { get; set; }
         public string AssignedUserNames { get; set; }
 
+        public string Comment { get; set; }
+
+        public int? ComponentId { get; set; }
+
         public string PlannedFor
         {
             get

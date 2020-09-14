@@ -91,7 +91,7 @@
       <HintPath>..\packages\Microsoft.AppCenter.Distribute.2.6.4\lib\MonoAndroid403\Microsoft.AppCenter.Distribute.Android.Bindings.dll</HintPath>
     </Reference>
     <Reference Include="MvvmHelpers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Refractored.MvvmHelpers.1.6.1-beta\lib\netstandard2.0\MvvmHelpers.dll</HintPath>
+      <HintPath>..\packages\Refractored.MvvmHelpers.1.6.2\lib\netstandard2.0\MvvmHelpers.dll</HintPath>
     </Reference>
     <Reference Include="netstandard" />
     <Reference Include="Java.Interop" />

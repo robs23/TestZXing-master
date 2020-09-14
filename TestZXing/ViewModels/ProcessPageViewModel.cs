@@ -14,6 +14,8 @@ using TestZXing.Static;
 using TestZXing.Classes;
 using ZXing.Mobile;
 using Xamarin.Forms;
+using Component = TestZXing.Models.Component;
+using MvvmHelpers;
 
 namespace TestZXing.ViewModels
 {
@@ -43,6 +45,20 @@ namespace TestZXing.ViewModels
                 OnPropertyChanged();
             }
         }
+        private ObservableRangeCollection<Component> _components { get; set; }
+        public ObservableRangeCollection<Component> Components
+        {
+            get
+            {
+                return _components;
+            }
+            set
+            {
+                _components = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsSaved { get; set; }
         public bool _IsNew { get; set; }
         private bool _IsWorking { get; set; }
@@ -206,6 +222,32 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public async Task InitializeComponents()
+        {
+            try
+            {
+                Components = new ObservableRangeCollection<Component>();
+                ComponentKeeper componentKeeper = new ComponentKeeper();
+                await componentKeeper.Reload($"PlaceId={_thisProcess.PlaceId}");
+                Device.BeginInvokeOnMainThread(() => {
+                    Components.AddRange(componentKeeper.Items);
+                    if (Components.Any())
+                    {
+                        HasComponents = true;
+                    }
+                    else
+                    {
+                        HasComponents = false;
+                    }
+                });
+                
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task Initialize(int AtId = -1)
         {
             try
@@ -273,6 +315,7 @@ namespace TestZXing.ViewModels
                 {
                     SelectedPlaceIndex = index;
                 }
+                Task.Run(() => InitializeComponents());
                 IsWorking = false;
                 IsInitialized = true;
                 
@@ -367,6 +410,23 @@ namespace TestZXing.ViewModels
                 }
             }
 
+        }
+
+        private bool _HasComponents { get; set; } = false;
+        public bool HasComponents
+        {
+            get
+            {
+                return _HasComponents;
+            }
+            set
+            {
+                if (value != _HasComponents)
+                {
+                    _HasComponents = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public bool ActionsApplicable
@@ -667,6 +727,7 @@ namespace TestZXing.ViewModels
                         OnPropertyChanged(nameof(ActionsApplicable));
                         OnPropertyChanged(nameof(PartsApplicable));
                         OnPropertyChanged(nameof(SaveButtonCount));
+                        OnPropertyChanged(nameof(HasComponents));
                     }
                 }catch(Exception ex)
                 {
@@ -752,6 +813,24 @@ namespace TestZXing.ViewModels
                 if(_place != value)
                 {
                     _place = value;
+                    OnPropertyChanged();
+                    Task.Run(()=> InitializeComponents());
+                }
+            }
+        }
+
+        private Component _component { get; set; }
+        public Component Component
+        {
+            get
+            {
+                return _component;
+            }
+            set
+            {
+                if(_component != value)
+                {
+                    _component = value;
                     OnPropertyChanged();
                 }
             }

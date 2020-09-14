@@ -47,6 +47,16 @@
                 IsVisible="{Binding IsMesRelated}"
                 />
             <testzxing:BorderfulPicker
+                x:Name="cmbComponents"
+                TextColor="CadetBlue"
+                Title="Wybierz komponent"
+                ItemsSource="{Binding Components}"
+                ItemDisplayBinding="{Binding Name}"
+                SelectedItem="{Binding Component, Mode=TwoWay}"
+                IsEnabled="{Binding IsIdle}"
+                IsVisible="{Binding HasComponents}"
+                />
+            <testzxing:BorderfulPicker
                 x:Name="cmbActionTypes"
                 TextColor="CadetBlue"
                 Title="Wybierz typ zgłoszenia"
