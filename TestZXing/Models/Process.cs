@@ -126,6 +126,7 @@ namespace TestZXing.Models
         public string Comment { get; set; }
 
         public int? ComponentId { get; set; }
+        public string ComponentName { get; set; }
 
         public string PlannedFor
         {
@@ -371,8 +372,11 @@ namespace TestZXing.Models
             string _Result = "OK";
 
             UsersKeeper uKeeper = new UsersKeeper();
-            User myUser = await uKeeper.GetUser(RuntimeSettings.UserId);
-            User manager = await uKeeper.GetUser((int)this.StartedBy);
+            Task<User> myUserTask = uKeeper.GetUser(RuntimeSettings.UserId);
+            Task<User> managerTask = uKeeper.GetUser((int)this.StartedBy);
+            await Task.WhenAll(myUserTask, managerTask);
+            User myUser = await myUserTask;
+            User manager = await managerTask;
 
             if (myUser != null && manager != null)
             {
@@ -393,7 +397,9 @@ namespace TestZXing.Models
                         InitialDiagnosis = this.InitialDiagnosis,
                         RepairActions = this.RepairActions,
                         Status = "AC",
-                        IsAdjustment = adjustment
+                        IsAdjustment = adjustment,
+                        ReasonCode2 = this.PlaceName,
+                        ReasonCode3 = this.ComponentName
                     };
                     try
                     {

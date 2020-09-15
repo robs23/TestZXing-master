@@ -124,7 +124,7 @@
                 PropertyChanged="BtnActions_PropertyChanged"
                 BackgroundColor="Black"
                 Image="checklist_48.png"
-                IsVisible="{Binding ActionsApplicable}"
+                IsVisible="{Binding HasActions}"
                 Clicked="BtnActions_Clicked"
                 Grid.Row="0"
                 Grid.Column="1"

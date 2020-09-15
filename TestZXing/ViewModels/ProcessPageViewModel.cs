@@ -230,9 +230,14 @@ namespace TestZXing.ViewModels
                 ComponentKeeper componentKeeper = new ComponentKeeper();
                 await componentKeeper.Reload($"PlaceId={_thisProcess.PlaceId}");
                 Device.BeginInvokeOnMainThread(() => {
+                    Components = new ObservableRangeCollection<Component>();
                     Components.AddRange(componentKeeper.Items);
                     if (Components.Any())
                     {
+                        if (_thisProcess.ComponentId != null)
+                        {
+                            Component = Components.Where(c => c.ComponentId == _thisProcess.ComponentId).FirstOrDefault();
+                        }
                         HasComponents = true;
                     }
                     else
@@ -772,6 +777,7 @@ namespace TestZXing.ViewModels
                     {
                         _selectedPlaceIndex = value;
                         _thisProcess.PlaceId = Places[value].PlaceId;
+                        _thisProcess.PlaceName = Places[value].Name;
                         Place = Places[value];
                         OnPropertyChanged();
                     }
@@ -831,6 +837,12 @@ namespace TestZXing.ViewModels
                 if(_component != value)
                 {
                     _component = value;
+                    if (value != null)
+                    {
+                        _thisProcess.ComponentId = value.ComponentId;
+                        _thisProcess.ComponentName = value.Name;
+                    }
+                    
                     OnPropertyChanged();
                 }
             }
