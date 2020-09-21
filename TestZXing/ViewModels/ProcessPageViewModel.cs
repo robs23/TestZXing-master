@@ -1159,6 +1159,10 @@ namespace TestZXing.ViewModels
             {
                 _res = ActionListVm.Validate();
             }
+            if(_res=="OK" && PartsApplicable)
+            {
+                _res = AssignedPartsVm.Validate();
+            }
             
             return _res;
         }

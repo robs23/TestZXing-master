@@ -109,10 +109,16 @@
                                    Grid.Column="0"
                                    HorizontalTextAlignment="Center"
                                    FontAttributes="Bold"
-
+                                   Keyboard="Numeric"
                                    />
                             </Grid>
                         </Grid>
+                        <Entry x:Name="txtComment"
+                                       Placeholder="Pozostało [szt]"
+                                       Text="{Binding Comment}"
+                                       HorizontalTextAlignment="Center"
+                                       Keyboard="Numeric"
+                                       />
                     </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

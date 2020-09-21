@@ -178,6 +178,21 @@ namespace TestZXing.ViewModels
         public string Validate()
         {
             string res = "OK";
+            try
+            {
+                foreach (PartUsage pu in Items)
+                {
+                    if (string.IsNullOrEmpty(pu.Comment))
+                    {
+                        res = $"Podaj jaka ilość części \"{pu.Name}\" pozostała na zapasie..";
+                        break;
+                    }
+                }
+            }catch(Exception ex)
+            {
+                res = $"Wystąpił nieoczekiwany błąd. {ex.Message}";
+            }
+            
             return res;
         }
 

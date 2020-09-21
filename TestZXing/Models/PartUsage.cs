@@ -44,7 +44,7 @@ namespace TestZXing.Models
         public Nullable<int> ProducerId { get; set; }
         public string ProducerName { get; set; }
         public string Symbol { get; set; }
-
+        public string Comment { get; set; }
         public string Image { get; set; }
 
         public string ImageUrl
