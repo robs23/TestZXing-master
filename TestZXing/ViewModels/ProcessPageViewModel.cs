@@ -688,33 +688,36 @@ namespace TestZXing.ViewModels
                         _thisProcess.ActionTypeName = ActionTypes[value].Name;
                         Type = ActionTypes[value];
                         if (Type.ClosePreviousInSamePlace == null) { Type.ClosePreviousInSamePlace = false; }
-                        if ((bool)!Type.AllowDuplicates && !(bool)Type.ClosePreviousInSamePlace) //check if there's open process of this type ONLY if AllowDuplicates property = false and ClosePreviousInSamePlace <> true
+                        if (!_thisProcess.IsCompleted)
                         {
-                            Process nProcess = null;
-                            Task.Run(async () =>
+                            if ((bool)!Type.AllowDuplicates && !(bool)Type.ClosePreviousInSamePlace) //check if there's open process of this type ONLY if AllowDuplicates property = false and ClosePreviousInSamePlace <> true
                             {
-                                nProcess = await Processes.GetOpenProcessesOfTypeAndResource(_thisProcess.ActionTypeId, _thisProcess.PlaceId);
-                                if (nProcess != null)
+                                Process nProcess = null;
+                                Task.Run(async () =>
                                 {
+                                    nProcess = await Processes.GetOpenProcessesOfTypeAndResource(_thisProcess.ActionTypeId, _thisProcess.PlaceId);
+                                    if (nProcess != null)
+                                    {
                                     //there's open process of this type on the resource, let's use it!
                                     _thisProcess = nProcess;
-                                    IsProcessOpen = true;
+                                        IsProcessOpen = true;
+                                        _this = await GetHandling();
+                                        OnPropertyChanged(nameof(NextState));
+                                        OnPropertyChanged(nameof(NextStateColor));
+                                    }
+                                    Task.Run(() => InitializeActions());
+                                });
+                            }
+                            else
+                            {
+                                Task.Run(async () =>
+                                {
                                     _this = await GetHandling();
+                                    Task.Run(() => InitializeActions());
                                     OnPropertyChanged(nameof(NextState));
                                     OnPropertyChanged(nameof(NextStateColor));
-                                }
-                                Task.Run(() => InitializeActions());
-                            });
-                        }
-                        else
-                        {
-                            Task.Run(async () =>
-                            {
-                                _this = await GetHandling();
-                                Task.Run(() => InitializeActions());
-                                OnPropertyChanged(nameof(NextState));
-                                OnPropertyChanged(nameof(NextStateColor));
-                            });
+                                });
+                            } 
                         }
 
                         if ((bool)ActionTypes[value].RequireInitialDiagnosis)
