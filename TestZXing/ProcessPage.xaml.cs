@@ -131,12 +131,25 @@ namespace TestZXing
             }
         }
 
+        public async Task Resurrect()
+        {
+            await vm._thisProcess.Resurrect();
+            vm.IsProcessOpen = true;
+            btnChangeState.SetBinding(Button.TextProperty, new Binding("NextState"));
+            btnChangeState.SetBinding(Button.BackgroundColorProperty, new Binding("NextStateColor"));
+            btnChangeState.SetBinding(Button.IsEnabledProperty, new Binding("IsOpen"));
+            await Save();
+        }
+
         private async void btnChangeState_Clicked(object sender, EventArgs e)
         {
             string _Res = string.Empty;
             if (vm._this.Status == "Rozpoczęty")
             {
                 await End();
+            }else if (vm._thisProcess.Status == "Zakończony")
+            {
+                await Resurrect();
             }
             else
             {
@@ -256,6 +269,46 @@ namespace TestZXing
         private async void btnSave_Clicked(object sender, EventArgs e)
         {
             await Save();
+        }
+
+        private async void btnChangeState_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsEnabled")
+            {
+                if (btnChangeState.IsEnabled)
+                {
+                    await btnChangeState.ScaleTo(1.3, 150);
+                    await btnChangeState.ScaleTo(1, 150);
+                }
+                else
+                {
+                    //allow resurrection in 10 seconds
+                    //but only if the process was finished in last 7 days
+                    if(vm._thisProcess.FinishedOn != null)
+                    {
+                        if(vm._thisProcess.FinishedOn >= DateTime.Now.AddDays(-7))
+                        {
+                            await Task.Run(async () =>
+                            {
+                                for (int i = 10; i >= 1; i--)
+                                {
+                                    Device.BeginInvokeOnMainThread(() =>
+                                    {
+                                        btnChangeState.Text = $"Wznów za {i}";
+                                    });
+                                    await Task.Delay(1000);
+                                }
+                            });
+
+                            btnChangeState.Text = "Wznów zgłoszenie";
+                            btnChangeState.BackgroundColor = Color.Green;
+                            btnChangeState.IsEnabled = true;
+                        }
+                    }
+                }
+                
+            }
+
         }
     }
 }

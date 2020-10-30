@@ -146,6 +146,7 @@
                 Margin="0,10,0,0"
                 x:Name="btnChangeState"
                 BackgroundColor="{Binding NextStateColor}"
+                PropertyChanged="btnChangeState_PropertyChanged"
                 TextColor="White"
                 Text="{Binding NextState}"  
                 IsEnabled="{Binding IsOpen}"

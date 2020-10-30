@@ -455,6 +455,14 @@ namespace TestZXing.Models
             }
             return nHandlings;
         }
+
+        public async Task Resurrect()
+        {
+            IsCompleted = false;
+            IsActive = true;
+            FinishedBy = null;
+            FinishedOn = null;
+        }
     }
 
     public enum ProcessStatus

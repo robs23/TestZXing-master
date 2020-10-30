@@ -80,6 +80,7 @@ namespace TestZXing.ViewModels
             _thisProcess.PlaceId = PlaceId;
             IsQrConfirmed = isQrConfirmed;
             _this = new Handling();
+            _this.PlaceId = PlaceId;
             IsNew = true;
             IsProcessOpen = false; //not known till we have it checked
             
@@ -94,6 +95,7 @@ namespace TestZXing.ViewModels
             _thisProcess.PlaceId = PlaceId;
             IsQrConfirmed = isQrConfirmed;
             _this = new Handling();
+            _this.PlaceId = PlaceId;
             IsProcessOpen = true;
             if (!_thisProcess.IsActive && !_thisProcess.IsFrozen)
             {
