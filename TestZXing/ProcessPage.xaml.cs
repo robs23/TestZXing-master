@@ -322,5 +322,22 @@ namespace TestZXing
             }
 
         }
+
+        protected override bool OnBackButtonPressed()
+        {
+            // Begin an asyncronous task on the UI thread because we intend to ask the users permission.
+            if (vm.IsDirty)
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    if (await DisplayAlert("Niezapisane dane", "Informacje, które wprowadziłeś, nie zostały jeszcze zapisane i mogą zostać utracone. Czy chcesz je zapisać teraz? ", "Tak", "Nie"))
+                    {
+
+                    }
+                });
+            }
+
+            return false;
+        }
     }
 }

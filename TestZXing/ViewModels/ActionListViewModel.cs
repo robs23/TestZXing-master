@@ -10,6 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using TestZXing.Interfaces;
 using TestZXing.Models;
+using TestZXing.Static;
+using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
 {
@@ -77,6 +79,7 @@ namespace TestZXing.ViewModels
 
                 }
                 IsInitialized = true;
+                TakeSnapshot();
                 if (Items.Any())
                 {
                     return true;
@@ -109,6 +112,46 @@ namespace TestZXing.ViewModels
                     _IsInitialized = value;
                 }
             }
+        }
+
+        public bool IsDirty
+        {
+            get
+            {
+                bool res = false;
+                int checkedItems = CheckedItems.Where(i => i.IsChecked == true).Count();
+                int savedItems = SavedItems.Count(i => i.IsChecked == true);
+                if (checkedItems > savedItems)
+                {
+                    res = true;
+                }
+                else
+                {
+                    foreach(ProcessAction pa in CheckedItems.Where(i=>i.IsChecked==true))
+                    {
+                        if(pa.ProcessActionId == 0)
+                        {
+                            //it's action user checked voluntarily
+                            //on the whole, items without id definitely haven't been saved yet
+                            res = true;
+                            break;
+                        }else if(SavedItems.Any(i=>i.ProcessActionId == pa.ProcessActionId && i.IsChecked == false))
+                        {
+                            //there's at least 1 item that IsChecked=true in CheckedItems that wasn't checked in saved items
+
+                            res = true;
+                            break;
+                        }
+                    }
+                }
+                return res;
+            }
+        }
+
+        public void TakeSnapshot()
+        {
+            SavedItems = new ObservableCollection<ProcessAction>();
+            SavedItems = this.CheckedItems.CloneJson<ObservableCollection<ProcessAction>>();
         }
 
         public PlaceActionKeeper PlaceActionKeeper { get; set; }
@@ -202,6 +245,23 @@ namespace TestZXing.ViewModels
                 if (_checkedItems != value)
                 {
                     _checkedItems = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private ObservableCollection<ProcessAction> _savedItems { get; set; }
+        public ObservableCollection<ProcessAction> SavedItems
+        {
+            get
+            {
+                return _savedItems;
+            }
+            set
+            {
+                if(value != _savedItems)
+                {
+                    _savedItems = value;
                     OnPropertyChanged();
                 }
             }

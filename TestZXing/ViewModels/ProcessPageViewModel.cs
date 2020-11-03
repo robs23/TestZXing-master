@@ -335,7 +335,22 @@ namespace TestZXing.ViewModels
             
         }
 
+        public bool IsDirty
+        {
+            get
+            {
+                bool res = false;
+                if (ActionListVm.IsDirty)
+                {
+                    res = true;
+                }
+                else
+                {
 
+                }
+                return res;
+            }
+        }
 
         public bool _IsQrConfirmed { get; set; }
         public bool IsQrConfirmed
