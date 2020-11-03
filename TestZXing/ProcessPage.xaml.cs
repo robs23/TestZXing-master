@@ -50,7 +50,7 @@ namespace TestZXing
         }
 
 
-        private async Task Save()
+        private async Task<string> Save()
         {
             //starting handling
             string _Res = string.Empty;
@@ -62,6 +62,7 @@ namespace TestZXing
                 if (_Result == "OK")
                 {
                     await DisplayAlert("Powodzenie", "Zapis zakończony powodzeniem!", "OK");
+                    
                 }
                 else
                 {
@@ -72,6 +73,7 @@ namespace TestZXing
             {
                 await DisplayAlert("Uups.. Coś poszło nie tak..", _Res, "OK");
             }
+            return _Res;
         }
 
         private async Task End()
@@ -133,12 +135,22 @@ namespace TestZXing
 
         public async Task Resurrect()
         {
-            await vm._thisProcess.Resurrect();
-            vm.IsProcessOpen = true;
-            btnChangeState.SetBinding(Button.TextProperty, new Binding("NextState"));
-            btnChangeState.SetBinding(Button.BackgroundColorProperty, new Binding("NextStateColor"));
-            btnChangeState.SetBinding(Button.IsEnabledProperty, new Binding("IsOpen"));
-            await Save();
+            
+
+            string _Res = await vm.Validate();
+            if(_Res == "OK")
+            {
+                await vm._thisProcess.Resurrect();
+                vm.IsProcessOpen = true;
+                btnChangeState.SetBinding(Button.TextProperty, new Binding("NextState"));
+                btnChangeState.SetBinding(Button.BackgroundColorProperty, new Binding("NextStateColor"));
+                btnChangeState.SetBinding(Button.IsEnabledProperty, new Binding("IsOpen"));
+                await Save();
+            }
+            else
+            {
+                await DisplayAlert("Uups.. Coś poszło nie tak..", _Res, "OK");
+            }
         }
 
         private async void btnChangeState_Clicked(object sender, EventArgs e)

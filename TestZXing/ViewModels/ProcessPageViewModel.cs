@@ -1289,6 +1289,13 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public void UpdateNextStateButton()
+        {
+            //called if the button's bindings are broken during resurrection
+            OnPropertyChanged(nameof(NextState));
+            OnPropertyChanged(nameof(NextStateColor));
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)

@@ -258,6 +258,7 @@ namespace TestZXing.Models
             }
         }
 
+        public bool? IsResurrected { get; set; }
 
         public override string ToString()
         {
@@ -462,6 +463,7 @@ namespace TestZXing.Models
             IsActive = true;
             FinishedBy = null;
             FinishedOn = null;
+            IsResurrected = true;
         }
     }
 
