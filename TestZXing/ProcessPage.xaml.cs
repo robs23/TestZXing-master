@@ -50,11 +50,21 @@ namespace TestZXing
         }
 
 
-        private async Task<string> Save()
+        private async Task<string> Save(bool validate = true)
         {
-            //starting handling
+            
             string _Res = string.Empty;
-            _Res = await vm.Validate();
+
+            //Do we need to validate this? Only events changing process's state need to be validated
+            if (validate)
+            {
+                _Res = await vm.Validate();
+            }
+            else
+            {
+                _Res = "OK";
+            }
+            
 
             if (_Res == "OK")
             {
@@ -145,7 +155,7 @@ namespace TestZXing
                 btnChangeState.SetBinding(Button.TextProperty, new Binding("NextState"));
                 btnChangeState.SetBinding(Button.BackgroundColorProperty, new Binding("NextStateColor"));
                 btnChangeState.SetBinding(Button.IsEnabledProperty, new Binding("IsOpen"));
-                await Save();
+                await Save(false);
             }
             else
             {
@@ -326,18 +336,26 @@ namespace TestZXing
         protected override bool OnBackButtonPressed()
         {
             // Begin an asyncronous task on the UI thread because we intend to ask the users permission.
-            if (vm.IsDirty)
+            
             {
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    if (await DisplayAlert("Niezapisane dane", "Informacje, które wprowadziłeś, nie zostały jeszcze zapisane i mogą zostać utracone. Czy chcesz je zapisać teraz? ", "Tak", "Nie"))
+                    if(await vm.IsDirty())
                     {
-
+                        if (await DisplayAlert("Niezapisane dane", "Informacje, które wprowadziłeś, nie zostały jeszcze zapisane i mogą zostać utracone. Czy chcesz je zapisać teraz? ", "Tak", "Nie"))
+                        {
+                            await Save(false);
+                        }
+                        await Navigation.PopAsync();
+                    }
+                    else
+                    {
+                        await Navigation.PopAsync();
                     }
                 });
             }
 
-            return false;
+            return true;
         }
     }
 }

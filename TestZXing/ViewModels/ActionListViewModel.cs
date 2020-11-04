@@ -79,7 +79,7 @@ namespace TestZXing.ViewModels
 
                 }
                 IsInitialized = true;
-                TakeSnapshot();
+                Task.Run(() => TakeSnapshot());
                 if (Items.Any())
                 {
                     return true;
@@ -94,7 +94,7 @@ namespace TestZXing.ViewModels
 
                 throw;
             }
-            
+
         }
 
         private bool _IsInitialized { get; set; }
@@ -114,41 +114,39 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public bool IsDirty
+        public async Task<bool> IsDirty()
         {
-            get
+            bool res = false;
+            int checkedItems = CheckedItems.Where(i => i.IsChecked == true).Count();
+            int savedItems = SavedItems.Count(i => i.IsChecked == true);
+            if (checkedItems > savedItems)
             {
-                bool res = false;
-                int checkedItems = CheckedItems.Where(i => i.IsChecked == true).Count();
-                int savedItems = SavedItems.Count(i => i.IsChecked == true);
-                if (checkedItems > savedItems)
+                res = true;
+            }
+            else
+            {
+                foreach (ProcessAction pa in CheckedItems.Where(i => i.IsChecked == true))
                 {
-                    res = true;
-                }
-                else
-                {
-                    foreach(ProcessAction pa in CheckedItems.Where(i=>i.IsChecked==true))
+                    if (pa.ProcessActionId == 0)
                     {
-                        if(pa.ProcessActionId == 0)
-                        {
-                            //it's action user checked voluntarily
-                            //on the whole, items without id definitely haven't been saved yet
-                            res = true;
-                            break;
-                        }else if(SavedItems.Any(i=>i.ProcessActionId == pa.ProcessActionId && i.IsChecked == false))
-                        {
-                            //there's at least 1 item that IsChecked=true in CheckedItems that wasn't checked in saved items
+                        //it's action user checked voluntarily
+                        //on the whole, items without id definitely haven't been saved yet
+                        res = true;
+                        break;
+                    }
+                    else if (SavedItems.Any(i => i.ProcessActionId == pa.ProcessActionId && i.IsChecked == false))
+                    {
+                        //there's at least 1 item that IsChecked=true in CheckedItems that wasn't checked in saved items
 
-                            res = true;
-                            break;
-                        }
+                        res = true;
+                        break;
                     }
                 }
-                return res;
             }
+            return res;
         }
 
-        public void TakeSnapshot()
+        public async Task TakeSnapshot()
         {
             SavedItems = new ObservableCollection<ProcessAction>();
             SavedItems = this.CheckedItems.CloneJson<ObservableCollection<ProcessAction>>();
@@ -166,7 +164,7 @@ namespace TestZXing.ViewModels
             }
             set
             {
-                if(value != _ProcessId)
+                if (value != _ProcessId)
                 {
                     _ProcessId = value;
                 }
@@ -259,7 +257,7 @@ namespace TestZXing.ViewModels
             }
             set
             {
-                if(value != _savedItems)
+                if (value != _savedItems)
                 {
                     _savedItems = value;
                     OnPropertyChanged();
@@ -288,7 +286,7 @@ namespace TestZXing.ViewModels
         {
             List<Task<string>> listOfTask = new List<Task<string>>();
 
-            foreach(ProcessAction pa in CheckedItems.Where(p=>(bool)p.IsMutable))
+            foreach (ProcessAction pa in CheckedItems.Where(p => (bool)p.IsMutable))
             {
 
                 pa.HandlingId = handlingId;
@@ -303,11 +301,11 @@ namespace TestZXing.ViewModels
                     {
                         listOfTask.Add(pa.Edit());
                     }
-                }    
+                }
             }
 
             IEnumerable<string> results = await Task.WhenAll<string>(listOfTask);
-            if(results.Where(r => r != "OK").Any())
+            if (results.Where(r => r != "OK").Any())
             {
                 return string.Join("; ", results.Where(r => r != "OK"));
             }
@@ -315,7 +313,7 @@ namespace TestZXing.ViewModels
             {
                 return "OK";
             }
-            
+
         }
 
         public bool IsSaved

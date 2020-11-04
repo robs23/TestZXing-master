@@ -335,20 +335,20 @@ namespace TestZXing.ViewModels
             
         }
 
-        public bool IsDirty
+        public async Task<bool> IsDirty()
         {
-            get
-            {
-                bool res = false;
-                if (ActionListVm.IsDirty)
-                {
-                    res = true;
-                }
-                else
-                {
+            var ActionIsDirtyTask = Task.Run(() => ActionListVm.IsDirty());
+            var PartIsDirtyTask = Task.Run(() => AssignedPartsVm.IsDirty());
 
-                }
-                return res;
+            IEnumerable<bool> res = await Task.WhenAll<bool>(ActionIsDirtyTask, PartIsDirtyTask);
+
+            if (res.Any(r=>r == true))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 

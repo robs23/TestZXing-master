@@ -41,7 +41,59 @@ namespace TestZXing.ViewModels
             {
                 await PartUsageKeeper.Reload($"ProcessId={processId} and CreatedBy={RuntimeSettings.CurrentUser.UserId}");
                 Items = new ObservableRangeCollection<PartUsage>(PartUsageKeeper.Items);
+                Task.Run(() => TakeSnapshot());
             }
+        }
+
+        public async Task TakeSnapshot()
+        {
+            //remember what you've already saved
+            SavedItems = this.Items.CloneJson<ObservableRangeCollection<PartUsage>>();
+        }
+
+        public async Task<bool> IsDirty()
+        {
+            bool res = false;
+
+            if(Items.Count() > SavedItems.Count())
+            {
+                res = true;
+            }
+            else
+            {
+                foreach(PartUsage pu in Items)
+                {
+                    if(pu.PartUsageId == 0)
+                    {
+                        //on the whole, items without id definitely haven't been saved yet
+                        res = true;
+                        break;
+                    }
+                    else if (!SavedItems.Any(i => i.PartUsageId == pu.PartUsageId))
+                    {
+                        //Current item hasn't been saved yet
+                        res = true;
+                        break;
+                    }
+                    else if(SavedItems.Any(i => i.PartUsageId == pu.PartUsageId && (i.Amount != pu.Amount || i.Comment != pu.Comment)))
+                    {
+                        //Either Amount or Comment has changed for at least single item
+                        res = true;
+                        break;
+                    }
+                }
+                foreach(PartUsage pu in SavedItems)
+                {
+                    if (!Items.Any(i => i.PartUsageId == pu.PartUsageId))
+                    {
+                        //Current item must hvae been deleted but this info hasn't been saved
+                        res = true;
+                        break;
+                    }
+                }
+            }
+
+            return res;
         }
 
         public async Task Update()
@@ -240,6 +292,20 @@ namespace TestZXing.ViewModels
             set
             {
                 SetProperty(ref _Items, value);
+            }
+        }
+
+        ObservableRangeCollection<PartUsage> _SavedItems;
+
+        public ObservableRangeCollection<PartUsage> SavedItems
+        {
+            get
+            {
+                return _SavedItems;
+            }
+            set
+            {
+                SetProperty(ref _SavedItems, value);
             }
         }
 
