@@ -4,6 +4,7 @@
              xmlns:testzxing="clr-namespace:TestZXing"
              x:Class="TestZXing.DiaryPage"
              Title="Moja historia">
+    
     <ListView x:Name="lstDiary"
             VerticalOptions="FillAndExpand"
             HasUnevenRows="True"

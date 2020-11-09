@@ -214,7 +214,7 @@ namespace TestZXing.ViewModels
                         RemovedItems.Remove(RemovedItems[i - 1]);
                     }
                 }
-
+                Task.Run(() => TakeSnapshot());
                 if (results.Where(r => r != "OK").Any())
                 {
                     return string.Join("; ", results.Where(r => r != "OK"));

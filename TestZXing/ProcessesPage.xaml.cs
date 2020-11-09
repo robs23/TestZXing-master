@@ -45,6 +45,10 @@ namespace TestZXing
             {
                 vm.Initialize();
             }
+            else
+            {
+                vm.Repaint();
+            }
         }
 
         private async void TabbedPage_CurrentPageChanged(object sender, EventArgs e)

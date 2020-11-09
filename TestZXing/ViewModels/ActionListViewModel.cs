@@ -305,6 +305,7 @@ namespace TestZXing.ViewModels
             }
 
             IEnumerable<string> results = await Task.WhenAll<string>(listOfTask);
+            Task.Run(() => TakeSnapshot());
             if (results.Where(r => r != "OK").Any())
             {
                 return string.Join("; ", results.Where(r => r != "OK"));

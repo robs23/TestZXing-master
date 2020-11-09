@@ -44,7 +44,14 @@ namespace TestZXing.ViewModels
         public async Task Initialize()
         {
             base.Initialize();
+            OnPropertyChanged(nameof(Icon));
             Task.Run(() => SetUpFilter());
+        }
+
+        public async Task Repaint()
+        {
+            //Things that need to update every time the screen re-appears
+            OnPropertyChanged(nameof(Icon));
         }
 
         public async Task OnFilterUpdate()

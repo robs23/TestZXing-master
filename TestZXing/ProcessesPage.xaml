@@ -14,7 +14,6 @@
                      Priority="0"
                      Order="Default"
                      Icon="{Binding Icon}"
-
                      Clicked="UserStatus_Clicked"
                      />
     </TabbedPage.ToolbarItems>

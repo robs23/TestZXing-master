@@ -44,6 +44,7 @@ namespace TestZXing
         protected override void OnSleep()
         {
             // Handle when your app sleeps
+            MessagingCenter.Send<object, string>(this, "OnSleepKey", "GoingSleep");
         }
 
         protected override void OnResume()

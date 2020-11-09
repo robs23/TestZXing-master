@@ -83,7 +83,7 @@ namespace TestZXing.ViewModels
             _this.PlaceId = PlaceId;
             IsNew = true;
             IsProcessOpen = false; //not known till we have it checked
-            
+            SetUpMessagingCenter();
             //Initialize();
 
 
@@ -110,12 +110,13 @@ namespace TestZXing.ViewModels
             if(_thisProcess.IsCompleted==true || _thisProcess.IsSuccessfull == true)
             {
                 //process is closed and open from history
+                IsProcessOpen = false;
                 _this.Status = "Zakończony";
                 OnPropertyChanged(nameof(NextState));
                 OnPropertyChanged(nameof(NextStateColor));
                 OnPropertyChanged(nameof(IsOpen));
             }
-            
+            SetUpMessagingCenter();
             //Initialize(_this.ActionTypeId);
 
         }
@@ -132,6 +133,7 @@ namespace TestZXing.ViewModels
             IsProcessOpen = false;
             IsMesRelated = true;
             MesString = ms;
+            SetUpMessagingCenter();
         }
 
         public ProcessPageViewModel(MesString ms, Process process, bool isQrConfirmed)
@@ -153,6 +155,7 @@ namespace TestZXing.ViewModels
                 OnPropertyChanged(nameof(NextStateColor));
                 OnPropertyChanged(nameof(IsOpen));
             }
+            SetUpMessagingCenter();
         }
 
         public async Task InitializeActions()
@@ -253,6 +256,20 @@ namespace TestZXing.ViewModels
             {
                 throw;
             }
+        }
+
+        public void SetUpMessagingCenter()
+        {
+            MessagingCenter.Subscribe<object, string>(this, "OnSleepKey", async (sender, parameter) =>
+            {
+                if (IsSaveable)
+                {
+                    if (await IsDirty())
+                    {
+                        await Save();
+                    }
+                }
+            });
         }
 
         public async Task Initialize(int AtId = -1)
