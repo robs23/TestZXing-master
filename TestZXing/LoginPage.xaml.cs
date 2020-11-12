@@ -109,6 +109,7 @@ namespace TestZXing
                     {
                         keeper.SaveUserCredentials(vm.SelectedUser);
                     }
+                    Microsoft.AppCenter.AppCenter.SetUserId($"{RuntimeSettings.CurrentUser.Name} {RuntimeSettings.CurrentUser.Surname}");
                     //CreateBackup();
                     await Application.Current.MainPage.Navigation.PushAsync(new ScanPage());
                 }

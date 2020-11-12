@@ -117,32 +117,36 @@ namespace TestZXing.ViewModels
         public async Task<bool> IsDirty()
         {
             bool res = false;
-            int checkedItems = CheckedItems.Where(i => i.IsChecked == true).Count();
-            int savedItems = SavedItems.Count(i => i.IsChecked == true);
-            if (checkedItems > savedItems)
+            if(CheckedItems != null && SavedItems != null)
             {
-                res = true;
-            }
-            else
-            {
-                foreach (ProcessAction pa in CheckedItems.Where(i => i.IsChecked == true))
+                int checkedItems = CheckedItems.Where(i => i.IsChecked == true).Count();
+                int savedItems = SavedItems.Count(i => i.IsChecked == true);
+                if (checkedItems > savedItems)
                 {
-                    if (pa.ProcessActionId == 0)
+                    res = true;
+                }
+                else
+                {
+                    foreach (ProcessAction pa in CheckedItems.Where(i => i.IsChecked == true))
                     {
-                        //it's action user checked voluntarily
-                        //on the whole, items without id definitely haven't been saved yet
-                        res = true;
-                        break;
-                    }
-                    else if (SavedItems.Any(i => i.ProcessActionId == pa.ProcessActionId && i.IsChecked == false))
-                    {
-                        //there's at least 1 item that IsChecked=true in CheckedItems that wasn't checked in saved items
+                        if (pa.ProcessActionId == 0)
+                        {
+                            //it's action user checked voluntarily
+                            //on the whole, items without id definitely haven't been saved yet
+                            res = true;
+                            break;
+                        }
+                        else if (SavedItems.Any(i => i.ProcessActionId == pa.ProcessActionId && i.IsChecked == false))
+                        {
+                            //there's at least 1 item that IsChecked=true in CheckedItems that wasn't checked in saved items
 
-                        res = true;
-                        break;
+                            res = true;
+                            break;
+                        }
                     }
                 }
             }
+            
             return res;
         }
 

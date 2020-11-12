@@ -16,11 +16,13 @@ using ZXing.Mobile;
 using Xamarin.Forms;
 using Component = TestZXing.Models.Component;
 using MvvmHelpers;
+using NLog.Fluent;
 
 namespace TestZXing.ViewModels
 {
     public class ProcessPageViewModel: INotifyPropertyChanged
     {
+        private readonly NLog.ILogger Logger = NLog.LogManager.GetCurrentClassLogger();
         public ObservableCollection<ActionType> _actionTypes { get; set; }
         public ObservableCollection<ActionType> ActionTypes { get
             {
@@ -354,19 +356,29 @@ namespace TestZXing.ViewModels
 
         public async Task<bool> IsDirty()
         {
-            var ActionIsDirtyTask = Task.Run(() => ActionListVm.IsDirty());
-            var PartIsDirtyTask = Task.Run(() => AssignedPartsVm.IsDirty());
+            Logger.Info("IsDirty: is starting");
+            if (ActionListVm != null && AssignedPartsVm != null)
+            { 
+                var ActionIsDirtyTask = Task.Run(() => ActionListVm.IsDirty());
+                var PartIsDirtyTask = Task.Run(() => AssignedPartsVm.IsDirty());
 
-            IEnumerable<bool> res = await Task.WhenAll<bool>(ActionIsDirtyTask, PartIsDirtyTask);
+                IEnumerable<bool> res = await Task.WhenAll<bool>(ActionIsDirtyTask, PartIsDirtyTask);
 
-            if (res.Any(r=>r == true))
-            {
-                return true;
+                if (res.Any(r => r == true))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
+                Log.Warn("ProcessPageViewModel - IsDirty: Either ActionListVm or AssignedPartsVm is null");
                 return false;
             }
+            
         }
 
         public bool _IsQrConfirmed { get; set; }

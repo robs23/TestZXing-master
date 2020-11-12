@@ -11,6 +11,7 @@ using Microsoft.AppCenter.Distribute;
 using Plugin.CurrentActivity;
 using System.Threading.Tasks;
 using System.IO;
+using System.Reflection;
 
 namespace TestZXing.Droid
 {
@@ -36,6 +37,7 @@ namespace TestZXing.Droid
             string localDbFileName = "JDE_Scan_db.db3";
             string localDbFolderPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             string localDbPath = Path.Combine(localDbFolderPath, localDbFileName);
+            InitializeNLog();
             LoadApplication(new App(localDbPath));
         }
 
@@ -60,45 +62,11 @@ namespace TestZXing.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
-        //bool OnReleaseAvailable(ReleaseDetails releaseDetails)
-        //{
-        //    // Look at releaseDetails public properties to get version information, release notes text or release notes URL
-        //    string versionName = releaseDetails.ShortVersion;
-        //    string versionCodeOrBuildNumber = releaseDetails.Version;
-        //    string releaseNotes = releaseDetails.ReleaseNotes;
-        //    Uri releaseNotesUrl = releaseDetails.ReleaseNotesUrl;
-
-        //    // custom dialog
-        //    var title = "Wersja " + versionName + " jest dostępna!";
-        //    Task answer;
-
-        //    // On mandatory update, user cannot postpone
-        //    if (releaseDetails.MandatoryUpdate)
-        //    {
-        //        answer = TestZXing.App.Current.MainPage.DisplayAlert(title, releaseNotes, "Pobierz i zainstaluj");
-        //    }
-        //    else
-        //    {
-        //        answer = TestZXing.App.Current.MainPage.DisplayAlert(title, releaseNotes, "Pobierz i zainstaluj", "Może jutro..");
-        //    }
-        //    answer.ContinueWith((task) =>
-        //    {
-        //        // If mandatory or if answer was positive
-        //        if (releaseDetails.MandatoryUpdate || (task as Task<bool>).Result)
-        //        {
-        //            // Notify SDK that user selected update
-        //            Distribute.NotifyUpdateAction(UpdateAction.Update);
-        //        }
-        //        else
-        //        {
-        //            // Notify SDK that user selected postpone (for 1 day)
-        //            // Note that this method call is ignored by the SDK if the update is mandatory
-        //            Distribute.NotifyUpdateAction(UpdateAction.Postpone);
-        //        }
-        //    });
-
-        //    // Return true if you are using your own dialog, false otherwise
-        //    return true;
-        //}
+        private void InitializeNLog()
+        {
+            Assembly assembly = this.GetType().Assembly;
+            string assemblyName = assembly.GetName().Name;
+            new Classes.LogService().Initialize(assembly, assemblyName);
+        }
     }
 }

@@ -54,44 +54,47 @@ namespace TestZXing.ViewModels
         public async Task<bool> IsDirty()
         {
             bool res = false;
-
-            if(Items.Count() > SavedItems.Count())
+            if(Items != null && SavedItems != null)
             {
-                res = true;
-            }
-            else
-            {
-                foreach(PartUsage pu in Items)
+                if (Items.Count() > SavedItems.Count())
                 {
-                    if(pu.PartUsageId == 0)
+                    res = true;
+                }
+                else
+                {
+                    foreach (PartUsage pu in Items)
                     {
-                        //on the whole, items without id definitely haven't been saved yet
-                        res = true;
-                        break;
+                        if (pu.PartUsageId == 0)
+                        {
+                            //on the whole, items without id definitely haven't been saved yet
+                            res = true;
+                            break;
+                        }
+                        else if (!SavedItems.Any(i => i.PartUsageId == pu.PartUsageId))
+                        {
+                            //Current item hasn't been saved yet
+                            res = true;
+                            break;
+                        }
+                        else if (SavedItems.Any(i => i.PartUsageId == pu.PartUsageId && (i.Amount != pu.Amount || i.Comment != pu.Comment)))
+                        {
+                            //Either Amount or Comment has changed for at least single item
+                            res = true;
+                            break;
+                        }
                     }
-                    else if (!SavedItems.Any(i => i.PartUsageId == pu.PartUsageId))
+                    foreach (PartUsage pu in SavedItems)
                     {
-                        //Current item hasn't been saved yet
-                        res = true;
-                        break;
-                    }
-                    else if(SavedItems.Any(i => i.PartUsageId == pu.PartUsageId && (i.Amount != pu.Amount || i.Comment != pu.Comment)))
-                    {
-                        //Either Amount or Comment has changed for at least single item
-                        res = true;
-                        break;
+                        if (!Items.Any(i => i.PartUsageId == pu.PartUsageId))
+                        {
+                            //Current item must hvae been deleted but this info hasn't been saved
+                            res = true;
+                            break;
+                        }
                     }
                 }
-                foreach(PartUsage pu in SavedItems)
-                {
-                    if (!Items.Any(i => i.PartUsageId == pu.PartUsageId))
-                    {
-                        //Current item must hvae been deleted but this info hasn't been saved
-                        res = true;
-                        break;
-                    }
-                }
             }
+            
 
             return res;
         }

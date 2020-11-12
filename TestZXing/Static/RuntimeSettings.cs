@@ -20,5 +20,7 @@ namespace TestZXing.Static
         public static string FilesPath { get { return "Files/"; } }
 
         public static bool IsVpnConnection { get; set; } = true;
+
+        public static string ZippedLogFile { get; set; }
     }
 }
