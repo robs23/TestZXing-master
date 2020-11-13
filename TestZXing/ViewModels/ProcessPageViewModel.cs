@@ -22,7 +22,7 @@ namespace TestZXing.ViewModels
 {
     public class ProcessPageViewModel: INotifyPropertyChanged
     {
-        private readonly NLog.ILogger Logger = NLog.LogManager.GetCurrentClassLogger();
+        //private readonly NLog.ILogger Logger = NLog.LogManager.GetCurrentClassLogger();
         public ObservableCollection<ActionType> _actionTypes { get; set; }
         public ObservableCollection<ActionType> ActionTypes { get
             {
@@ -356,29 +356,57 @@ namespace TestZXing.ViewModels
 
         public async Task<bool> IsDirty()
         {
-            Logger.Info("IsDirty: is starting");
-            if (ActionListVm != null && AssignedPartsVm != null)
-            { 
-                var ActionIsDirtyTask = Task.Run(() => ActionListVm.IsDirty());
-                var PartIsDirtyTask = Task.Run(() => AssignedPartsVm.IsDirty());
+            //Logger.Info("IsDirty: is starting");
+            List<Task<bool>> tasks = new List<Task<bool>>();
+            try
+            {
+                Task<bool> ActionIsDirtyTask;
+                Task<bool> PartIsDirtyTask;
 
-                IEnumerable<bool> res = await Task.WhenAll<bool>(ActionIsDirtyTask, PartIsDirtyTask);
-
-                if (res.Any(r => r == true))
+                if (ActionListVm != null && AssignedPartsVm != null)
                 {
-                    return true;
+                    ActionIsDirtyTask = Task.Run(() => ActionListVm.IsDirty());
+                    PartIsDirtyTask = Task.Run(() => AssignedPartsVm.IsDirty());
+                    tasks.Add(ActionIsDirtyTask);
+                    tasks.Add(PartIsDirtyTask);
+                }
+                else if (AssignedPartsVm != null)
+                {
+                    PartIsDirtyTask = Task.Run(() => AssignedPartsVm.IsDirty());
+                    tasks.Add(PartIsDirtyTask);
+                }
+                else if(ActionListVm != null)
+                {
+                    ActionIsDirtyTask = Task.Run(() => ActionListVm.IsDirty());
+                    tasks.Add(ActionIsDirtyTask);
                 }
                 else
                 {
+                    //Logger.Warn("ProcessPageViewModel - IsDirty: Either ActionListVm or AssignedPartsVm is null");
                     return false;
                 }
+                if (tasks.Any())
+                {
+                    IEnumerable<bool> res = await Task.WhenAll<bool>(tasks);
+
+                    if (res.Any(r => r == true))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                return false;
+                
             }
-            else
+            catch(Exception ex)
             {
-                Log.Warn("ProcessPageViewModel - IsDirty: Either ActionListVm or AssignedPartsVm is null");
+                //Logger.Error(ex, "IsDirty: {ex}");
+                Static.Functions.CreateError(ex, "IsDirty throws error", "IsDirty", this.GetType().Name);
                 return false;
             }
-            
         }
 
         public bool _IsQrConfirmed { get; set; }

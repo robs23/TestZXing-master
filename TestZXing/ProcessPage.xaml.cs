@@ -340,7 +340,7 @@ namespace TestZXing
             {
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    if(await vm.IsDirty())
+                    if (await vm.IsDirty())
                     {
                         if (await DisplayAlert("Niezapisane dane", "Informacje, które wprowadziłeś, nie zostały jeszcze zapisane i mogą zostać utracone. Czy chcesz je zapisać teraz? ", "Tak", "Nie"))
                         {
@@ -353,6 +353,7 @@ namespace TestZXing
                         await Navigation.PopAsync();
                     }
                 });
+                
             }
             else
             {

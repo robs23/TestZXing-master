@@ -40,22 +40,22 @@ namespace TestZXing
             AppCenter.Start($"android={Static.Secrets.AppCenterSecret}", typeof(Analytics), typeof(Crashes), typeof(Distribute));
             Analytics.SetEnabledAsync(true);
             Distribute.SetEnabledAsync(true);
-            if (await Crashes.HasCrashedInLastSessionAsync())
-            {
-                Functions.CreateZipFile();
-                if (!string.IsNullOrEmpty(RuntimeSettings.ZippedLogFile))
-                {
-                    Crashes.GetErrorAttachments = (ErrorReport report) =>
-                    {
-                        // Your code goes here.
-                        return new ErrorAttachmentLog[]
-                        {
-                        ErrorAttachmentLog.AttachmentWithBinary(File.ReadAllBytes(RuntimeSettings.ZippedLogFile), "logs.zip", "application/x-zip-compressed")
-                        };
-                    };
-                }
+            //if (await Crashes.HasCrashedInLastSessionAsync())
+            //{
+            //    Functions.CreateZipFile();
+            //    if (!string.IsNullOrEmpty(RuntimeSettings.ZippedLogFile))
+            //    {
+            //        Crashes.GetErrorAttachments = (ErrorReport report) =>
+            //        {
+            //            // Your code goes here.
+            //            return new ErrorAttachmentLog[]
+            //            {
+            //            ErrorAttachmentLog.AttachmentWithBinary(File.ReadAllBytes(RuntimeSettings.ZippedLogFile), "logs.zip", "application/x-zip-compressed")
+            //            };
+            //        };
+            //    }
                 
-            }
+            //}
         }
 
         protected override void OnSleep()
