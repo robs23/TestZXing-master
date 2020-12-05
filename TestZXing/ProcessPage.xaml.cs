@@ -362,5 +362,10 @@ namespace TestZXing
 
             return true;
         }
+
+        private void btnAttachments_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.MainPage.Navigation.PushAsync(new ProcessAttachementsPage(vm.ProcessAttachmentsVm));
+        }
     }
 }

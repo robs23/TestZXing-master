@@ -74,6 +74,7 @@ namespace TestZXing.ViewModels
         public Place CurrentPlace { get; set; }
         public ActionListViewModel ActionListVm { get; set; }
         public AssignedPartsViewModel AssignedPartsVm { get; set; }
+        public ProcessAttachmentsViewModel ProcessAttachmentsVm { get; set; }
         public ProcessKeeper Processes = new ProcessKeeper();
 
         public ProcessPageViewModel(int PlaceId, bool isQrConfirmed)
@@ -210,6 +211,28 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public async Task InitializeProcessAttachments()
+        {
+            try
+            {
+                ProcessAttachmentsVm = new ProcessAttachmentsViewModel();
+
+                if (_thisProcess.ProcessId > 0)
+                {
+                    Task.Run(() => ProcessAttachmentsVm.Initialize(_thisProcess.ProcessId));
+                }
+                else
+                {
+                    Task.Run(() => ProcessAttachmentsVm.Initialize());
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task InitializeCurrentPlace()
         {
             try
@@ -316,6 +339,7 @@ namespace TestZXing.ViewModels
 
                 Task.Run(() => InitializeActions()); //get actions associated with this process
                 Task.Run(() => InitializeParts()); //get parts associated with this process
+                Task.Run(() => InitializeProcessAttachments()); //get files associated with this process
                 Task.Run(() => InitializeCurrentPlace()); //get current place data
                 //load places to combobox
                 if (_IsMesRelated)
@@ -362,29 +386,27 @@ namespace TestZXing.ViewModels
             {
                 Task<bool> ActionIsDirtyTask;
                 Task<bool> PartIsDirtyTask;
+                Task<bool> AttachmentIsDirtyTask;
 
-                if (ActionListVm != null && AssignedPartsVm != null)
-                {
-                    ActionIsDirtyTask = Task.Run(() => ActionListVm.IsDirty());
-                    PartIsDirtyTask = Task.Run(() => AssignedPartsVm.IsDirty());
-                    tasks.Add(ActionIsDirtyTask);
-                    tasks.Add(PartIsDirtyTask);
-                }
-                else if (AssignedPartsVm != null)
-                {
-                    PartIsDirtyTask = Task.Run(() => AssignedPartsVm.IsDirty());
-                    tasks.Add(PartIsDirtyTask);
-                }
-                else if(ActionListVm != null)
+                if(ActionListVm != null)
                 {
                     ActionIsDirtyTask = Task.Run(() => ActionListVm.IsDirty());
                     tasks.Add(ActionIsDirtyTask);
                 }
-                else
+
+                if(AssignedPartsVm != null)
                 {
-                    //Logger.Warn("ProcessPageViewModel - IsDirty: Either ActionListVm or AssignedPartsVm is null");
-                    return false;
+                    PartIsDirtyTask = Task.Run(() => AssignedPartsVm.IsDirty());
+                    tasks.Add(PartIsDirtyTask);
                 }
+
+                if(ProcessAttachmentsVm != null)
+                {
+                    AttachmentIsDirtyTask = Task.Run(() => ProcessAttachmentsVm.IsDirty());
+                    tasks.Add(AttachmentIsDirtyTask);
+                }
+
+
                 if (tasks.Any())
                 {
                     IEnumerable<bool> res = await Task.WhenAll<bool>(tasks);

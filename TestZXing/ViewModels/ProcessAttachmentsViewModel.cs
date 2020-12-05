@@ -9,7 +9,7 @@ using TestZXing.Static;
 
 namespace TestZXing.ViewModels
 {
-    class ProcessAttachmentsViewModel: BaseViewModel
+    public class ProcessAttachmentsViewModel: BaseViewModel
     {
         FileKeeper Files = new FileKeeper();
 
@@ -34,6 +34,13 @@ namespace TestZXing.ViewModels
             //remember what you've already saved
             SavedItems = this.Items.CloneJson<ObservableRangeCollection<File>>();
         }
+
+        public async Task Update()
+        {
+
+
+        }
+
 
         public async Task<bool> IsDirty()
         {
@@ -102,6 +109,147 @@ namespace TestZXing.ViewModels
             set
             {
                 SetProperty(ref _SavedItems, value);
+            }
+        }
+
+        private async Task RemoveItems()
+        {
+            if (SelectedItems.Count > 0)
+            {
+                for (int i = SelectedItems.Count; i > 0; i--)
+                {
+                    if (SelectedItems[i - 1].FileId > 0)
+                    {
+                        //if saved, add it to RemovedItems collection for further removal
+                        RemovedItems.Add(SelectedItems[i - 1]);
+                    }
+                    Items.Remove(SelectedItems[i - 1]);
+                    SelectedItems.Remove(SelectedItems[i - 1]);
+                }
+            }
+        }
+
+        public async Task<string> Save(int processId)
+        {
+            string res = "OK";
+
+            if (res == "OK")
+            {
+                List<Task<string>> SaveTasks = new List<Task<string>>();
+
+                foreach (File f in Items)
+                {
+                    f.ProcessId = processId;
+                    if (f.FileId == 0)
+                    {
+                        f.CreatedBy = RuntimeSettings.CurrentUser.UserId;
+                        SaveTasks.Add(f.Add());
+                    }
+                    else
+                    {
+                        //if (!pu.IsSaved)
+                        //{
+                        SaveTasks.Add(f.Edit());
+                        //}
+
+                    }
+                }
+                if (RemovedItems.Any())
+                {
+                    foreach (File f in RemovedItems)
+                    {
+                        SaveTasks.Add(f.Remomve());
+                    }
+                }
+
+                IEnumerable<string> results = await Task.WhenAll<string>(SaveTasks);
+                for (int i = RemovedItems.Count; i > 0; i--)
+                {
+                    if (RemovedItems[i - 1].IsSaved)
+                    {
+                        RemovedItems.Remove(RemovedItems[i - 1]);
+                    }
+                }
+                Task.Run(() => TakeSnapshot());
+                if (results.Where(r => r != "OK").Any())
+                {
+                    return string.Join("; ", results.Where(r => r != "OK"));
+                }
+                else
+                {
+                    return "OK";
+                }
+            }
+            return res;
+        }
+
+        public string Validate()
+        {
+            string res = "OK";
+            try
+            {
+                foreach (File f in Items)
+                {
+      
+                }
+            }
+            catch (Exception ex)
+            {
+                res = $"Wystąpił nieoczekiwany błąd. {ex.Message}";
+            }
+
+            return res;
+        }
+
+        ObservableRangeCollection<File> _SelectedItems = new ObservableRangeCollection<File>();
+
+        public ObservableRangeCollection<File> SelectedItems
+        {
+            get { return _SelectedItems; }
+            set
+            {
+                bool changed = SetProperty(ref _SelectedItems, value);
+                if (changed)
+                {
+                    OnPropertyChanged(nameof(RemovableSelected));
+                }
+            }
+        }
+
+        bool _RemovableSelected;
+
+        public bool RemovableSelected
+        {
+            get
+            {
+                return _RemovableSelected;
+            }
+            set
+            {
+                SetProperty(ref _RemovableSelected, value);
+            }
+        }
+
+        ObservableRangeCollection<File> _RemovedItems = new ObservableRangeCollection<File>();
+
+        public ObservableRangeCollection<File> RemovedItems
+        {
+            get { return _RemovedItems; }
+            set { SetProperty(ref _RemovedItems, value); }
+        }
+
+        public string EmptyViewCaption
+        {
+            get
+            {
+                if (IsWorking)
+                {
+                    return "Trwa wczytywanie..";
+                }
+                else
+                {
+                    return "Nie dodano żadnego zdjęcia do tego zgłoszenia. Dodaj pierwsze zdjęcie korzystając z przycisków poniżej. Przycisk LUPY pozwala dodać wcześniej zrobione zdjęcie, przycisk APARAT pozwala zrobić nowe zdjęcie..";
+                }
             }
         }
     }
