@@ -30,6 +30,14 @@ namespace TestZXing.Views
                 {
                     if (e.CurrentSelection.Count > 0)
                     {
+                        if (e.CurrentSelection.Count == 1)
+                        {
+                            foreach (var f in e.CurrentSelection)
+                            {
+                                vm.ActiveElementPath = ((File)f).Source;
+                            }
+                            
+                        }
                         vm.RemovableSelected = true;
                         foreach (var f in e.CurrentSelection)
                         {

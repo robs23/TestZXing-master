@@ -7,6 +7,15 @@
              x:Class="TestZXing.Views.ProcessAttachementsPage">
     <ContentPage.Content>
         <StackLayout>
+            <Grid IsVisible="{Binding IsElementActive}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="400"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Image Source="{Binding ActiveElementPath}" Grid.Column="0" Grid.Row="0"/>
+            </Grid>
             <CollectionView x:Name="lstAttachments"
                             ItemsSource="{Binding Items}"
                             VerticalOptions="FillAndExpand"
@@ -14,19 +23,13 @@
                             Margin="0,5,0,20"
                             SelectionMode="Multiple"
                             SelectionChanged="lstAttachments_SelectionChanged">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="3" />
+                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Padding="5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="5*"></ColumnDefinition>
-                                    <ColumnDefinition Width="5*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <Image HeightRequest="100" Source=""/>
-                            </Grid>
+                            <Image HeightRequest="100" Source="{Binding Source}"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
@@ -51,13 +54,13 @@
                     ImageSource="search.png"
                     Grid.Row="0"
                     Grid.Column="1"
-                    Command="{Binding PickCommand}"/>
+                    Command="{Binding PickPhotoCommand}"/>
                 <Button BackgroundColor="Green" 
                     x:Name="btnCapture" 
                     ImageSource="capture.png"
                     Grid.Row="0"
                     Grid.Column="2"
-                    Command="{Binding CaptumreCommand}"/>
+                    Command="{Binding CaptumrePhotoCommand}"/>
             </Grid>
         </StackLayout>
     </ContentPage.Content>

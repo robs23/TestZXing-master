@@ -1,30 +1,69 @@
 ﻿using MvvmHelpers;
+using MvvmHelpers.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using TestZXing.Models;
 using TestZXing.Static;
+using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
 {
     public class ProcessAttachmentsViewModel: BaseViewModel
     {
-        FileKeeper Files = new FileKeeper();
+        FileKeeper FileKeeper = new FileKeeper();
 
         public ProcessAttachmentsViewModel()
         {
-
+            CapturePhotoCommand = new AsyncCommand(CapturePhoto);
+            PickPhotoCommand = new AsyncCommand(PickPhoto);
+            RemoveItemsCommand = new AsyncCommand(RemoveItems);
+            Items = new ObservableRangeCollection<File>();
+            SelectedItems = new ObservableRangeCollection<File>();
+            FileKeeper = new FileKeeper();
         }
+
+        public ICommand CapturePhotoCommand { get; }
+
+        public async Task CapturePhoto()
+        {
+            
+        }
+
+        public ICommand PickPhotoCommand { get; }
+        public async Task PickPhoto()
+        {
+            FileResult result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
+            {
+                Title = "Wybierz zdjęcie"
+            });
+
+            if (result != null)
+            {
+                var stream = await result.OpenReadAsync();
+                ActiveElementPath = ImageSource.FromStream(() => stream);
+                Items.Add(new File
+                {
+                    Name = result.FileName,
+                    Source = result.FullPath
+            }) ;
+            }
+        }
+
+        public ICommand RemoveItemsCommand { get; }
+
         public async Task Initialize(int? processId = null)
         {
             base.Initialize();
 
             if (processId != null)
             {
-                await Files.Reload($"ProcessId={processId} and CreatedBy={RuntimeSettings.CurrentUser.UserId}");
-                Items = new ObservableRangeCollection<File>(Files.Items);
+                await FileKeeper.Reload($"ProcessId={processId} and CreatedBy={RuntimeSettings.CurrentUser.UserId}");
+                Items = new ObservableRangeCollection<File>(FileKeeper.Items);
                 Task.Run(() => TakeSnapshot());
             }
         }
@@ -33,6 +72,20 @@ namespace TestZXing.ViewModels
         {
             //remember what you've already saved
             SavedItems = this.Items.CloneJson<ObservableRangeCollection<File>>();
+        }
+
+        ImageSource _ActiveElementPath;
+
+        public ImageSource ActiveElementPath
+        {
+            get
+            {
+                return _ActiveElementPath;
+            }
+            set
+            {
+                SetProperty(ref _ActiveElementPath, value);
+            }
         }
 
         public async Task Update()
@@ -213,6 +266,19 @@ namespace TestZXing.ViewModels
                 {
                     OnPropertyChanged(nameof(RemovableSelected));
                 }
+            }
+        }
+
+        bool _IsElementActive = false;
+        public bool IsElementActive
+        {
+            get
+            {
+                return _IsElementActive;
+            }
+            set
+            {
+                SetProperty(ref _IsElementActive, value);
             }
         }
 

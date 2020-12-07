@@ -146,8 +146,9 @@
                 <Button
                     Margin="0,10,0,0"
                     x:Name="btnAttachments"
-                    BackgroundColor="White"
+                    BackgroundColor="Black"
                     ImageSource="photo.png"
+                    IsVisible="True"
                     IsEnabled="{Binding IsProcessOpen}"
                     Clicked="btnAttachments_Clicked"
                     Grid.Row="0"
