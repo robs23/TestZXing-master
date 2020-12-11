@@ -49,7 +49,7 @@ namespace TestZXing.ViewModels
                 Items.Add(new File
                 {
                     Name = result.FileName,
-                    Link = System.IO.Path.Combine(result.FullPath, result.FileName)
+                    Link = result.FullPath
                 }) ;
                 IsElementActive = true;
             }

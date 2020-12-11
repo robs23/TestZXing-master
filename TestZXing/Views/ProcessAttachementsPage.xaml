@@ -29,7 +29,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Padding="5">
-                            <Image HeightRequest="100" Source="{Binding Source}"/>
+                            <Image HeightRequest="100" Source="{Binding Link}"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
