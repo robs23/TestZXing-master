@@ -49,8 +49,9 @@ namespace TestZXing.ViewModels
                 Items.Add(new File
                 {
                     Name = result.FileName,
-                    Source = result.FullPath
-            }) ;
+                    Link = System.IO.Path.Combine(result.FullPath, result.FileName)
+                }) ;
+                IsElementActive = true;
             }
         }
 
@@ -192,17 +193,16 @@ namespace TestZXing.ViewModels
 
                 foreach (File f in Items)
                 {
-                    f.ProcessId = processId;
                     if (f.FileId == 0)
                     {
                         f.CreatedBy = RuntimeSettings.CurrentUser.UserId;
-                        SaveTasks.Add(f.Add());
+                        SaveTasks.Add(f.Add($"ProcessId={processId}"));
                     }
                     else
                     {
                         //if (!pu.IsSaved)
                         //{
-                        SaveTasks.Add(f.Edit());
+                        //SaveTasks.Add(f.Edit());
                         //}
 
                     }
@@ -223,6 +223,8 @@ namespace TestZXing.ViewModels
                         RemovedItems.Remove(RemovedItems[i - 1]);
                     }
                 }
+                FileKeeper.Items = Items;
+                FileKeeper.AddToUploadQueue();
                 Task.Run(() => TakeSnapshot());
                 if (results.Where(r => r != "OK").Any())
                 {

@@ -34,18 +34,24 @@ namespace TestZXing.Views
                         {
                             foreach (var f in e.CurrentSelection)
                             {
-                                vm.ActiveElementPath = ((File)f).Source;
+                                vm.ActiveElementPath = ((File)f).Link;
                             }
-                            
+                            vm.IsElementActive = true;
+                        }
+                        else
+                        {
+                            foreach (var f in e.CurrentSelection)
+                            {
+                                vm.SelectedItems.Add((File)f);
+                            }
+                            vm.IsElementActive = false;
                         }
                         vm.RemovableSelected = true;
-                        foreach (var f in e.CurrentSelection)
-                        {
-                            vm.SelectedItems.Add((File)f);
-                        }
+                        
                     }
                     else
                     {
+                        vm.IsElementActive = false;
                         vm.RemovableSelected = false;
                     }
                 }

@@ -1178,6 +1178,10 @@ namespace TestZXing.ViewModels
                         {
                             _Result = await AssignedPartsVm.Save(_thisProcess.ProcessId, _thisProcess.PlaceId);
                         }
+                        if (_Result == "OK")
+                        {
+                            _Result = await ProcessAttachmentsVm.Save(_thisProcess.ProcessId);
+                        }
                         RuntimeSettings.CurrentUser.IsWorking = true;
                         OnPropertyChanged(nameof(Icon));
                     }

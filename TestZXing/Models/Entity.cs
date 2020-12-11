@@ -62,6 +62,41 @@ namespace TestZXing.Models
             
         }
 
+        public virtual async Task<string> Add(string args)
+        {
+            using (var client = new HttpClient())
+            {
+                string _Result = "OK";
+                string url = Secrets.ApiAddress + $"Create{typeof(T).Name}?token={Secrets.TenantToken}&UserId={RuntimeSettings.CurrentUser.UserId}&{args}";
+
+                try
+                {
+                    HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                    var serialized = JsonConvert.SerializeObject(this);
+                    var content = new StringContent(serialized, Encoding.UTF8, "application/json");
+                    HttpResponseMessage httpResponse = await Static.Functions.GetPostRetryAsync(() => httpClient.PostAsync(new Uri(url), content), TimeSpan.FromSeconds(3));
+                    if (!httpResponse.IsSuccessStatusCode)
+                    {
+                        IsSaved = false;//hasn't been saved
+                        _Result = httpResponse.ReasonPhrase;
+                    }
+                    else
+                    {
+                        IsSaved = true;//has been saved successfully
+                        var rString = await httpResponse.Content.ReadAsStringAsync();
+                        AddedItem = rString;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _Result = ex.Message;
+                    Static.Functions.CreateError(ex, "No connection", nameof(this.Add), this.GetType().Name);
+                }
+                return _Result;
+
+            }
+        }
+
         public async Task<string> Edit()
         {
             string url = Secrets.ApiAddress + $"Edit{typeof(T).Name}?token=" + Secrets.TenantToken + $"&id={this.Id}&UserId={RuntimeSettings.CurrentUser.UserId}";

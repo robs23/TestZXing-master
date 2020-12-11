@@ -1,9 +1,14 @@
-﻿using SQLite;
+﻿using ModernHttpClient;
+using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
+using TestZXing.Static;
 using Xamarin.Forms;
 
 namespace TestZXing.Models
@@ -17,7 +22,6 @@ namespace TestZXing.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        [Unique]
         public int FileId { get; set; }
         public override int Id
         {
@@ -28,9 +32,6 @@ namespace TestZXing.Models
         public string Name { get; set; }
         public string Token { get; set; }
         public string Link { get; set; }
-        public int? PartId { get; set; }
-        public int? PlaceId { get; set; }
-        public int? ProcessId { get; set; }
         public string _Source { get; set; }
         public string Source
         {
@@ -47,5 +48,44 @@ namespace TestZXing.Models
                 OnPropertyChanged();
             }
         }
+
+        public bool? IsUploaded { get; set; } = false;
+
+        public string Type { get; set; }
+
+        public async Task<string> Upload()
+        {
+            using (var client = new HttpClient())
+            {
+                string _Result = "OK";
+                string url = Secrets.ApiAddress + $"UploadFile?token=" + Secrets.TenantToken + "&UserId=" + RuntimeSettings.UserId;
+
+                try
+                {
+                    HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                    var serialized = JsonConvert.SerializeObject(this);
+                    var content = new StringContent(serialized, Encoding.UTF8, "application/json");
+                    HttpResponseMessage httpResponse = await Static.Functions.GetPostRetryAsync(() => httpClient.PostAsync(new Uri(url), content), TimeSpan.FromSeconds(3));
+                    if (!httpResponse.IsSuccessStatusCode)
+                    {
+                        IsUploaded = false;//hasn't been saved
+                        _Result = httpResponse.ReasonPhrase;
+                    }
+                    else
+                    {
+                        IsUploaded = true;//has been saved successfully
+                        var rString = await httpResponse.Content.ReadAsStringAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _Result = ex.Message;
+                    Static.Functions.CreateError(ex, "No connection", nameof(this.Add), this.GetType().Name);
+                }
+                return _Result;
+
+            }
+        }
+
     }
 }

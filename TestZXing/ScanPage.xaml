@@ -37,6 +37,11 @@
                      Priority="2"
                      Order="Secondary"
                      Clicked="btnVersion_Clicked"/>
+        <ToolbarItem Name="btnSyncFiles"
+                     Text="Synchronizuj pliki"
+                     Priority="2"
+                     Order="Secondary"
+                     Clicked="btnSyncFiles_Clicked"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="15,20">

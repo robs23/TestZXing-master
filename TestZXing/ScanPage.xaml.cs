@@ -265,5 +265,12 @@ namespace TestZXing
             ver = VersionTracking.CurrentVersion;
             DependencyService.Get<IToaster>().LongAlert($"Zainstalowana wersja: {ver}");
         }
+
+        private async void btnSyncFiles_Clicked(object sender, EventArgs e)
+        {
+            FileKeeper keeper = new FileKeeper();
+            await keeper.RestoreUploadQueue();
+            await keeper.Upload();
+        }
     }
 }
