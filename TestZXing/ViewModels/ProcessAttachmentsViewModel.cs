@@ -196,6 +196,7 @@ namespace TestZXing.ViewModels
                     if (f.FileId == 0)
                     {
                         f.CreatedBy = RuntimeSettings.CurrentUser.UserId;
+                        f.CreatedOn = DateTime.Now;
                         SaveTasks.Add(f.Add($"ProcessId={processId}"));
                     }
                     else

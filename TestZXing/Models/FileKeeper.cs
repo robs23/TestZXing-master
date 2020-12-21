@@ -39,7 +39,9 @@ namespace TestZXing.Models
             {
                 foreach(File f in Items)
                 {
+                    f.IsUploading = true;
                     var res = await f.Upload();
+                    f.IsUploading = false;
                     if(res == "OK")
                     {
                         f.IsUploaded = true;
@@ -47,6 +49,7 @@ namespace TestZXing.Models
                     else
                     {
                         f.IsUploaded = false;
+                        f.UploadFailed = true;
                     }
                 }
                 await DeleteUploaded();
@@ -62,6 +65,14 @@ namespace TestZXing.Models
                 db.Delete<File>(f.FileId);
                 Items.Remove(f);
             }
+            db.Close();
+        }
+
+        public async Task DeleteAll()
+        {
+            var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
+
+            db.DeleteAll<File>();
             db.Close();
         }
     }

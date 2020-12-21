@@ -268,9 +268,10 @@ namespace TestZXing
 
         private async void btnSyncFiles_Clicked(object sender, EventArgs e)
         {
-            FileKeeper keeper = new FileKeeper();
-            await keeper.RestoreUploadQueue();
-            await keeper.Upload();
+            //FileKeeper keeper = new FileKeeper();
+            //await keeper.RestoreUploadQueue();
+            //await keeper.Upload();
+            Application.Current.MainPage.Navigation.PushAsync(new UploadQueue());
         }
     }
 }

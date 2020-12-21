@@ -49,16 +49,90 @@ namespace TestZXing.Models
             }
         }
 
-        public bool? IsUploaded { get; set; } = false;
+        private bool? _IsUploaded { get; set; } = false;
+
+        public bool? IsUploaded
+        { get 
+            {
+                return _IsUploaded;
+            }
+            set
+            {
+                if(value != _IsUploaded)
+                {
+                    _IsUploaded = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private bool _IsUploading { get; set; } = false;
+        public bool IsUploading
+        {
+            get
+            {
+                return _IsUploading;
+            }
+            set
+            {
+                if (value != _IsUploading)
+                {
+                    _IsUploading = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private bool _UploadFailed { get; set; } = false;
+
+        public bool UploadFailed
+        {
+            get
+            {
+                return _UploadFailed;
+            }
+            set
+            {
+                if (value != _UploadFailed)
+                {
+                    _UploadFailed = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public string Type { get; set; }
+
+        public async override Task<string> Add()
+        {
+            string res = "OK";
+
+            res = await base.Add();
+
+
+            if (res == "OK")
+            {
+                try
+                {
+                    File _this = JsonConvert.DeserializeObject<File>(AddedItem);
+                    this.FileId = _this.FileId;
+                    this.TenantId = _this.TenantId;
+                    this.Token = _this.Token;
+                    this.CreatedOn = _this.CreatedOn;
+                }
+                catch (Exception ex)
+                {
+                    res = ex.Message;
+                }
+            }
+            return res;
+
+        }
 
         public async Task<string> Upload()
         {
             using (var client = new HttpClient())
             {
                 string _Result = "OK";
-                string url = Secrets.ApiAddress + $"UploadFile?token=" + Secrets.TenantToken + "&UserId=" + RuntimeSettings.UserId;
+                string url = Secrets.ApiAddress + $"UploadFile?token=" + Secrets.TenantToken + "&fileToken=" + this.Token;
 
                 try
                 {
@@ -85,6 +159,14 @@ namespace TestZXing.Models
                 return _Result;
 
             }
+        }
+
+        public async Task RemoveFromUploadQueue()
+        {
+            var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
+
+            db.Delete<File>(FileId);
+            db.Close();
         }
 
     }
