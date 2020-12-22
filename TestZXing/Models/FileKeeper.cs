@@ -60,7 +60,7 @@ namespace TestZXing.Models
         {
             var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
 
-            foreach (File f in Items.Where(i=>i.IsUploaded==true))
+            foreach (File f in Items.Where(i=>i.IsUploaded==true).ToList())
             {
                 db.Delete<File>(f.FileId);
                 Items.Remove(f);

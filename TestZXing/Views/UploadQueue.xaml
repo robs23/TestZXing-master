@@ -8,7 +8,13 @@
              Title="Kolejka plików">
     <ContentPage.Content>
         <StackLayout Margin="10">
-            <Button Text="Wyślij pliki" Command="{Binding StartUploadCommand}" BackgroundColor="Green" CornerRadius="20" TextColor="White" HeightRequest="80"/>
+            <Button Text="Wyślij pliki" 
+                    Command="{Binding StartUploadCommand}" 
+                    BackgroundColor="Green" 
+                    CornerRadius="20" 
+                    TextColor="White" 
+                    HeightRequest="80"
+                    IsVisible="{Binding HasItems}"/>
             <CollectionView x:Name="lstFiles"
                             ItemsSource="{Binding Items}"
                             VerticalOptions="FillAndExpand"
@@ -22,17 +28,19 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="3*"/>
                                     <ColumnDefinition Width="4*"/>
                                     <ColumnDefinition Width="3*"/>
                                 </Grid.ColumnDefinitions>
-                                <Image HeightRequest="60" Source="{Binding Link}" Grid.Row="0" Grid.Column="0"/>
+                                <Image HeightRequest="60" Source="{Binding Link}" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"/>
                                 <Label Text="{Binding CreatedOn}" Grid.Row="0" Grid.Column="1"/>
-                                <ActivityIndicator IsVisible="{Binding IsUploading}" IsRunning="{Binding IsUploading}" Grid.Row="0" Grid.Column="2"/>
-                                <Image HeightRequest="60" Source="tick_green.png" IsVisible="{Binding IsUploaded}" Grid.Row="0" Grid.Column="2"/>
-                                <Image HeightRequest="60" Source="exclamation_red.png" IsVisible="{Binding UploadFailed}" Grid.Row="0" Grid.Column="2"/>
+                                <Label Text="{Binding UploadStatus}" Grid.Row="1" Grid.Column="1"/>
+                                <ActivityIndicator IsVisible="{Binding IsUploading}" IsRunning="{Binding IsUploading}" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"/>
+                                <Image HeightRequest="60" Source="tick_green.png" IsVisible="{Binding IsUploaded}" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"/>
+                                <Image HeightRequest="60" Source="exclamation_red.png" IsVisible="{Binding UploadFailed}" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"/>
                             </Grid>
                         </StackLayout>
                     </DataTemplate>

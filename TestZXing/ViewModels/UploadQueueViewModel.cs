@@ -3,6 +3,7 @@ using MvvmHelpers.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -28,6 +29,10 @@ namespace TestZXing.ViewModels
             await fileKeeper.RestoreUploadQueue();
             //await fileKeeper.DeleteAll();
             Items = fileKeeper.Items;
+            if (Items.Any())
+            {
+                HasItems = true;
+            }
         }
 
         public async Task StartUpload()
@@ -48,6 +53,16 @@ namespace TestZXing.ViewModels
                     Items.Remove(SelectedItems[i - 1]);
                     SelectedItems.Remove(SelectedItems[i - 1]);
                 }
+            }
+        }
+
+        bool _HasItems = false;
+        public bool HasItems
+        {
+            get { return _HasItems; }
+            set
+            {
+                SetProperty(ref _HasItems, value);
             }
         }
 
