@@ -2,14 +2,17 @@
 using MvvmHelpers.Commands;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TestZXing.Interfaces;
 using TestZXing.Models;
 using TestZXing.Static;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using File = TestZXing.Models.File;
 
 namespace TestZXing.ViewModels
 {
@@ -31,7 +34,64 @@ namespace TestZXing.ViewModels
 
         public async Task CapturePhoto()
         {
-            
+            FileResult result = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
+            {
+                Title = "Zrób zdjęcie"
+            });
+
+            await EmbedMedia(result);
+        }
+
+        public async Task CaptureVideo()
+        {
+            FileResult result = await MediaPicker.CaptureVideoAsync(new MediaPickerOptions
+            {
+                Title = "Nagraj wideo"
+            });
+
+            await EmbedMedia(result);
+        }
+
+        public async Task EmbedMedia(FileResult result)
+        {
+            if (result != null)
+            {
+                string fullPath = string.Empty;
+
+                //check if it needs to be saved first
+                if(result.FullPath.Contains("com.companyname.TestZXing"))
+                {
+                    //save
+                    fullPath = await SaveToGallery(result);
+                }
+                else
+                {
+                    fullPath = result.FullPath;
+                }
+
+                var stream = await result.OpenReadAsync();
+                ActiveElementPath = ImageSource.FromStream(() => stream);
+                Items.Add(new File
+                {
+                    Name = result.FileName,
+                    Link = fullPath
+                });
+                IsElementActive = true;
+            }
+        }
+
+        public async Task<string> SaveToGallery(FileResult result)
+        {
+            string f = DependencyService.Get<IFileHandler>().GetImageGalleryPath();
+            string nPath = Path.Combine(f, result.FileName);
+            using(var stream = await result.OpenReadAsync())
+            {
+                using( var nStream = System.IO.File.OpenWrite(nPath))
+                {
+                    await stream.CopyToAsync(nStream);
+                    return nPath;
+                }
+            }
         }
 
         public ICommand PickPhotoCommand { get; }
@@ -42,17 +102,17 @@ namespace TestZXing.ViewModels
                 Title = "Wybierz zdjęcie"
             });
 
-            if (result != null)
+            await EmbedMedia(result);
+        }
+
+        public async Task PickVideo()
+        {
+            FileResult result = await MediaPicker.PickVideoAsync(new MediaPickerOptions
             {
-                var stream = await result.OpenReadAsync();
-                ActiveElementPath = ImageSource.FromStream(() => stream);
-                Items.Add(new File
-                {
-                    Name = result.FileName,
-                    Link = result.FullPath
-                }) ;
-                IsElementActive = true;
-            }
+                Title = "Wybierz film"
+            });
+
+            await EmbedMedia(result);
         }
 
         public ICommand RemoveItemsCommand { get; }

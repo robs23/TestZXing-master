@@ -54,13 +54,13 @@
                     ImageSource="search.png"
                     Grid.Row="0"
                     Grid.Column="1"
-                    Command="{Binding PickPhotoCommand}"/>
+                    Clicked="btnPick_Clicked"/>
                 <Button BackgroundColor="Green" 
                     x:Name="btnCapture" 
                     ImageSource="capture.png"
                     Grid.Row="0"
                     Grid.Column="2"
-                    Command="{Binding CaptumrePhotoCommand}"/>
+                    Clicked="btnCapture_Clicked"/>
             </Grid>
         </StackLayout>
     </ContentPage.Content>

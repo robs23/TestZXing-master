@@ -73,5 +73,31 @@ namespace TestZXing.Views
 
 
         }
+
+        private async void btnPick_Clicked(object sender, EventArgs e)
+        {
+            string res = await DisplayActionSheet("Co chcesz wybrać?", "Anuluj", null, "Zdjęcie", "Wideo");
+            if (res == "Zdjęcie")
+            {
+                await vm.PickPhoto();
+            }
+            else if(res=="Wideo")
+            {
+                await vm.PickVideo();
+            }
+        }
+
+        private async void btnCapture_Clicked(object sender, EventArgs e)
+        {
+            string res = await DisplayActionSheet("Co chcesz nagrać?", "Anuluj", null, "Zdjęcie", "Wideo");
+            if (res == "Zdjęcie")
+            {
+                await vm.CapturePhoto();
+            }
+            else if (res == "Wideo")
+            {
+                await vm.CaptureVideo();
+            }
+        }
     }
 }
