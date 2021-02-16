@@ -39,7 +39,7 @@ namespace TestZXing.ViewModels
                 Title = "Zrób zdjęcie"
             });
 
-            await EmbedMedia(result);
+            await EmbedMedia(result, true);
         }
 
         public async Task CaptureVideo()
@@ -49,11 +49,12 @@ namespace TestZXing.ViewModels
                 Title = "Nagraj wideo"
             });
 
-            await EmbedMedia(result);
+            await EmbedMedia(result, false);
         }
 
-        public async Task EmbedMedia(FileResult result)
+        public async Task EmbedMedia(FileResult result, bool isPhoto)
         {
+            
             if (result != null)
             {
                 string fullPath = string.Empty;
@@ -62,7 +63,7 @@ namespace TestZXing.ViewModels
                 if(result.FullPath.Contains("com.companyname.TestZXing"))
                 {
                     //save
-                    fullPath = await SaveToGallery(result);
+                    fullPath = await SaveToGallery(result, isPhoto);
                 }
                 else
                 {
@@ -80,10 +81,20 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public async Task<string> SaveToGallery(FileResult result)
+        public async Task<string> SaveToGallery(FileResult result, bool isPhoto)
         {
-            string f = DependencyService.Get<IFileHandler>().GetImageGalleryPath();
-            string nPath = Path.Combine(f, result.FileName);
+
+            string mPath = string.Empty;
+            if (isPhoto)
+            {
+                mPath = DependencyService.Get<IFileHandler>().GetImageGalleryPath();
+            }
+            else
+            {
+                mPath = DependencyService.Get<IFileHandler>().GetVideoGalleryPath();
+            }
+
+            string nPath = Path.Combine(mPath, result.FileName);
             using(var stream = await result.OpenReadAsync())
             {
                 using( var nStream = System.IO.File.OpenWrite(nPath))
@@ -102,7 +113,7 @@ namespace TestZXing.ViewModels
                 Title = "Wybierz zdjęcie"
             });
 
-            await EmbedMedia(result);
+            await EmbedMedia(result, true);
         }
 
         public async Task PickVideo()
@@ -112,7 +123,7 @@ namespace TestZXing.ViewModels
                 Title = "Wybierz film"
             });
 
-            await EmbedMedia(result);
+            await EmbedMedia(result, false);
         }
 
         public ICommand RemoveItemsCommand { get; }
