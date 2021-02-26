@@ -58,5 +58,31 @@ namespace TestZXing.Views
             {
             }
         }
+
+        private async void btnRemoveAll_Clicked(object sender, EventArgs e)
+        {
+            var res = await DisplayAlert("Potwierdź usunięcie", "Czy jesteś pewny, że chcesz usunąć wszystkie pliki przeznaczone do synchronizacji? Usunięcie spowoduje, że pliki te zostaną również usunięte z odpowiednich zgłoszeń/maszyn/części", "Usuń pliki", "Anuluj");
+            if(res == true)
+            {
+                string _Result = await vm.RemoveAll();
+                if (_Result != "OK")
+                {
+                    await DisplayAlert("Napotkano błędy", _Result, "OK");
+                }
+            }
+        }
+
+        private async void btnRemoveSelected_Clicked(object sender, EventArgs e)
+        {
+            var res = await DisplayAlert("Potwierdź usunięcie", "Czy jesteś pewny, że chcesz usunąć zaznaczone pliki przeznaczone do synchronizacji? Usunięcie spowoduje, że pliki te zostaną również usunięte z odpowiednich zgłoszeń/maszyn/części", "Usuń pliki", "Anuluj");
+            if (res == true)
+            {
+                string _Result = await vm.RemoveSelected();
+                if(_Result != "OK")
+                {
+                    await DisplayAlert("Napotkano błędy", _Result, "OK");
+                }
+            }
+        }
     }
 }

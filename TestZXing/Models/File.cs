@@ -210,6 +210,7 @@ namespace TestZXing.Models
 
 
         public string Type { get; set; }
+        public long Size { get; set; }
 
         public async override Task<string> Add(string args)
         {

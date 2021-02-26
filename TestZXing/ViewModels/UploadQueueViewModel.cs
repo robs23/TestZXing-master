@@ -19,12 +19,12 @@ namespace TestZXing.ViewModels
         public UploadQueueViewModel()
         {
             StartUploadCommand = new AsyncCommand(StartUpload);
-            RemoveItemsCommand = new AsyncCommand(RemoveItems);
             SelectedItems = new ObservableRangeCollection<File>();
         }
 
         public async Task Initialize()
         {
+            IsWorking = true;
             base.Initialize();
             await fileKeeper.RestoreUploadQueue();
             //await fileKeeper.DeleteAll();
@@ -33,27 +33,79 @@ namespace TestZXing.ViewModels
             {
                 HasItems = true;
             }
+            IsWorking = false;
         }
+
 
         public async Task StartUpload()
         {
+            IsWorking = true;
             await fileKeeper.Upload();
+            IsWorking = false;
         }
 
         public ICommand StartUploadCommand { get; }
-        public ICommand RemoveItemsCommand { get; }
 
-        private async Task RemoveItems()
+        public async Task<string> RemoveSelected()
         {
+            string res = "OK";
+
             if (SelectedItems.Count > 0)
             {
-                for (int i = SelectedItems.Count; i > 0; i--)
+                res = await RemoveItems(SelectedItems);
+            }
+
+            return res;
+        }
+
+        public async Task<string> RemoveAll()
+        {
+            string res = "OK";
+
+            if (Items.Count > 0)
+            {
+                res = await RemoveItems(new ObservableRangeCollection<File>(Items));
+            }
+
+            return res;
+        }
+
+        public async Task<string> RemoveItems(ObservableRangeCollection<File> rItems)
+        {
+            IsWorking = true;
+            string result = "OK";
+
+            try
+            {
+                List<Task<string>> ToRemove = new List<Task<string>>();
+                foreach (File f in rItems)
                 {
-                    SelectedItems[i - 1].RemoveFromUploadQueue();
-                    Items.Remove(SelectedItems[i - 1]);
-                    SelectedItems.Remove(SelectedItems[i - 1]);
+                    ToRemove.Add(f.Remove());
+                }
+                IEnumerable<string> res = await Task.WhenAll<string>();
+                if (res.Any(i => i != "OK"))
+                {
+                    result = string.Join(Environment.NewLine, res.Where(i => i != "OK"));
+                }
+
+                for (int i = rItems.Count; i > 0; i--)
+                {
+                    await rItems[i-1].RemoveFromUploadQueue();
+                    Items.Remove(rItems[i-1]);
+                    if (SelectedItems.Any(x => x.FileId == rItems[i-1].FileId))
+                    {
+                        //remove it also from selected list
+                        SelectedItems.Remove(rItems[i-1]);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                result = $"Błąd podczas próby usunięcia pliku.. Szczegóły: {ex.ToString()}";
+            }
+            IsWorking = false;
+
+            return result;
         }
 
         bool _HasItems = false;

@@ -128,7 +128,7 @@ namespace TestZXing.Models
             return _Result;
         }
 
-        public async Task<string> Remomve()
+        public async Task<string> Remove()
         {
             string _Result = "OK";
             string url = Secrets.ApiAddress + $"Delete{typeof(T).Name}?token=" + Secrets.TenantToken + $"&id={this.Id}&UserId={RuntimeSettings.CurrentUser.UserId}";
@@ -139,8 +139,16 @@ namespace TestZXing.Models
                 HttpResponseMessage result = await Static.Functions.GetPostRetryAsync(() => httpClient.DeleteAsync(new Uri(url)), TimeSpan.FromSeconds(3));
                 if (!result.IsSuccessStatusCode)
                 {
-                    IsSaved = false;
-                    _Result = String.Format("Serwer zwrócił błąd przy próbie usunięcia pozycji {0}. Wiadomość: " + result.ReasonPhrase, this.Id);
+                    if(result.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        IsSaved = true;
+                    }
+                    else
+                    {
+                        IsSaved = false;
+                        _Result = String.Format("Serwer zwrócił błąd przy próbie usunięcia pozycji {0}. Wiadomość: " + result.ReasonPhrase, this.Id);
+                    }
+                    
                 }
                 else
                 {
@@ -149,7 +157,7 @@ namespace TestZXing.Models
             }catch(Exception ex)
             {
                 _Result = ex.Message;
-                Static.Functions.CreateError(ex, "No connection", nameof(this.Remomve), this.GetType().Name);
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Remove), this.GetType().Name);
             }
 
             return _Result;

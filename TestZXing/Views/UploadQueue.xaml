@@ -8,13 +8,38 @@
              Title="Kolejka plików">
     <ContentPage.Content>
         <StackLayout Margin="10">
-            <Button Text="Wyślij pliki" 
-                    Command="{Binding StartUploadCommand}" 
-                    BackgroundColor="Green" 
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="7*"/>
+                </Grid.ColumnDefinitions>
+                <Button 
+                    x:Name="btnRemoveAll"
+                    ImageSource="delete.png"
+                    BackgroundColor="Red" 
+                    Grid.Row="0"
+                    Grid.Column="0"
                     CornerRadius="20" 
                     TextColor="White" 
                     HeightRequest="80"
-                    IsVisible="{Binding HasItems}"/>
+                    Clicked="btnRemoveAll_Clicked"
+                    IsVisible="{Binding HasItems}"
+                    IsEnabled="{Binding IsIdle}"/>
+                <Button Text="Wyślij pliki" 
+                    Command="{Binding StartUploadCommand}" 
+                    BackgroundColor="Green" 
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    CornerRadius="20" 
+                    TextColor="White" 
+                    HeightRequest="80"
+                    IsVisible="{Binding HasItems}"
+                    IsEnabled="{Binding IsIdle}"/>
+            </Grid>
+            
             <CollectionView x:Name="lstFiles"
                             ItemsSource="{Binding Items}"
                             VerticalOptions="FillAndExpand"
@@ -46,9 +71,10 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            <Button BackgroundColor="Red"
+            <Button x:Name="btnRemoveSelected"
+                    BackgroundColor="Red"
                     ImageSource="delete.png"
-                    Command="{Binding RemoveItemsCommand}"
+                    Clicked="btnRemoveSelected_Clicked"
                     IsVisible="{Binding RemovableSelected}"/>
         </StackLayout>
     </ContentPage.Content>

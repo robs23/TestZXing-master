@@ -15,7 +15,25 @@ namespace TestZXing.ViewModels
             get { return _IsWorking; }
             set
             {
-                SetProperty(ref _IsWorking, value);
+                if (SetProperty(ref _IsWorking, value) == true)
+                {
+                    OnPropertyChanged(nameof(IsIdle));
+                }
+            }
+        }
+
+        public virtual bool IsIdle
+        {
+            get
+            {
+                if (IsWorking)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             }
         }
 

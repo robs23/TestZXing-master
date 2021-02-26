@@ -205,7 +205,7 @@ namespace TestZXing.ViewModels
                 {
                     foreach (PartUsage pu in RemovedItems)
                     {
-                        SaveTasks.Add(pu.Remomve());
+                        SaveTasks.Add(pu.Remove());
                     }
                 }
 

@@ -268,6 +268,16 @@ namespace TestZXing.ViewModels
                     {
                         f.CreatedBy = RuntimeSettings.CurrentUser.UserId;
                         f.CreatedOn = DateTime.Now;
+                        try
+                        {
+                            f.Type = System.IO.Path.GetExtension(f.Link).Substring(1, 3);
+                            var s = new System.IO.FileInfo(f.Link);
+                            f.Size = s.Length;
+                        }catch(Exception ex)
+                        {
+
+                        }
+                        
                         SaveTasks.Add(f.Add($"ProcessId={processId}"));
                     }
                     else
@@ -283,7 +293,7 @@ namespace TestZXing.ViewModels
                 {
                     foreach (File f in RemovedItems)
                     {
-                        SaveTasks.Add(f.Remomve());
+                        SaveTasks.Add(f.Remove());
                     }
                 }
 
