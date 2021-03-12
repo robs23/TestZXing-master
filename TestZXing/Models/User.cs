@@ -91,6 +91,7 @@ namespace TestZXing.Models
                     string output = await ds.readStream(responseMsg);
                     IsWorking = JsonConvert.DeserializeObject<bool>(output);
                 }
+                SessionManager.Instance.StartTrackSessionAsync();
                 OnPropertyChanged(nameof(IsWorking));
                 OnPropertyChanged(nameof(Icon));
             }

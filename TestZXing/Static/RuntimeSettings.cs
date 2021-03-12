@@ -22,5 +22,6 @@ namespace TestZXing.Static
         public static bool IsVpnConnection { get; set; } = true;
 
         public static string ZippedLogFile { get; set; }
+        public static FileKeeper UploadKeeper { get; set; }
     }
 }

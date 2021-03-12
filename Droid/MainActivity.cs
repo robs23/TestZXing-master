@@ -12,6 +12,7 @@ using Plugin.CurrentActivity;
 using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
+using TestZXing.Classes;
 
 namespace TestZXing.Droid
 {
@@ -60,6 +61,12 @@ namespace TestZXing.Droid
             
             Plugin.Permissions.PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        public override void OnUserInteraction()
+        {
+            base.OnUserInteraction();
+            SessionManager.Instance.ExtendSession();
         }
 
         private void InitializeNLog()

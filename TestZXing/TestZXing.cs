@@ -40,6 +40,8 @@ namespace TestZXing
             AppCenter.Start($"android={Static.Secrets.AppCenterSecret}", typeof(Analytics), typeof(Crashes), typeof(Distribute));
             Analytics.SetEnabledAsync(true);
             Distribute.SetEnabledAsync(true);
+            FileKeeper files = new FileKeeper(uploadKeeper: true);
+            RuntimeSettings.UploadKeeper = files; 
             //if (await Crashes.HasCrashedInLastSessionAsync())
             //{
             //    Functions.CreateZipFile();
