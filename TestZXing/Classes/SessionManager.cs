@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using TestZXing.Interfaces;
+using TestZXing.Static;
 using TestZXing.Views;
 using Xamarin.Forms;
 
@@ -56,7 +57,20 @@ namespace TestZXing.Classes
                     Xamarin.Forms.Device.BeginInvokeOnMainThread(async () =>
                     {
                         //Do something
-                        DependencyService.Get<IToaster>().ShortAlert($"Synchronizuje pliki..");
+                        if(RuntimeSettings.UploadKeeper == null)
+                        {
+                            DependencyService.Get<IToaster>().ShortAlert($"Synchronizacja plików w tle nie została odpowiednio uruchomiona.. Należy zrestartować aplikację..");
+                        }
+                        else
+                        {
+                            if (!RuntimeSettings.UploadKeeper.IsWorking)
+                            {
+                                DependencyService.Get<IToaster>().ShortAlert($"Synchronizuje pliki..");
+                                await RuntimeSettings.UploadKeeper.RestoreUploadQueue();
+                                await RuntimeSettings.UploadKeeper.Upload();
+                            }
+                        }
+                        
 
                     });
 
