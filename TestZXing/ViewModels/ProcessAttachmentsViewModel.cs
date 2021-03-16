@@ -137,6 +137,57 @@ namespace TestZXing.ViewModels
                 await FileKeeper.Reload($"ProcessId={processId} and CreatedBy={RuntimeSettings.CurrentUser.UserId}");
                 Items = new ObservableRangeCollection<File>(FileKeeper.Items);
                 Task.Run(() => TakeSnapshot());
+                await LoadImages();
+                LoadPreviews();
+            }
+        }
+
+        public async Task LoadImages()
+        {
+            if (Items.Any())
+            {
+                foreach(File item in Items)
+                {
+                    item.ImageSource = item.ThumbnailPlaceholder;
+                }
+            }
+        }
+
+        public async Task LoadPreviews()
+        {
+            if (Items.Any())
+            {
+                foreach (File item in Items.Where(i=>i.IsImage==true))
+                {
+                    if (item.IsUploaded == false)
+                    {
+                        //check if file is in Link destination
+                        try
+                        {
+                            if (!string.IsNullOrEmpty(item.Link))
+                            {
+                                if (System.IO.File.Exists(item.Link))
+                                {
+                                    item.ImageSource = item.Link;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        //it's uploaded so take from server
+                        if(!string.IsNullOrEmpty(item.Token) && !string.IsNullOrEmpty(item.Type))
+                        {
+                            item.ImageSource = Secrets.ApiAddress + RuntimeSettings.ThumbnailsPath + $"{item.Token}.{item.Type}";
+                        }
+                        
+
+                    }
+                }
             }
         }
 

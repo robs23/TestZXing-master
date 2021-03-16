@@ -36,20 +36,20 @@ namespace TestZXing.Models
         public string Name { get; set; }
         public string Token { get; set; }
         public string Link { get; set; }
-        public string _Source { get; set; }
-        public string Source
+        private string _ImageSource { get; set; }
+        public string ImageSource
         {
             get
             {
-                return _Source;
+                return _ImageSource;
             }
             set
             {
-                if(_Source != value)
+                if(value != _ImageSource)
                 {
-                    _Source = value;
+                    _ImageSource = value;
+                    OnPropertyChanged();
                 }
-                OnPropertyChanged();
             }
         }
 
