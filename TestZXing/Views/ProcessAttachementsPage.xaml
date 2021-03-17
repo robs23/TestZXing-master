@@ -7,6 +7,26 @@
              x:Class="TestZXing.Views.ProcessAttachementsPage">
     <ContentPage.Content>
         <StackLayout>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Label Text="Tryb zaznaczania"
+                       Margin="10,0,0,0"
+                       FontSize="Large"
+                       FontAttributes="Bold"
+                       TextColor="DeepSkyBlue"
+                       Grid.Row="0"
+                       Grid.Column="0"/>
+                <Switch  IsToggled="{Binding SelectionModeEnabled}"
+                         Grid.Row="0"
+                         Grid.Column="1"/>
+            </Grid>
+            
             <Grid IsVisible="{Binding IsElementActive}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="400"></RowDefinition>
@@ -21,15 +41,20 @@
                             VerticalOptions="FillAndExpand"
                             EmptyView="{Binding EmptyViewCaption}"
                             Margin="0,5,0,20"
-                            SelectionMode="Multiple"
-                            SelectionChanged="lstAttachments_SelectionChanged">
+                            SelectionMode="{Binding SelectionMode}"
+                            SelectedItems="{Binding SelectedItems}">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="3" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Padding="5">
-                            <Image HeightRequest="100" Source="{Binding ImageSource}"/>
+                            <Image x:Name="imgImage" HeightRequest="100" Source="{Binding ImageSource}">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.TapCommand, Source={x:Reference lstAttachments}}" CommandParameter="{Binding}"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <Label x:Name="lblName" Text="{Binding Name}" HorizontalOptions="Center"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

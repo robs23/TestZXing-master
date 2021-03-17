@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TestZXing.Models;
+using TestZXing.Static;
 
 namespace TestZXing.ViewModels
 {
@@ -26,7 +27,12 @@ namespace TestZXing.ViewModels
         {
             IsWorking = true;
             base.Initialize();
-            await fileKeeper.RestoreUploadQueue();
+            fileKeeper = RuntimeSettings.UploadKeeper;
+            if (!fileKeeper.IsWorking)
+            {
+                await fileKeeper.RestoreUploadQueue();
+            }
+            
             //await fileKeeper.DeleteAll();
             Items = fileKeeper.Items;
             if (Items.Any())

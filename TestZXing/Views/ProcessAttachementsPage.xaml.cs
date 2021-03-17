@@ -25,36 +25,36 @@ namespace TestZXing.Views
         {
             try
             {
-                vm.SelectedItems.Clear();
-                if (e.CurrentSelection != null)
-                {
-                    if (e.CurrentSelection.Count > 0)
-                    {
-                        if (e.CurrentSelection.Count == 1)
-                        {
-                            foreach (var f in e.CurrentSelection)
-                            {
-                                vm.ActiveElementPath = ((File)f).Link;
-                            }
-                            vm.IsElementActive = true;
-                        }
-                        else
-                        {
-                            foreach (var f in e.CurrentSelection)
-                            {
-                                vm.SelectedItems.Add((File)f);
-                            }
-                            vm.IsElementActive = false;
-                        }
-                        vm.RemovableSelected = true;
+                //vm.SelectedItems.Clear();
+                //if (e.CurrentSelection != null)
+                //{
+                //    if (e.CurrentSelection.Count > 0)
+                //    {
+                //        if (e.CurrentSelection.Count == 1)
+                //        {
+                //            foreach (var f in e.CurrentSelection)
+                //            {
+                //                vm.ActiveElementPath = ((File)f).Link;
+                //            }
+                //            vm.IsElementActive = true;
+                //        }
+                //        else
+                //        {
+                //            foreach (var f in e.CurrentSelection)
+                //            {
+                //                vm.SelectedItems.Add((File)f);
+                //            }
+                //            vm.IsElementActive = false;
+                //        }
+                //        vm.RemovableSelected = true;
                         
-                    }
-                    else
-                    {
-                        vm.IsElementActive = false;
-                        vm.RemovableSelected = false;
-                    }
-                }
+                //    }
+                //    else
+                //    {
+                //        vm.IsElementActive = false;
+                //        vm.RemovableSelected = false;
+                //    }
+                //}
 
             }
             catch (Exception ex)
@@ -99,5 +99,23 @@ namespace TestZXing.Views
                 await vm.CaptureVideo();
             }
         }
+
+        //private void Switch_Toggled(object sender, ToggledEventArgs e)
+        //{
+        //    if (e.Value)
+        //    {
+
+        //    }
+        //    else
+        //    {
+        //        //disabled
+        //        var tapGestureRecognizer = new TapGestureRecognizer();
+        //        tapGestureRecognizer.SetBinding(TapGestureRecognizer.CommandProperty, "TapCommand");
+                
+                
+        //    }
+        //}
+
+
     }
 }

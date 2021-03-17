@@ -25,12 +25,51 @@ namespace TestZXing.ViewModels
             CapturePhotoCommand = new AsyncCommand(CapturePhoto);
             PickPhotoCommand = new AsyncCommand(PickPhoto);
             RemoveItemsCommand = new AsyncCommand(RemoveItems);
+            TapCommand = new AsyncCommand<File>(OpenFile, (e) => {
+                if (SelectionModeEnabled)
+                {
+                    return false;
+                }
+                return true;
+                }) ;
             Items = new ObservableRangeCollection<File>();
             SelectedItems = new ObservableRangeCollection<File>();
             FileKeeper = new FileKeeper();
         }
 
         public ICommand CapturePhotoCommand { get; }
+
+        public async Task OpenFile(File f)
+        {
+            Uri uri = null;
+            if (f.IsUploaded==true)
+            {
+                if (!string.IsNullOrEmpty(f.Token) && !string.IsNullOrEmpty(f.Type))
+                {
+                    uri = new Uri(Secrets.ApiAddress + RuntimeSettings.FilesPath + $"{f.Token}.{f.Type.Trim()}");
+                }
+            }
+            else
+            {
+                if (System.IO.File.Exists(f.Link))
+                {
+                    uri = new Uri(f.Link);
+                }
+            }
+
+
+            if (uri != null)
+            {
+                await Browser.OpenAsync(uri);
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert("Plik niedostępny", $"Plik nie jest jeszcze dostępny na serwerze({ f.Token}.{f.Type.Trim()}) ponieważ {f.CreatedByName} nie zsynchronizował jeszcze plików..", "OK");
+            }
+            
+        }
+
+
 
         public async Task CapturePhoto()
         {
@@ -128,6 +167,8 @@ namespace TestZXing.ViewModels
 
         public ICommand RemoveItemsCommand { get; }
 
+        public ICommand TapCommand { get; }
+
         public async Task Initialize(int? processId = null)
         {
             base.Initialize();
@@ -182,7 +223,7 @@ namespace TestZXing.ViewModels
                         //it's uploaded so take from server
                         if(!string.IsNullOrEmpty(item.Token) && !string.IsNullOrEmpty(item.Type))
                         {
-                            item.ImageSource = Secrets.ApiAddress + RuntimeSettings.ThumbnailsPath + $"{item.Token}.{item.Type}";
+                            item.ImageSource = Secrets.ApiAddress + RuntimeSettings.ThumbnailsPath + $"{item.Token}.{item.Type.Trim()}";
                         }
                         
 
@@ -208,6 +249,52 @@ namespace TestZXing.ViewModels
             set
             {
                 SetProperty(ref _ActiveElementPath, value);
+            }
+        }
+
+        private bool _SelectionModeEnabled { get; set; } = false;
+
+        public bool SelectionModeEnabled
+        {
+            get
+            {
+                return _SelectionModeEnabled;
+            }
+            set
+            {
+                if(value != _SelectionModeEnabled)
+                {
+                    _SelectionModeEnabled = value;
+                    if (value == true)
+                    {
+                        SelectionMode = SelectionMode.Multiple;
+                    }
+                    else
+                    {
+                        SelectionMode = SelectionMode.None;
+                        
+
+                    }
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private SelectionMode _SelectionMode { get; set; } = SelectionMode.None;
+
+        public SelectionMode SelectionMode
+        {
+            get
+            {
+                return _SelectionMode;
+            }
+            set
+            {
+                if(value != _SelectionMode)
+                {
+                    _SelectionMode = value;
+                    OnPropertyChanged();
+                }
             }
         }
 

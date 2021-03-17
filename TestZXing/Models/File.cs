@@ -130,14 +130,14 @@ namespace TestZXing.Models
 
                 if (!string.IsNullOrEmpty(Type))
                 {
-                    if (imageFormats.Contains(Type.ToLower()))
+                    if (imageFormats.Contains(Type.ToLower().Trim()))
                     {
                         res = true;
                     }
                 }
                 else if (!string.IsNullOrEmpty(Name))
                 {
-                    if (imageFormats.Contains(Name.Split('.').Last().ToLower()))
+                    if (imageFormats.Contains(Name.Split('.').Last().ToLower().Trim()))
                     {
                         res = true;
                     }
@@ -173,19 +173,19 @@ namespace TestZXing.Models
                 }
                 else
                 {
-                    if (excels.Contains(Type.ToLower()))
+                    if (excels.Contains(Type.ToLower().Trim()))
                     {
                         res = "icon_excel.png";
                     }
-                    if (words.Contains(Type.ToLower()))
+                    if (words.Contains(Type.ToLower().Trim()))
                     {
                         res = "icon_word";
                     }
-                    if (videos.Contains(Type.ToLower()))
+                    if (videos.Contains(Type.ToLower().Trim()))
                     {
                         res = "icon_video.png";
                     }
-                    if (Type.ToLower() == "pdf")
+                    if (Type.ToLower().Trim() == "pdf")
                     {
                         res = "icon_pdf.png";
                     }
