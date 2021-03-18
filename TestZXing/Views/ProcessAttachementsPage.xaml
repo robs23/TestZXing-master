@@ -26,7 +26,6 @@
                          Grid.Row="0"
                          Grid.Column="1"/>
             </Grid>
-            
             <Grid IsVisible="{Binding IsElementActive}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="400"></RowDefinition>

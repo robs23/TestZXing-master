@@ -60,9 +60,9 @@ namespace TestZXing.Models
         {
             var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
             db.CreateTable<File>();
-            if (Items.Any())
+            if (Items.Any(i=>i.IsUploaded==false && i.IsUploading==false && !db.Table<File>().Any(x => x.FileId==i.FileId)))
             {
-                db.InsertOrReplaceAll(Items);
+                db.InsertOrReplaceAll(Items.Where(i=>i.IsUploaded==false && i.IsUploading==false && !db.Table<File>().Any(x => x.FileId == i.FileId)));
             }
 
         }

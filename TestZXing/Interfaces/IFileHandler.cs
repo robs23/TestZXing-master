@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TestZXing.Models;
 
 namespace TestZXing.Interfaces
 {
@@ -8,5 +9,6 @@ namespace TestZXing.Interfaces
     {
         string GetImageGalleryPath();
         string GetVideoGalleryPath();
+        void OpenFile(File f);
     }
 }

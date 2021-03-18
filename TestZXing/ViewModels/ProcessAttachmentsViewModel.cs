@@ -10,6 +10,7 @@ using System.Windows.Input;
 using TestZXing.Interfaces;
 using TestZXing.Models;
 using TestZXing.Static;
+using TestZXing.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using File = TestZXing.Models.File;
@@ -53,20 +54,22 @@ namespace TestZXing.ViewModels
             {
                 if (System.IO.File.Exists(f.Link))
                 {
-                    uri = new Uri(f.Link);
+                    await Application.Current.MainPage.Navigation.PushAsync(new WebBrowser(f.Link));
+                    //DependencyService.Get<IFileHandler>().OpenFile(f);
                 }
             }
 
 
             if (uri != null)
             {
-                await Browser.OpenAsync(uri);
+                await Application.Current.MainPage.Navigation.PushAsync(new WebBrowser(uri.AbsoluteUri));
+                //await Browser.OpenAsync(uri);
             }
             else
             {
                 await App.Current.MainPage.DisplayAlert("Plik niedostępny", $"Plik nie jest jeszcze dostępny na serwerze({ f.Token}.{f.Type.Trim()}) ponieważ {f.CreatedByName} nie zsynchronizował jeszcze plików..", "OK");
             }
-            
+
         }
 
 
