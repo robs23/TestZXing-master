@@ -124,7 +124,15 @@ namespace TestZXing
                                 Part Part = await new PartKeeper().GetByToken(res);
                                 if (Part != null)
                                 {
-                                    await Application.Current.MainPage.Navigation.PushAsync(new PartPage(Part));
+                                    if (Part.IsArchived == true)
+                                    {
+                                        await Application.Current.MainPage.DisplayAlert("Część zarchiwizowana", "Ta część została zarchiwizowana! Być może ta część występuje teraz pod nowym numerem, w takim przypadku należy wydrukować i okleić ją nowym kodem", "OK");
+                                    }
+                                    else
+                                    {
+                                        await Application.Current.MainPage.Navigation.PushAsync(new PartPage(Part));
+                                    }
+                                    
                                 }
                                 else
                                 {
@@ -143,14 +151,19 @@ namespace TestZXing
                                 {
                                     try
                                     {
-                                        //await DisplayAlert("Czas", $"Zajęło {(DateTime.Now - _start).TotalMilliseconds} sekund", "Ok");
-                                        await Navigation.PushAsync(new ScanningResults(Place, true));
-
+                                        if (Place.IsArchived == true)
+                                        {
+                                            await Application.Current.MainPage.DisplayAlert("Zasób zarchiwizowany", "Ten zasób został zarchiwizowany! Być może ten zasób występuje teraz pod nowym numerem, w takim przypadku należy wydrukować i okleić go nowym kodem", "OK");
+                                        }
+                                        else
+                                        {
+                                            await Navigation.PushAsync(new ScanningResults(Place, true));
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
                                     if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
-                                    await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                                        await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
                                     }
                                 }
                                         

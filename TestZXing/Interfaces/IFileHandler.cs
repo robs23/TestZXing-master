@@ -9,6 +9,5 @@ namespace TestZXing.Interfaces
     {
         string GetImageGalleryPath();
         string GetVideoGalleryPath();
-        void OpenFile(File f);
     }
 }

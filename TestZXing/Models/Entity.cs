@@ -26,6 +26,8 @@ namespace TestZXing.Models
 
         public bool IsSaved { get; set; } = false;
 
+        public bool? IsArchived { get; set; } = false;
+
         public virtual async Task<string> Add()
         {
             using (var client = new HttpClient())

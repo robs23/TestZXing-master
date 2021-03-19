@@ -14,9 +14,14 @@ using TestZXing.Static;
 namespace TestZXing.Models
 {
 
-    public class Place
+    public class Place: Entity<Place>
     {
         public int PlaceId { get; set; }
+        public override int Id
+        {
+            set => value = PlaceId;
+            get => PlaceId;
+        }
         public string Number1 { get; set; }
         public string Number2 { get; set; }
         public string Name { get; set; }
@@ -26,11 +31,6 @@ namespace TestZXing.Models
         public int SetId { get; set; }
         public string SetName { get; set; }
         public string Priority { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public int CreatedBy { get; set; }
-        public string CreatedByName { get; set; }
-        public int TenantId { get; set; }
-        public string TenantName { get; set; }
         public string PlaceToken { get; set; }
         public DateTime? VisitedAt { get; set; }
         public string VisitedAtString {

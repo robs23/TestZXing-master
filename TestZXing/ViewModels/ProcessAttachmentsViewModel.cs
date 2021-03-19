@@ -54,16 +54,24 @@ namespace TestZXing.ViewModels
             {
                 if (System.IO.File.Exists(f.Link))
                 {
-                    await Application.Current.MainPage.Navigation.PushAsync(new WebBrowser(f.Link));
-                    //DependencyService.Get<IFileHandler>().OpenFile(f);
+                    uri = new Uri(f.Link);
                 }
             }
 
 
             if (uri != null)
             {
-                await Application.Current.MainPage.Navigation.PushAsync(new WebBrowser(uri.AbsoluteUri));
-                //await Browser.OpenAsync(uri);
+                if (f.IsUploaded==true)
+                {
+                    await Browser.OpenAsync(uri);
+                }
+                else
+                {
+                    await Launcher.OpenAsync(new OpenFileRequest
+                    {
+                        File = new ReadOnlyFile(f.Link)
+                    });
+                }
             }
             else
             {
@@ -117,9 +125,9 @@ namespace TestZXing.ViewModels
                 Items.Add(new File
                 {
                     Name = result.FileName,
-                    Link = fullPath
+                    Link = fullPath,
+                    ImageSource = fullPath
                 });
-                IsElementActive = true;
             }
         }
 
@@ -491,19 +499,6 @@ namespace TestZXing.ViewModels
                 {
                     OnPropertyChanged(nameof(RemovableSelected));
                 }
-            }
-        }
-
-        bool _IsElementActive = false;
-        public bool IsElementActive
-        {
-            get
-            {
-                return _IsElementActive;
-            }
-            set
-            {
-                SetProperty(ref _IsElementActive, value);
             }
         }
 

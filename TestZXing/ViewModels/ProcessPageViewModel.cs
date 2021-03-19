@@ -1061,6 +1061,10 @@ namespace TestZXing.ViewModels
                             {
                                 if (qrToken == CurrentPlace.PlaceToken)
                                 {
+                                    if (CurrentPlace.IsArchived == true)
+                                    {
+                                        _Result = "Zeskanowany kod odpowiada zarchwizowanemu zasobowi.. Należy okleić zasób nowym kodem..";
+                                    }
                                     //scanned code matches
                                     IsQrConfirmed = true;
                                     _Result = "OK";

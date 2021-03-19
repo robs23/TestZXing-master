@@ -4,7 +4,8 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="TestZXing.Views.ProcessAttachementsPage">
+             x:Class="TestZXing.Views.ProcessAttachementsPage"
+             Title="Załączniki">
     <ContentPage.Content>
         <StackLayout>
             <Grid>
@@ -26,22 +27,13 @@
                          Grid.Row="0"
                          Grid.Column="1"/>
             </Grid>
-            <Grid IsVisible="{Binding IsElementActive}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="400"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Image Source="{Binding ActiveElementPath}" Grid.Column="0" Grid.Row="0"/>
-            </Grid>
             <CollectionView x:Name="lstAttachments"
                             ItemsSource="{Binding Items}"
                             VerticalOptions="FillAndExpand"
                             EmptyView="{Binding EmptyViewCaption}"
                             Margin="0,5,0,20"
                             SelectionMode="{Binding SelectionMode}"
-                            SelectedItems="{Binding SelectedItems}">
+                            SelectionChanged="lstAttachments_SelectionChanged">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="3" />
                 </CollectionView.ItemsLayout>

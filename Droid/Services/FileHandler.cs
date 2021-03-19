@@ -53,14 +53,6 @@ namespace TestZXing.Droid.Services
             }
         }
 
-        public void OpenFile(File f)
-        {
-            Java.IO.File file = new Java.IO.File(f.Link);
-            Android.Net.Uri uri = Android.Net.Uri.FromFile(file);
-            Intent intent = new Intent(Intent.ActionView);
-            intent.SetDataAndType(uri, "image/jpeg");
-            Xamarin.Forms.Forms.Context.StartActivity(intent);
-        }
 
     }
 }
