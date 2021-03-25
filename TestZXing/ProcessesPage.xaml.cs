@@ -41,7 +41,7 @@ namespace TestZXing
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            if (!vm.IsInitilized)
+            if (!vm.IsInitialized)
             {
                 vm.Initialize();
             }

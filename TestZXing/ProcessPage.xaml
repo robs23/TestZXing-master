@@ -147,7 +147,7 @@
                     Margin="0,10,0,0"
                     x:Name="btnAttachments"
                     BackgroundColor="Black"
-                    ImageSource="photo.png"
+                    ImageSource="attachment.png"
                     IsVisible="True"
                     IsEnabled="{Binding IsProcessOpen}"
                     Clicked="btnAttachments_Clicked"

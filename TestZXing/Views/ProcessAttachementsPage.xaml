@@ -30,7 +30,6 @@
             <CollectionView x:Name="lstAttachments"
                             ItemsSource="{Binding Items}"
                             VerticalOptions="FillAndExpand"
-                            EmptyView="{Binding EmptyViewCaption}"
                             Margin="0,5,0,20"
                             SelectionMode="{Binding SelectionMode}"
                             SelectionChanged="lstAttachments_SelectionChanged">
@@ -49,6 +48,16 @@
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <ContentView>
+                        <StackLayout HorizontalOptions="CenterAndExpand"
+                             VerticalOptions="CenterAndExpand">
+                            <Label Text="{Binding EmptyViewCaption}"
+                                   FontSize="Body"
+                                   Margin="20,0,20,0"/>
+                        </StackLayout>
+                    </ContentView>
+                </CollectionView.EmptyView>
             </CollectionView>
             <Grid>
                 <Grid.RowDefinitions>

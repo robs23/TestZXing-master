@@ -21,5 +21,37 @@ namespace TestZXing.Views
             vm = new PartPageViewModel(part);
             BindingContext = vm;
         }
+
+        protected async override void OnAppearing()
+        {
+            base.OnAppearing();
+            try
+            {
+                if (!vm.IsInitialized)
+                {
+                    //initialize only when not yet initialized
+                    await vm.Initialize();
+                    
+                    BindingContext = vm;
+                }
+                else
+                {
+                    if (!vm.IsSaveable)
+                    {
+                        vm.IsSaveable = await vm.IsDirty();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+            }
+        }
+
+        private async void btnSave_Clicked(object sender, EventArgs e)
+        {
+            await vm.Save();
+        }
     }
 }

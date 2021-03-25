@@ -16,7 +16,12 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="10*" />
                 </Grid.ColumnDefinitions>
-                <Image HeightRequest="400" Source="{Binding ImageUrl}"  Grid.Row="0" Grid.Column="0"/>
+                <ImageButton HeightRequest="400" 
+                       Source="{Binding ImageUrl}"  
+                       Grid.Row="0" 
+                       Grid.Column="0"
+                       Command="{Binding ChangeImageCommand}"
+                       />
                 <Grid Grid.Row="1" Grid.Column="0" Margin="0,20,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="8*"/>
@@ -73,14 +78,39 @@
 
                         </Grid>
                     </ScrollView>
-                    
-                    <Button x:Name="btnChangeImage"
+
+                    <Grid Grid.Row="1"
+                          Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="8*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="btnSave"
                             BackgroundColor="DeepSkyBlue"
                             TextColor="White"
-                            Text="Zmień zdjęcie"
-                            Grid.Row="1"
+                            IsEnabled="{Binding IsSaveable}"
+                            Text="Zapisz"
+                            Grid.Row="0"
                             Grid.Column="0"
-                            Command="{Binding ChangeImageCommand}"/>
+                            CornerRadius="20"
+                            Clicked="btnSave_Clicked"/>
+                        <Button
+                            Margin="0,0,0,0"
+                            x:Name="btnAttachments"
+                            BackgroundColor="Black"
+                            ImageSource="attachment.png"
+                            IsVisible="True"
+                            IsEnabled="True"
+                            Command="{Binding ShowAttachmentsCommand}"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            CornerRadius="20"
+                            />
+                    </Grid>
+                    
                 </Grid>
             </Grid>
         </StackLayout>

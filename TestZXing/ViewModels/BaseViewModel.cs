@@ -37,17 +37,18 @@ namespace TestZXing.ViewModels
             }
         }
 
+
         public async Task Initialize()
         {
-            IsInitilized = true;
+            IsInitialized = true;
         }
 
-        bool _IsInitilized = false;
+        bool _IsInitialized = false;
 
-        public bool IsInitilized
+        public bool IsInitialized
         {
-            get { return _IsInitilized; }
-            set { SetProperty(ref _IsInitilized, value); }
+            get { return _IsInitialized; }
+            set { SetProperty(ref _IsInitialized, value); }
         }
     }
 }

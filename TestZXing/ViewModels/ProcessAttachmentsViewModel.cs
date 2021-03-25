@@ -180,13 +180,24 @@ namespace TestZXing.ViewModels
 
         public ICommand TapCommand { get; }
 
-        public async Task Initialize(int? processId = null)
+        public async Task Initialize(int? processId = null, int? partId = null, int? placeId=null)
         {
             base.Initialize();
 
-            if (processId != null)
+            if (processId != null || partId != null || placeId != null)
             {
-                await FileKeeper.Reload($"ProcessId={processId} and CreatedBy={RuntimeSettings.CurrentUser.UserId}");
+                if(processId != null)
+                {
+                    await FileKeeper.Reload($"ProcessId={processId}");
+                }else if(partId != null)
+                {
+                    await FileKeeper.Reload($"PartId={partId}");
+                }
+                else
+                {
+                    await FileKeeper.Reload($"PlaceId={placeId}");
+                }
+                
                 Items = new ObservableRangeCollection<File>(FileKeeper.Items);
                 Task.Run(() => TakeSnapshot());
                 await LoadImages();
@@ -403,7 +414,7 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public async Task<string> Save(int processId)
+        public async Task<string> Save(int? processId = null, int? partId = null, int? placeId = null)
         {
             string res = "OK";
 
@@ -426,8 +437,17 @@ namespace TestZXing.ViewModels
                         {
 
                         }
+                        if(processId != null)
+                        {
+                            SaveTasks.Add(f.Add($"ProcessId={processId}"));
+                        }else if(partId != null)
+                        {
+                            SaveTasks.Add(f.Add($"PartId={partId}"));
+                        }else if(placeId != null)
+                        {
+                            SaveTasks.Add(f.Add($"PlaceId={placeId}"));
+                        }
                         
-                        SaveTasks.Add(f.Add($"ProcessId={processId}"));
                     }
                     else
                     {
@@ -534,7 +554,7 @@ namespace TestZXing.ViewModels
                 }
                 else
                 {
-                    return "Nie dodano żadnego zdjęcia do tego zgłoszenia. Dodaj pierwsze zdjęcie korzystając z przycisków poniżej. Przycisk LUPY pozwala dodać wcześniej zrobione zdjęcie, przycisk APARAT pozwala zrobić nowe zdjęcie..";
+                    return "Nie dodano jeszcze żadnego załącznika.. Dodaj pierwsze zdjęcie/film korzystając z przycisków poniżej. Przycisk LUPY pozwala dodać wcześniej zrobione zdjęcie/film, przycisk APARAT pozwala zrobić nowe zdjęcie/film..";
                 }
             }
         }

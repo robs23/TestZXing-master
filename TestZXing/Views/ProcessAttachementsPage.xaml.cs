@@ -55,7 +55,7 @@ namespace TestZXing.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            if (!vm.IsInitilized)
+            if (!vm.IsInitialized)
             {
                 vm.Initialize();
             }
@@ -79,7 +79,7 @@ namespace TestZXing.Views
 
         private async void btnCapture_Clicked(object sender, EventArgs e)
         {
-            string res = await DisplayActionSheet("Co chcesz nagrać?", "Anuluj", null, "Zdjęcie", "Wideo");
+            string res = await DisplayActionSheet("Co chcesz zrobić?", "Anuluj", null, "Zdjęcie", "Wideo");
             if (res == "Zdjęcie")
             {
                 await vm.CapturePhoto();
