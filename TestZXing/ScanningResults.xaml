@@ -19,10 +19,29 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="10,20">
-            <Label x:Name="lblScanResult" 
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="6*"/>
+                </Grid.ColumnDefinitions>
+                <ImageButton x:Name="PlaceImage" 
+                       HeightRequest="200" 
+                       Source="{Binding ImageUrl}"
+                       Grid.Row="0" 
+                       Grid.Column="0"
+                       Command="{Binding ShowPlaceCommand}"
+                />
+                <Label x:Name="lblScanResult" 
                    HorizontalTextAlignment="Center"
                    TextColor="CadetBlue"
-                   FontSize="Large"/>
+                   FontSize="Large"
+                   Grid.Row="0"
+                   Grid.Column="1"/>
+            </Grid>
+
             <ActivityIndicator x:Name="Looper"
                                IsEnabled="True"
                                Color="CadetBlue"/>

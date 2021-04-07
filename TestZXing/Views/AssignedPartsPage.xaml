@@ -38,7 +38,10 @@
                                 <ColumnDefinition Width="2*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <StackLayout Padding="10" Grid.Column="0">
-                                <Image HeightRequest="100" Source="{Binding ImageUrl}"/>
+                                <ImageButton HeightRequest="100" 
+                                       Source="{Binding ImageUrl}"
+                                       Command="{Binding ShowPartCommand}"
+                                       />
                             </StackLayout>
                             <StackLayout Padding="10" Grid.Column="1">
                                 <Grid>

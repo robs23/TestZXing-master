@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MvvmHelpers.Commands;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TestZXing.Interfaces;
+using TestZXing.Views;
 using Xamarin.Forms;
 
 namespace TestZXing.Models
@@ -14,6 +16,7 @@ namespace TestZXing.Models
     public class PartUsage : Entity<PartUsage>, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public PartKeeper Keeper { get; set; }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
@@ -22,8 +25,21 @@ namespace TestZXing.Models
 
         public PartUsage()
         {
-            IncreaseAmountCommand = new Command(IncreaseAmount);
-            DecreaseAmountCommand = new Command(DecreaseAmount);
+            IncreaseAmountCommand = new Xamarin.Forms.Command(IncreaseAmount);
+            DecreaseAmountCommand = new Xamarin.Forms.Command(DecreaseAmount);
+            ShowPartCommand = new AsyncCommand(ShowPart);
+            Keeper = new PartKeeper();
+        }
+
+        public ICommand ShowPartCommand { get; }
+
+        public async Task ShowPart()
+        {
+            Part p = await Keeper.GetById(PartId);
+            if(p != null)
+            {
+                Application.Current.MainPage.Navigation.PushAsync(new PartPage(p));
+            }
         }
 
         public int PartUsageId { get; set; }

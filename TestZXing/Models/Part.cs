@@ -1,4 +1,5 @@
 ﻿using MvvmHelpers;
+using Newtonsoft.Json;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -68,6 +69,36 @@ namespace TestZXing.Models
                     return "image_placeholder_128.png";
                 }  
             }
+        }
+
+        public async override Task<string> Add(string attachmentPath = null)
+        {
+            string x = "OK";
+            if (attachmentPath == null)
+            {
+                x = await base.Add();
+            }
+            else
+            {
+                x = await base.Add(attachmentPath, null);
+            }
+
+            if (x=="OK")
+            {
+                try
+                {
+                    Part _this = JsonConvert.DeserializeObject<Part>(AddedItem);
+                    this.PartId = _this.PartId;
+                    this.Token = _this.Token;
+                    this.TenantId = _this.TenantId;
+                }
+                catch (Exception ex)
+                {
+                    x = $"Błąd podczas tworzenia nowej części. Szczegóły: {ex}";
+                }
+
+            }
+            return x;
         }
     }
 }

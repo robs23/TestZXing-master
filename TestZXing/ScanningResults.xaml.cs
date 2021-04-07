@@ -59,9 +59,15 @@ namespace TestZXing
 
         protected override void OnAppearing()
         {
-            vm.Initialize();
+            if (!vm.IsInitialized)
+            {
+                vm.Initialize();
+            }
+            vm.RefreshStatus();
+            
             if (Place != null)
             {
+                vm._this = Place;
                 if (Place.PlaceId != 0)
                 {
                     UpdateList();
@@ -121,6 +127,11 @@ namespace TestZXing
         private void UserStatus_Clicked(object sender, EventArgs e)
         {
             Application.Current.MainPage.Navigation.PushAsync(new DiaryPage());
+        }
+
+        private void btnSave_Clicked(object sender, EventArgs e)
+        {
+
         }
     }
 }

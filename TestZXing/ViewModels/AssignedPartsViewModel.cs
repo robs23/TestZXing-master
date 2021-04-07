@@ -11,6 +11,7 @@ using TestZXing.Classes;
 using TestZXing.Interfaces;
 using TestZXing.Models;
 using TestZXing.Static;
+using TestZXing.Views;
 using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
@@ -252,6 +253,7 @@ namespace TestZXing.ViewModels
         }
 
         public ICommand RemoveItemsCommand { get; }
+        
 
         private async Task RemoveItems()
         {

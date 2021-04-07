@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MvvmHelpers.Commands;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,19 +7,30 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using TestZXing.Interfaces;
 using TestZXing.Models;
 using TestZXing.Static;
+using TestZXing.Views;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
 {
-    public class ProcessInPlaceViewModel : INotifyPropertyChanged
+    public class ProcessInPlaceViewModel : BaseViewModel, INotifyPropertyChanged
     {
         public ObservableCollection<ProcessItem> Items { get; set; }
 
         public ProcessInPlaceViewModel()
         {
-            
+            ShowPlaceCommand = new AsyncCommand(ShowPlace);
+        }
+
+        public ICommand ShowPlaceCommand { get; }
+
+        public async Task ShowPlace()
+        {
+
         }
 
         public string Icon
@@ -28,6 +40,24 @@ namespace TestZXing.ViewModels
                 return Static.RuntimeSettings.CurrentUser.Icon;
             }
         }
+        public Place _this { get; set; }
+        private ImageSource _ImageUrl { get; set; } = "image_placeholder_128.png";
+        public ImageSource ImageUrl
+        {
+            get
+            {
+                return _ImageUrl;
+            }
+            set
+            {
+                if (_ImageUrl != value)
+                {
+                    _ImageUrl = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
 
         public void Update(List<Process> nItems)
         {
@@ -77,11 +107,6 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public void Initialize()
-        {
-            
-            OnPropertyChanged(nameof(Icon));
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -115,6 +140,22 @@ namespace TestZXing.ViewModels
             }
             return str;
         }
+
+        public async Task Initialize()
+        {
+            base.Initialize();
+            
+            if (!string.IsNullOrWhiteSpace(_this.Image))
+            {
+                ImageUrl = Static.Secrets.ApiAddress + Static.RuntimeSettings.FilesPath + _this.Image;
+            }
+        }
+
+        public async Task RefreshStatus()
+        {
+            OnPropertyChanged(nameof(Icon));
+        }
+
     }
 
     public class ProcessItem

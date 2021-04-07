@@ -52,6 +52,7 @@ namespace TestZXing.Models
             }
         }
         public int? HandlingId { get; set; }
+        public string Image { get; set; }
         public List<Process> Processes { get; set; } = new List<Process>();
 
         public async Task<List<Process>> GetProcesses(bool active = false)

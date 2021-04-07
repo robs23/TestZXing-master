@@ -127,5 +127,33 @@ namespace TestZXing.Models
                 throw;
             }
         }
+
+        public async Task<T> GetById(int id)
+        {
+            string url = Secrets.ApiAddress + $"Get{ObjectName}?token=" + Secrets.TenantToken + $"&id=" + id;
+            DataService ds = new DataService();
+
+            try
+            {
+                HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                HttpResponseMessage responseMsg = await Static.Functions.GetPostRetryAsync(() => httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, url)), TimeSpan.FromSeconds(3));
+                if (responseMsg.IsSuccessStatusCode)
+                {
+                    string output = await ds.readStream(responseMsg);
+                    return JsonConvert.DeserializeObject<T>(output);
+                }
+                else
+                {
+                    return default(T);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Static.Functions.CreateError(ex, "No connection", nameof(this.GetByToken), this.GetType().Name);
+                throw;
+            }
+        }
+
     }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Interfaces;
 using TestZXing.Static;
+using Xamarin.Essentials;
 
 namespace TestZXing.Models
 {
@@ -99,6 +100,47 @@ namespace TestZXing.Models
             }
         }
 
+        public virtual async Task<string> Add(string attachmentPath, string args)
+        {
+            using (var client = new HttpClient())
+            {
+                string _Result = "OK";
+                var serialized = JsonConvert.SerializeObject(this);
+                string url = Secrets.ApiAddress + $"Create{typeof(T).Name}?token={Secrets.TenantToken}&{typeof(T).Name}Json={serialized}&UserId={RuntimeSettings.CurrentUser.UserId}&{args}";
+
+                try
+                {
+                    HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+
+                    var content = new MultipartFormDataContent();
+                    var file = new FileResult(attachmentPath);
+                    StreamContent img = new StreamContent(await file.OpenReadAsync());
+                    img.Headers.Add("Content-Type", file.ContentType);
+                    content.Add(img, "file", file.FileName);
+
+                    HttpResponseMessage httpResponse = await Static.Functions.GetPostRetryAsync(() => httpClient.PostAsync(new Uri(url), content), TimeSpan.FromSeconds(3));
+                    if (!httpResponse.IsSuccessStatusCode)
+                    {
+                        IsSaved = false;//hasn't been saved
+                        _Result = httpResponse.ReasonPhrase;
+                    }
+                    else
+                    {
+                        IsSaved = true;//has been saved successfully
+                        var rString = await httpResponse.Content.ReadAsStringAsync();
+                        AddedItem = rString;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _Result = ex.Message;
+                    Static.Functions.CreateError(ex, "No connection", nameof(this.Add), this.GetType().Name);
+                }
+                return _Result;
+
+            }
+        }
+
         public async Task<string> Edit()
         {
             string url = Secrets.ApiAddress + $"Edit{typeof(T).Name}?token=" + Secrets.TenantToken + $"&id={this.Id}&UserId={RuntimeSettings.CurrentUser.UserId}";
@@ -129,6 +171,57 @@ namespace TestZXing.Models
 
             return _Result;
         }
+
+        public async Task<string> Edit(string attachmentPath)
+        {
+            string _Result = "OK";
+
+            if (string.IsNullOrEmpty(attachmentPath))
+            {
+                //_Result = await Edit();
+            }
+            else
+            {
+                if (!System.IO.File.Exists(attachmentPath))
+                {
+                    _Result = $"Plik w lokacji {attachmentPath} nie istnieje lub program nie ma uprawnień dostępu do tej lokacji..";
+                }
+                else
+                {
+                    try
+                    {
+                        var serialized = JsonConvert.SerializeObject(this);
+                        string url = Secrets.ApiAddress + $"Edit{typeof(T).Name}?token=" + Secrets.TenantToken + $"&id={this.Id}&UserId={RuntimeSettings.CurrentUser.UserId}&{typeof(T).Name}Json={serialized}";
+                        HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
+                        var content = new MultipartFormDataContent();
+                        var file = new FileResult(attachmentPath);
+                        StreamContent img = new StreamContent(await file.OpenReadAsync());
+                        img.Headers.Add("Content-Type", file.ContentType);
+                        content.Add(img, "file", file.FileName);
+                        HttpResponseMessage result = await Static.Functions.GetPostRetryAsync(() => httpClient.PutAsync(new Uri(url), content), TimeSpan.FromSeconds(3));
+                        if (!result.IsSuccessStatusCode)
+                        {
+                            IsSaved = false; //hasn't been saved
+                            _Result = result.ReasonPhrase;
+                        }
+                        else
+                        {
+                            IsSaved = true;//has been saved successfully
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _Result = ex.Message;
+                        Static.Functions.CreateError(ex, "No connection", nameof(this.Edit), this.GetType().Name);
+                    }
+                }
+
+            }
+            
+            return _Result;
+        }
+
+
 
         public async Task<string> Remove()
         {

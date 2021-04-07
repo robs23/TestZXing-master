@@ -119,15 +119,40 @@ namespace TestZXing.ViewModels
 
         public async Task Save()
         {
-            string _Result = await ProcessAttachmentsVm.Save(partId: _this.PartId);
+            string _Result = "OK";
+            if (!string.IsNullOrEmpty(ImageUrl.ToString()))
+            {
+                if (!ImageUrl.ToString().Contains("Uri"))
+                {
+                    try
+                    {
+                        string imgPath = ImageUrl.ToString().Split(':')[1].Trim();
+                        _Result = await _this.Edit(imgPath);
+                    }catch(Exception ex)
+                    {
+                        _Result = ex.Message;
+                    }
+                }
+                
+            }
             if(_Result == "OK")
             {
-                await Application.Current.MainPage.DisplayAlert("Zapisano", "Zapis zakończony powodzeniem!", "OK");
+                _Result = await ProcessAttachmentsVm.Save(partId: _this.PartId);
+                if (_Result == "OK")
+                {
+                    await Application.Current.MainPage.DisplayAlert("Zapisano", "Zapis zakończony powodzeniem!", "OK");
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Błąd zapisu", $"Zapis załączników zakończony błędem: {_Result}", "OK");
+                }
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Błąd zapisu", $"Zapis zakończony błędem: {_Result}", "OK");
+                await Application.Current.MainPage.DisplayAlert("Błąd zapisu", $"Zapis danych części zakończony błędem: {_Result}", "OK");
+
             }
+            
         }
 
         public async Task ShowAttachments()

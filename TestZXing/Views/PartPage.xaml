@@ -16,12 +16,12 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="10*" />
                 </Grid.ColumnDefinitions>
-                <ImageButton HeightRequest="400" 
-                       Source="{Binding ImageUrl}"  
+                <ImageButton x:Name="PartImage" HeightRequest="400" 
+                       Source="{Binding ImageUrl}"
                        Grid.Row="0" 
                        Grid.Column="0"
                        Command="{Binding ChangeImageCommand}"
-                       />
+                />
                 <Grid Grid.Row="1" Grid.Column="0" Margin="0,20,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="8*"/>
