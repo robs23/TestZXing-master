@@ -25,6 +25,7 @@ namespace TestZXing.ViewModels
             _this = place;
             ShowAttachmentsCommand = new AsyncCommand(ShowAttachments);
             ChangeImageCommand = new AsyncCommand(ChangeImage);
+            ShowHistoryCommand = new AsyncCommand(ShowHistory);
         }
 
         public string Name
@@ -117,6 +118,7 @@ namespace TestZXing.ViewModels
 
         public ICommand ShowAttachmentsCommand { get; }
         public ICommand ChangeImageCommand { get; }
+        public ICommand ShowHistoryCommand { get; }
 
         public async Task Save()
         {
@@ -160,6 +162,11 @@ namespace TestZXing.ViewModels
         public async Task ShowAttachments()
         {
             await Application.Current.MainPage.Navigation.PushAsync(new ProcessAttachementsPage(ProcessAttachmentsVm));
+        }
+
+        public async Task ShowHistory()
+        {
+            Application.Current.MainPage.Navigation.PushAsync(new CompletedProcessesForPlace(_this), true);
         }
 
         public async Task Initialize()

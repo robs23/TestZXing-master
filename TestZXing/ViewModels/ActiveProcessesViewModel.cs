@@ -10,6 +10,7 @@ using System.Windows.Input;
 using Microsoft.AppCenter.Crashes;
 using ModernHttpClient;
 using MvvmHelpers;
+using MvvmHelpers.Commands;
 using Newtonsoft.Json;
 using Rg.Plugins.Popup.Services;
 using TestZXing.Classes;
@@ -54,13 +55,14 @@ namespace TestZXing.ViewModels
 
         public ActiveProcessesViewModel(ActiveProcessesPageMode _mode)
         {
+            
             Mode = _mode;
-            if (Mode== ActiveProcessesPageMode.UsersProcesses)
+            if (Mode == ActiveProcessesPageMode.UsersProcesses)
             {
                 Title = "MOJE";
                 HidePlanned = false;
             }
-            else if(Mode == ActiveProcessesPageMode.AllProcesses)
+            else if (Mode == ActiveProcessesPageMode.AllProcesses)
             {
                 Title = "WSZYSTKIE";
                 HidePlanned = true;
@@ -70,8 +72,10 @@ namespace TestZXing.ViewModels
                 Title = "KONSERWACJE";
                 HidePlanned = false;
             }
-            this.HeaderClickCommand = new Command<PlaceViewModel>((item) => ExecuteHeaderClickCommand(item));
+            this.HeaderClickCommand = new Xamarin.Forms.Command<PlaceViewModel>((item) => ExecuteHeaderClickCommand(item));
         }
+
+        
 
         public async Task<string> ExecuteLoadDataCommand()
         {
@@ -310,6 +314,23 @@ namespace TestZXing.ViewModels
                 if (_selectedItem != value)
                 {
                     _selectedItem = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private ImageSource _ImageUrl { get; set; } = "image_placeholder_128.png";
+        public ImageSource ImageUrl
+        {
+            get
+            {
+                return _ImageUrl;
+            }
+            set
+            {
+                if (_ImageUrl != value)
+                {
+                    _ImageUrl = value;
                     OnPropertyChanged();
                 }
             }

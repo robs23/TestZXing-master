@@ -20,17 +20,30 @@ namespace TestZXing.ViewModels
     public class ProcessInPlaceViewModel : BaseViewModel, INotifyPropertyChanged
     {
         public ObservableCollection<ProcessItem> Items { get; set; }
+        public Place _this { get; set; }
 
-        public ProcessInPlaceViewModel()
+        public ProcessInPlaceViewModel(Place place)
         {
             ShowPlaceCommand = new AsyncCommand(ShowPlace);
+            _this = place;
         }
 
         public ICommand ShowPlaceCommand { get; }
 
         public async Task ShowPlace()
         {
+            try
+            {
 
+                if (_this != null)
+                {
+                    Application.Current.MainPage.Navigation.PushAsync(new PlacePage(_this));
+                }
+            }catch(Exception ex)
+            {
+                Functions.CreateError(ex, "Couldn't get Place from cloud", nameof(this.ShowPlace), this.GetType().Name);
+            }
+            
         }
 
         public string Icon
@@ -40,7 +53,7 @@ namespace TestZXing.ViewModels
                 return Static.RuntimeSettings.CurrentUser.Icon;
             }
         }
-        public Place _this { get; set; }
+
         private ImageSource _ImageUrl { get; set; } = "image_placeholder_128.png";
         public ImageSource ImageUrl
         {
@@ -147,7 +160,7 @@ namespace TestZXing.ViewModels
             
             if (!string.IsNullOrWhiteSpace(_this.Image))
             {
-                ImageUrl = Static.Secrets.ApiAddress + Static.RuntimeSettings.FilesPath + _this.Image;
+                ImageUrl = Static.Secrets.ApiAddress + Static.RuntimeSettings.ThumbnailsPath + _this.Image;
             }
         }
 

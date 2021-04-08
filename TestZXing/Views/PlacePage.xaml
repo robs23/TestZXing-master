@@ -65,8 +65,8 @@
                             <Label Text="{Binding AreaName}"
                                Grid.Row="2"
                                Grid.Column="1"
-                               FontSize="Priorytet"/>
-                            <Label Text="Opis"
+                               FontSize="Medium"/>
+                            <Label Text="Priorytet"
                                FontAttributes="Bold"
                                Grid.Row="3"
                                Grid.Column="0"
@@ -85,7 +85,8 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="8*"/>
+                            <ColumnDefinition Width="6*"/>
+                            <ColumnDefinition Width="2*"/>
                             <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
                         <Button x:Name="btnSave"
@@ -107,6 +108,18 @@
                             Command="{Binding ShowAttachmentsCommand}"
                             Grid.Row="0"
                             Grid.Column="1"
+                            CornerRadius="20"
+                            />
+                        <Button
+                            Margin="0,0,0,0"
+                            x:Name="btnHistory"
+                            BackgroundColor="Black"
+                            ImageSource="history.png"
+                            IsVisible="True"
+                            IsEnabled="True"
+                            Command="{Binding ShowHistoryCommand}"
+                            Grid.Row="0"
+                            Grid.Column="2"
                             CornerRadius="20"
                             />
                     </Grid>

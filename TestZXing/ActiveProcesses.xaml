@@ -95,15 +95,40 @@
                                     RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.8}"
                                     RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.3}"/>
                                 <StackLayout Padding="16,8,8,16" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" HeightRequest="140">
-                                    <Label Text="{Binding Name}"
-                                   FontSize="Large"
-                                   FontAttributes="Bold"
-                                   RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1}"
-                                   RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=6}"  />
-                                    <Label Text="{Binding Set}"
-                                   FontSize="Medium"
-                                   RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1}"
-                                   RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=60}"  />
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="8*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ImageButton x:Name="PlaceImage" 
+                                           HeightRequest="100" 
+                                           BackgroundColor="White"
+                                           Source="{Binding ImageUrl}"
+                                           Grid.Row="0" 
+                                           Grid.Column="0"
+                                           Grid.RowSpan="2"
+                                           Command="{Binding ShowPlaceCommand}"
+                                    />
+                                        <Label Text="{Binding Name}"
+                                               Grid.Row="0"
+                                               Grid.Column="1"
+                                               FontSize="Large"
+                                               FontAttributes="Bold"
+                                               RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1}"
+                                               RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=6}"  />
+                                        <Label Text="{Binding Set}"
+                                               Grid.Row="1"
+                                               Grid.Column="1"
+                                               FontSize="Medium"
+                                               RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1}"
+                                               RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0, Constant=60}"  />
+                                    </Grid>
+                                    
+                                    
                                 </StackLayout>
 
                                 <RelativeLayout.GestureRecognizers>

@@ -5,8 +5,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using MvvmHelpers;
+using MvvmHelpers.Commands;
 using TestZXing.Models;
+using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
 {
@@ -20,6 +23,7 @@ namespace TestZXing.ViewModels
 
         public PlaceViewModel(Place place, bool expanded = false)
         {
+            ShowPlaceCommand = new AsyncCommand(ShowPlace);
             this._place = place;
             this._expanded = expanded;
             // Place has many processes. Once we get it, init ProcessViewModel and store it in a backup variable
@@ -37,6 +41,12 @@ namespace TestZXing.ViewModels
         public string Name { get { return _place.Name; } }
         public string Set { get { return _place.SetName; } }
         public string Area { get { return _place.AreaName; } }
+        public ICommand ShowPlaceCommand { get; }
+
+        public async Task ShowPlace()
+        {
+            Application.Current.MainPage.DisplayAlert("OK", "OK", "OK");
+        }
 
         private bool _expanded;
         public bool Expanded

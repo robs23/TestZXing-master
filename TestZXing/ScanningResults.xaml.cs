@@ -28,7 +28,7 @@ namespace TestZXing
             Place = nPlace;
             IsQrConfirmed = isQrConfirmed;
             Keeper = new PlacesKeeper();
-            vm = new ProcessInPlaceViewModel();
+            vm = new ProcessInPlaceViewModel(Place);
             BindingContext = vm;
             lblScanResult.Text = Place.Name;
         }
@@ -40,9 +40,10 @@ namespace TestZXing
             try
             {
                 Pros = await Place.GetProcesses(true);
-                vm = new ProcessInPlaceViewModel();
+                vm = new ProcessInPlaceViewModel(Place);
                 vm.Update(Pros);
                 BindingContext = vm;
+                vm.Initialize();
             }
             catch (Exception ex)
             {
@@ -59,15 +60,11 @@ namespace TestZXing
 
         protected override void OnAppearing()
         {
-            if (!vm.IsInitialized)
-            {
-                vm.Initialize();
-            }
+            vm.Initialize();
             vm.RefreshStatus();
             
             if (Place != null)
             {
-                vm._this = Place;
                 if (Place.PlaceId != 0)
                 {
                     UpdateList();
@@ -121,7 +118,7 @@ namespace TestZXing
 
         private void btnShowCompleted_Clicked(object sender, EventArgs e)
         {
-            PopupNavigation.Instance.PushAsync(new CompletedProcessesForPlace(Place), true);
+            Application.Current.MainPage.Navigation.PushAsync(new CompletedProcessesForPlace(Place), true);
         }
 
         private void UserStatus_Clicked(object sender, EventArgs e)

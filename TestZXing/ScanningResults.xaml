@@ -28,7 +28,8 @@
                     <ColumnDefinition Width="6*"/>
                 </Grid.ColumnDefinitions>
                 <ImageButton x:Name="PlaceImage" 
-                       HeightRequest="200" 
+                       HeightRequest="100" 
+                       BackgroundColor="White"
                        Source="{Binding ImageUrl}"
                        Grid.Row="0" 
                        Grid.Column="0"
