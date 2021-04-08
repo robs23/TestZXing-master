@@ -304,5 +304,103 @@ namespace TestZXing.Static
                 RuntimeSettings.ZippedLogFile = string.Empty;
         }
 
+        public static async Task<string> SaveToGallery(FileResult result, bool isPhoto)
+        {
+            //takes care of storing photo/video taken with camera in system gallery
+            string mPath = string.Empty;
+            if (isPhoto)
+            {
+                mPath = DependencyService.Get<IFileHandler>().GetImageGalleryPath();
+            }
+            else
+            {
+                mPath = DependencyService.Get<IFileHandler>().GetVideoGalleryPath();
+            }
+
+            string nPath = System.IO.Path.Combine(mPath, result.FileName);
+            using (var stream = await result.OpenReadAsync())
+            {
+                using (var nStream = System.IO.File.OpenWrite(nPath))
+                {
+                    await stream.CopyToAsync(nStream);
+                    return nPath;
+                }
+            }
+        }
+
+        public static async Task<string> EmbedMedia(FileResult result, bool isPhoto)
+        {
+            //checks if result is existent file or just captrued and decides if to store it in system gallery
+            if (result != null)
+            {
+                string fullPath = string.Empty;
+
+                //check if it needs to be saved first
+                if (result.FullPath.Contains("com.companyname.TestZXing"))
+                {
+                    //save
+                    fullPath = await Functions.SaveToGallery(result, isPhoto);
+                }
+                else
+                {
+                    fullPath = result.FullPath;
+                }
+
+                var stream = await result.OpenReadAsync();
+                return fullPath; //ImageSource.FromStream(() => stream);
+
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static async Task<string> ChangeImage()
+        {
+            //takes care of capturing/picking a photo/video
+            //and store it in local gallery
+
+            FileResult result = null;
+            string imageUrl = string.Empty;
+
+
+            try
+            {
+                string res = await Application.Current.MainPage.DisplayActionSheet("Co chcesz zrobić?", "Anuluj", null, "Zrób zdjęcie", "Wybierz z galerii");
+                if (res == "Zrób zdjęcie")
+                {
+                    result = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
+                    {
+                        Title = "Zrób zdjęcie"
+                    });
+                }
+                else if (res == "Wybierz z galerii")
+                {
+                    result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
+                    {
+                        Title = "Wybierz zdjęcie"
+                    });
+                }
+
+                if (result != null)
+                {
+                    string success = await Functions.EmbedMedia(result, true);
+                    if (!string.IsNullOrEmpty(success))
+                    {
+                        imageUrl = success;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                CreateError(ex, "Error during picking/capturing/embeding/saving to gallery of image", nameof(ChangeImage), "Functions");
+            }
+
+            return imageUrl;
+
+        }
+
     }
 }

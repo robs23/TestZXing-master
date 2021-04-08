@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="TestZXing.Views.PlacePage"
+             Title="Szczegóły zasobu">
+    <ContentPage.Content>
+        <StackLayout Margin="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="6*"/>
+                    <RowDefinition Height="4*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10*" />
+                </Grid.ColumnDefinitions>
+                <ImageButton x:Name="PartImage" HeightRequest="400" 
+                       Source="{Binding ImageUrl}"
+                       Grid.Row="0" 
+                       Grid.Column="0"
+                       Command="{Binding ChangeImageCommand}"
+                />
+                <Grid Grid.Row="1" Grid.Column="0" Margin="0,20,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="8*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                    </Grid.ColumnDefinitions>
+                    <ScrollView>
+                        <Grid Grid.Row="0" Grid.Column="0" RowSpacing="15">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="7*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Text="{Binding Name}"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               Grid.ColumnSpan="2"
+                               FontAttributes="Bold"
+                               FontSize="Title"/>
+                            <Label Text="Instalacja"
+                               FontAttributes="Bold"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               FontSize="Medium"/>
+                            <Label Text="{Binding SetName}"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               FontSize="Medium"/>
+                            <Label Text="Obszar"
+                               FontAttributes="Bold"
+                               Grid.Row="2"
+                               Grid.Column="0"
+                               FontSize="Medium"/>
+                            <Label Text="{Binding AreaName}"
+                               Grid.Row="2"
+                               Grid.Column="1"
+                               FontSize="Priorytet"/>
+                            <Label Text="Opis"
+                               FontAttributes="Bold"
+                               Grid.Row="3"
+                               Grid.Column="0"
+                               FontSize="Medium"/>
+                            <Label Text="{Binding Priority}"
+                               Grid.Row="3"
+                               Grid.Column="1"
+                               FontSize="Medium"/>
+
+                        </Grid>
+                    </ScrollView>
+
+                    <Grid Grid.Row="1"
+                          Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="8*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="btnSave"
+                            BackgroundColor="DeepSkyBlue"
+                            TextColor="White"
+                            IsEnabled="{Binding IsSaveable}"
+                            Text="Zapisz"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            CornerRadius="20"
+                            Clicked="btnSave_Clicked"/>
+                        <Button
+                            Margin="0,0,0,0"
+                            x:Name="btnAttachments"
+                            BackgroundColor="Black"
+                            ImageSource="attachment.png"
+                            IsVisible="True"
+                            IsEnabled="True"
+                            Command="{Binding ShowAttachmentsCommand}"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            CornerRadius="20"
+                            />
+                    </Grid>
+
+                </Grid>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

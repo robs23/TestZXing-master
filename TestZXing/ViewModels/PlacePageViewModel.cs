@@ -14,15 +14,15 @@ using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
 {
-    public class PartPageViewModel : BaseViewModel
+    public class PlacePageViewModel: BaseViewModel
     {
-        public Part _this { get; set; }
+        public Place _this { get; set; }
 
         public ProcessAttachmentsViewModel ProcessAttachmentsVm { get; set; }
 
-        public PartPageViewModel(Part part)
+        public PlacePageViewModel(Place place)
         {
-            _this = part;
+            _this = place;
             ShowAttachmentsCommand = new AsyncCommand(ShowAttachments);
             ChangeImageCommand = new AsyncCommand(ChangeImage);
         }
@@ -39,46 +39,46 @@ namespace TestZXing.ViewModels
                 }
             }
         }
-        public string Description
+        public string AreaName
         {
-            get { return _this.Description; }
+            get { return _this.AreaName; }
             set
             {
-                if (value != _this.Description)
+                if (value != _this.AreaName)
                 {
-                    _this.Description = value;
+                    _this.AreaName = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public string ProducerName
+        public string Priority
         {
-            get { return _this.ProducerName; }
+            get { return _this.Priority; }
             set
             {
-                if (value != _this.ProducerName)
+                if (value != _this.Priority)
                 {
-                    _this.ProducerName = value;
+                    _this.Priority = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public string Symbol
+        public string SetName
         {
-            get { return _this.Symbol; }
+            get { return _this.SetName; }
             set
             {
-                if (value != _this.Symbol)
+                if (value != _this.SetName)
                 {
-                    _this.Symbol = value;
+                    _this.SetName = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        
+
 
         private ImageSource _ImageUrl { get; set; } = "image_placeholder_128.png";
         public ImageSource ImageUrl
@@ -89,7 +89,7 @@ namespace TestZXing.ViewModels
             }
             set
             {
-                if(_ImageUrl != value)
+                if (_ImageUrl != value)
                 {
                     _ImageUrl = value;
                     OnPropertyChanged();
@@ -107,7 +107,7 @@ namespace TestZXing.ViewModels
             }
             set
             {
-                if(_IsSaveable != value)
+                if (_IsSaveable != value)
                 {
                     _IsSaveable = value;
                     OnPropertyChanged();
@@ -129,16 +129,17 @@ namespace TestZXing.ViewModels
                     {
                         string imgPath = ImageUrl.ToString().Split(':')[1].Trim();
                         _Result = await _this.Edit(imgPath);
-                    }catch(Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         _Result = ex.Message;
                     }
                 }
-                
+
             }
-            if(_Result == "OK")
+            if (_Result == "OK")
             {
-                _Result = await ProcessAttachmentsVm.Save(partId: _this.PartId);
+                _Result = await ProcessAttachmentsVm.Save(placeId: _this.PlaceId);
                 if (_Result == "OK")
                 {
                     await Application.Current.MainPage.DisplayAlert("Zapisano", "Zapis zakończony powodzeniem!", "OK");
@@ -150,10 +151,10 @@ namespace TestZXing.ViewModels
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Błąd zapisu", $"Zapis danych części zakończony błędem: {_Result}", "OK");
+                await Application.Current.MainPage.DisplayAlert("Błąd zapisu", $"Zapis danych zasobu zakończony błędem: {_Result}", "OK");
 
             }
-            
+
         }
 
         public async Task ShowAttachments()
@@ -170,7 +171,7 @@ namespace TestZXing.ViewModels
             {
                 ImageUrl = Static.Secrets.ApiAddress + Static.RuntimeSettings.FilesPath + _this.Image;
             }
-            
+
         }
 
         public async Task ChangeImage()
@@ -188,6 +189,7 @@ namespace TestZXing.ViewModels
             IsSaveable = true;
 
         }
+   
 
         public async Task<bool> IsDirty()
         {
@@ -232,9 +234,9 @@ namespace TestZXing.ViewModels
             {
                 ProcessAttachmentsVm = new ProcessAttachmentsViewModel();
 
-                if (_this.PartId > 0)
+                if (_this.PlaceId > 0)
                 {
-                    Task.Run(() => ProcessAttachmentsVm.Initialize(partId: _this.PartId));
+                    Task.Run(() => ProcessAttachmentsVm.Initialize(placeId: _this.PlaceId));
                 }
                 else
                 {

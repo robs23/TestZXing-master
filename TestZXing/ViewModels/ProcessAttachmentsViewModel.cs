@@ -113,7 +113,7 @@ namespace TestZXing.ViewModels
                 if(result.FullPath.Contains("com.companyname.TestZXing"))
                 {
                     //save
-                    fullPath = await SaveToGallery(result, isPhoto);
+                    fullPath = await Functions.SaveToGallery(result, isPhoto);
                 }
                 else
                 {
@@ -131,29 +131,6 @@ namespace TestZXing.ViewModels
             }
         }
 
-        public async Task<string> SaveToGallery(FileResult result, bool isPhoto)
-        {
-
-            string mPath = string.Empty;
-            if (isPhoto)
-            {
-                mPath = DependencyService.Get<IFileHandler>().GetImageGalleryPath();
-            }
-            else
-            {
-                mPath = DependencyService.Get<IFileHandler>().GetVideoGalleryPath();
-            }
-
-            string nPath = Path.Combine(mPath, result.FileName);
-            using(var stream = await result.OpenReadAsync())
-            {
-                using( var nStream = System.IO.File.OpenWrite(nPath))
-                {
-                    await stream.CopyToAsync(nStream);
-                    return nPath;
-                }
-            }
-        }
 
         public ICommand PickPhotoCommand { get; }
         public async Task PickPhoto()
