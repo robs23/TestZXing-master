@@ -121,6 +121,7 @@ namespace TestZXing.ViewModels
         public async Task Save()
         {
             string _Result = "OK";
+            IsWorking = true;
             if (!string.IsNullOrEmpty(ImageUrl.ToString()))
             {
                 if (!ImageUrl.ToString().Contains("Uri"))
@@ -139,6 +140,7 @@ namespace TestZXing.ViewModels
             if(_Result == "OK")
             {
                 _Result = await ProcessAttachmentsVm.Save(partId: _this.PartId);
+                IsWorking = false;
                 if (_Result == "OK")
                 {
                     await Application.Current.MainPage.DisplayAlert("Zapisano", "Zapis zakończony powodzeniem!", "OK");
@@ -150,6 +152,7 @@ namespace TestZXing.ViewModels
             }
             else
             {
+                IsWorking = false;
                 await Application.Current.MainPage.DisplayAlert("Błąd zapisu", $"Zapis danych części zakończony błędem: {_Result}", "OK");
 
             }
@@ -181,10 +184,7 @@ namespace TestZXing.ViewModels
             {
                 ImageUrl = imagePath;
             }
-            else
-            {
-                ImageUrl = string.Empty;
-            }
+
             IsSaveable = true;
 
         }

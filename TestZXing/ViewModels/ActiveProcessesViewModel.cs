@@ -194,6 +194,7 @@ namespace TestZXing.ViewModels
                             nPlace.SetName = p.SetName;
                             nPlace.AreaId = (int)p.AreaId;
                             nPlace.AreaName = p.AreaName;
+                            nPlace.Image = p.PlaceImage;
                             nPlace.Processes.Add(p);
                             Places.Add(nPlace);
                         }
@@ -230,6 +231,7 @@ namespace TestZXing.ViewModels
                             nPlace.SetName = p.SetName;
                             nPlace.AreaId = (int)p.AreaId;
                             nPlace.AreaName = p.AreaName;
+                            nPlace.Image = p.PlaceImage;
                             nPlace.Processes.Add(p);
                             Places.Add(nPlace);
                         }

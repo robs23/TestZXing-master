@@ -21,6 +21,8 @@ namespace TestZXing.Views
             vm = new PlacePageViewModel(place);
             BindingContext = vm;
         }
+
+
         protected async override void OnAppearing()
         {
             base.OnAppearing();

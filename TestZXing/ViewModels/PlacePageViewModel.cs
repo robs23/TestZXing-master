@@ -1,4 +1,5 @@
 ﻿using MvvmHelpers.Commands;
+using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,9 @@ namespace TestZXing.ViewModels
             ShowAttachmentsCommand = new AsyncCommand(ShowAttachments);
             ChangeImageCommand = new AsyncCommand(ChangeImage);
             ShowHistoryCommand = new AsyncCommand(ShowHistory);
+
         }
+
 
         public string Name
         {
@@ -116,6 +119,27 @@ namespace TestZXing.ViewModels
             }
         }
 
+        public bool IsWorking
+        {
+            get
+            {
+                return base.IsWorking;
+            }
+            set
+            {
+                base.IsWorking = value;
+                if (value == false)
+                {
+                    //PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                    if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }
+                }
+                else
+                {
+                    PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
+                }
+            }
+        }
+
         public ICommand ShowAttachmentsCommand { get; }
         public ICommand ChangeImageCommand { get; }
         public ICommand ShowHistoryCommand { get; }
@@ -123,6 +147,7 @@ namespace TestZXing.ViewModels
         public async Task Save()
         {
             string _Result = "OK";
+            IsWorking = true;
             if (!string.IsNullOrEmpty(ImageUrl.ToString()))
             {
                 if (!ImageUrl.ToString().Contains("Uri"))
@@ -142,6 +167,7 @@ namespace TestZXing.ViewModels
             if (_Result == "OK")
             {
                 _Result = await ProcessAttachmentsVm.Save(placeId: _this.PlaceId);
+                IsWorking = false;
                 if (_Result == "OK")
                 {
                     await Application.Current.MainPage.DisplayAlert("Zapisano", "Zapis zakończony powodzeniem!", "OK");
@@ -153,6 +179,7 @@ namespace TestZXing.ViewModels
             }
             else
             {
+                IsWorking = false;
                 await Application.Current.MainPage.DisplayAlert("Błąd zapisu", $"Zapis danych zasobu zakończony błędem: {_Result}", "OK");
 
             }
@@ -174,6 +201,18 @@ namespace TestZXing.ViewModels
             base.Initialize();
             IsSaveable = false;
             Task.Run(() => InitializeProcessAttachments());
+            if (string.IsNullOrEmpty(_this.PlaceToken))
+            {
+                //got to download it
+                PlacesKeeper placesKeeper = new PlacesKeeper();
+                Place p = await placesKeeper.GetPlace(_this.PlaceId);
+                _this = p;
+                OnPropertyChanged(nameof(Name));
+                OnPropertyChanged(nameof(Priority));
+                OnPropertyChanged(nameof(SetName));
+                OnPropertyChanged(nameof(AreaName));
+
+            }
             if (!string.IsNullOrWhiteSpace(_this.Image))
             {
                 ImageUrl = Static.Secrets.ApiAddress + Static.RuntimeSettings.FilesPath + _this.Image;
@@ -188,10 +227,6 @@ namespace TestZXing.ViewModels
             if (!string.IsNullOrEmpty(imagePath))
             {
                 ImageUrl = imagePath;
-            }
-            else
-            {
-                ImageUrl = string.Empty;
             }
             IsSaveable = true;
 

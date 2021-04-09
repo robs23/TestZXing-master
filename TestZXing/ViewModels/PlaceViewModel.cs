@@ -9,6 +9,7 @@ using System.Windows.Input;
 using MvvmHelpers;
 using MvvmHelpers.Commands;
 using TestZXing.Models;
+using TestZXing.Views;
 using Xamarin.Forms;
 
 namespace TestZXing.ViewModels
@@ -36,6 +37,10 @@ namespace TestZXing.ViewModels
             {
                 this.AddRange(Processes);
             }
+            if (!string.IsNullOrWhiteSpace(_place.Image))
+            {
+                ImageUrl = Static.Secrets.ApiAddress + Static.RuntimeSettings.ThumbnailsPath + _place.Image;
+            }
         }
 
         public string Name { get { return _place.Name; } }
@@ -45,8 +50,31 @@ namespace TestZXing.ViewModels
 
         public async Task ShowPlace()
         {
-            Application.Current.MainPage.DisplayAlert("OK", "OK", "OK");
+            if(_place != null)
+            {
+                await Application.Current.MainPage.Navigation.PushAsync(new PlacePage(_place));
+            }
+            
         }
+
+
+        private ImageSource _ImageUrl { get; set; } = "image_placeholder_128.png";
+        public ImageSource ImageUrl
+        {
+            get
+            {
+                return _ImageUrl;
+            }
+            set
+            {
+                if (_ImageUrl != value)
+                {
+                    _ImageUrl = value;
+                    OnPropertyChanged(new PropertyChangedEventArgs("ImageUrl"));
+                }
+            }
+        }
+
 
         private bool _expanded;
         public bool Expanded
