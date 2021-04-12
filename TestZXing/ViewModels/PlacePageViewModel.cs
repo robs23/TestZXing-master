@@ -84,7 +84,7 @@ namespace TestZXing.ViewModels
 
 
 
-        private ImageSource _ImageUrl { get; set; } = "image_placeholder_128.png";
+        private ImageSource _ImageUrl { get; set; } = RuntimeSettings.ImagePlaceholderName;
         public ImageSource ImageUrl
         {
             get
@@ -150,18 +150,22 @@ namespace TestZXing.ViewModels
             IsWorking = true;
             if (!string.IsNullOrEmpty(ImageUrl.ToString()))
             {
-                if (!ImageUrl.ToString().Contains("Uri"))
+                if(!ImageUrl.ToString().Contains(RuntimeSettings.ImagePlaceholderName))
                 {
-                    try
+                    if (!ImageUrl.ToString().Contains("Uri"))
                     {
-                        string imgPath = ImageUrl.ToString().Split(':')[1].Trim();
-                        _Result = await _this.Edit(imgPath);
-                    }
-                    catch (Exception ex)
-                    {
-                        _Result = ex.Message;
+                        try
+                        {
+                            string imgPath = ImageUrl.ToString().Split(':')[1].Trim();
+                            _Result = await _this.Edit(imgPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            _Result = ex.Message;
+                        }
                     }
                 }
+                
 
             }
             if (_Result == "OK")
@@ -227,8 +231,9 @@ namespace TestZXing.ViewModels
             if (!string.IsNullOrEmpty(imagePath))
             {
                 ImageUrl = imagePath;
+                IsSaveable = true;
             }
-            IsSaveable = true;
+            
 
         }
    

@@ -1,4 +1,5 @@
 ﻿using MvvmHelpers.Commands;
+using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,9 +79,28 @@ namespace TestZXing.ViewModels
             }
         }
 
-        
+        public bool IsWorking
+        {
+            get
+            {
+                return base.IsWorking;
+            }
+            set
+            {
+                base.IsWorking = value;
+                if (value == false)
+                {
+                    //PopupNavigation.Instance.PopAsync(true); // Hide loading screen
+                    if (PopupNavigation.Instance.PopupStack.Any()) { PopupNavigation.Instance.PopAllAsync(true); }
+                }
+                else
+                {
+                    PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
+                }
+            }
+        }
 
-        private ImageSource _ImageUrl { get; set; } = "image_placeholder_128.png";
+        private ImageSource _ImageUrl { get; set; } = RuntimeSettings.ImagePlaceholderName;
         public ImageSource ImageUrl
         {
             get
@@ -124,15 +144,19 @@ namespace TestZXing.ViewModels
             IsWorking = true;
             if (!string.IsNullOrEmpty(ImageUrl.ToString()))
             {
-                if (!ImageUrl.ToString().Contains("Uri"))
+                if (!ImageUrl.ToString().Contains(RuntimeSettings.ImagePlaceholderName))
                 {
-                    try
+                    if (!ImageUrl.ToString().Contains("Uri"))
                     {
-                        string imgPath = ImageUrl.ToString().Split(':')[1].Trim();
-                        _Result = await _this.Edit(imgPath);
-                    }catch(Exception ex)
-                    {
-                        _Result = ex.Message;
+                        try
+                        {
+                            string imgPath = ImageUrl.ToString().Split(':')[1].Trim();
+                            _Result = await _this.Edit(imgPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            _Result = ex.Message;
+                        }
                     }
                 }
                 
@@ -143,10 +167,12 @@ namespace TestZXing.ViewModels
                 IsWorking = false;
                 if (_Result == "OK")
                 {
+                    IsWorking = false;
                     await Application.Current.MainPage.DisplayAlert("Zapisano", "Zapis zakończony powodzeniem!", "OK");
                 }
                 else
                 {
+                    IsWorking = false;
                     await Application.Current.MainPage.DisplayAlert("Błąd zapisu", $"Zapis załączników zakończony błędem: {_Result}", "OK");
                 }
             }
@@ -172,6 +198,7 @@ namespace TestZXing.ViewModels
             if (!string.IsNullOrWhiteSpace(_this.Image))
             {
                 ImageUrl = Static.Secrets.ApiAddress + Static.RuntimeSettings.FilesPath + _this.Image;
+                IsSaveable = true;
             }
             
         }

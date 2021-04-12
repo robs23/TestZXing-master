@@ -19,9 +19,11 @@ namespace TestZXing.Static
         public static string ThumbnailsPath { get { return "Files/Thumbnails/"; } }
         public static string FilesPath { get { return "Files/"; } }
 
-        public static bool IsVpnConnection { get; set; } = true;
+        public static bool IsVpnConnection { get; set; } = false;
 
         public static string ZippedLogFile { get; set; }
         public static FileKeeper UploadKeeper { get; set; }
+
+        public static string ImagePlaceholderName { get { return "image_placeholder_128.png"; } }
     }
 }

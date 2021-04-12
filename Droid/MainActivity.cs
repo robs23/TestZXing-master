@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
 using TestZXing.Classes;
+using TestZXing.Droid.Services;
 
 namespace TestZXing.Droid
 {
@@ -34,7 +35,7 @@ namespace TestZXing.Droid
             AppCenter.Start($"{Static.Secrets.AppCenterSecret}", typeof(Analytics), typeof(Crashes), typeof(Distribute));
                 
             global::Xamarin.Forms.Forms.Init(this, bundle);
-            Android.Glide.Forms.Init(this);
+            Android.Glide.Forms.Init(this, new GlideWithPlaceholder(), false);
             string localDbFileName = "JDE_Scan_db.db3";
             string localDbFolderPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             string localDbPath = Path.Combine(localDbFolderPath, localDbFileName);
