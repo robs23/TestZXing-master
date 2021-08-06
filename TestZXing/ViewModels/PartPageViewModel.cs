@@ -131,6 +131,7 @@ namespace TestZXing.ViewModels
                 {
                     _IsSaveable = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsSaveable));
                 }
             }
         }

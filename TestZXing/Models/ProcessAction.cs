@@ -30,6 +30,9 @@ namespace TestZXing.Models
         public string Type { get; set; }
         public int? PlaceId { get; set; }
 
+        public int? AbandonReasonId { get; set; }
+        public string AbandonReasonName { get; set; }
+
         public async override Task<string> Add()
         {
             string res = "";

@@ -97,6 +97,7 @@ namespace TestZXing.ViewModels
                 {
                     _ImageUrl = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsSaveable));
                 }
             }
         }
