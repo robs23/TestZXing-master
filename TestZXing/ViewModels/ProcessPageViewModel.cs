@@ -60,6 +60,7 @@ namespace TestZXing.ViewModels
                 OnPropertyChanged();
             }
         }
+        public AbandonReasonKeeper AbandonReasons { get; set; } = new AbandonReasonKeeper();
 
         public bool IsSaved { get; set; }
         public bool _IsNew { get; set; }
@@ -341,6 +342,7 @@ namespace TestZXing.ViewModels
                 Task.Run(() => InitializeParts()); //get parts associated with this process
                 Task.Run(() => InitializeProcessAttachments()); //get files associated with this process
                 Task.Run(() => InitializeCurrentPlace()); //get current place data
+                Task.Run(() => AbandonReasons.Reload()); //get abandon reasons
                 //load places to combobox
                 if (_IsMesRelated)
                 {

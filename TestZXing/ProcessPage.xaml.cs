@@ -98,9 +98,21 @@ namespace TestZXing
             {
                 if (_Res == "ActionListViewModelSkippable")
                 {
-                    if (!await DisplayAlert("Niezaznaczone czynności", "Nie wszystkie wymagane czynności zostały zaznaczone. Czy na pewno chcesz zakończyć zgłoszenie?", "Zamknij", "Anuluj, chcę poprawić"))
+                    if (vm.AbandonReasons.Items.Any())
                     {
-                        _Continue = false;
+                        string res = "";
+
+                        if (res = await DisplayActionSheet("Wybierz powód niewykonania", "Anuluj", null, vm.AbandonReasons.Items.ToArray()))
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        if (!await DisplayAlert("Niezaznaczone czynności", "Nie wszystkie wymagane czynności zostały zaznaczone. Czy na pewno chcesz zakończyć zgłoszenie?", "Zamknij", "Anuluj, chcę poprawić"))
+                        {
+                            _Continue = false;
+                        }
                     }
                 }
                 if (_Continue)
