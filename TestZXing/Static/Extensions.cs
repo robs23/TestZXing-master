@@ -53,5 +53,15 @@ namespace TestZXing.Static
 
             return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source), deserializeSettings);
         }
+
+        public static bool ContainsNullSafe(this string str, string search)
+        {
+            bool res = false;
+            if (str != null)
+            {
+                return str.Contains(search);
+            }
+            return res;
+        }
     }
 }

@@ -27,6 +27,7 @@ namespace TestZXing.Models
         public bool? PartsApplicable { get; set; }
 
         public bool? ActionsApplicable { get; set; }
+        public bool? Leaveable { get; set; }
 
         public override string ToString()
         {

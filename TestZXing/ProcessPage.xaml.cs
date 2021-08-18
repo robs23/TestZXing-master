@@ -93,18 +93,48 @@ namespace TestZXing
             bool _ToClose = false;
             bool _toPause = false;
             bool _Continue = true;
+            int? _abandonReason = null;
+
             _Res = await vm.Validate(true);
             if (_Res == "OK" || _Res.Contains("Skippable"))
             {
+                //User accepted that not all required actions have been checked and wants to end anyway
+                if (await vm.AreThereOpenHandlingsLeft() == "No")
+                {
+                    if (vm.Type.Leaveable==true)
+                    {
+                        //prompt user if to close the process
+                    if (await DisplayAlert("Zamknąć zgłoszenie?", "Jesteś ostatnią osobą obsługującą to zgłoszenie. Możesz pozostawić to zgłoszenie otwarte lub zamknąć je. Co mam zrobić?", "Zamknij", "Pozostaw"))
+                        {
+                            _ToClose = true;
+                        }
+                        else
+                        {
+                            _toPause = true;
+                        }
+                    }
+                    else
+                    {
+                        _ToClose = true;
+                    }
+                }
                 if (_Res == "ActionListViewModelSkippable")
                 {
                     if (vm.AbandonReasons.Items.Any())
                     {
-                        string res = "";
+                        string res = await DisplayActionSheet("Wybierz powód niewykonania", "Anuluj", null, vm.AbandonReasons.Items.Select(i => i.Name).ToArray());
 
-                        if (res = await DisplayActionSheet("Wybierz powód niewykonania", "Anuluj", null, vm.AbandonReasons.Items.ToArray()))
+                        if (res == "Anuluj")
                         {
-
+                            //second chance to choose reason
+                            if (!await DisplayAlert("Niezaznaczone czynności", "Na liście są niezaznaczone czynności, dla których nie wybrano powodu ich niewykonania. Czy na pewno chcesz zakończyć zgłoszenie?", "Zamknij", "Pokaż listę powodów"))
+                            {
+                                res = await DisplayActionSheet("Wybierz powód niewykonania", "Anuluj", null, vm.AbandonReasons.Items.Select(i => i.Name).ToArray());
+                            }
+                        }
+                        if (res != "Anuluj")
+                        {
+                            _abandonReason = vm.AbandonReasons.Items.FirstOrDefault(i => i.Name == res).AbandonReasonId;
                         }
                     }
                     else
@@ -115,29 +145,10 @@ namespace TestZXing
                         }
                     }
                 }
+
                 if (_Continue)
                 {
-                    //User accepted that not all required actions have been checked and wants to end anyway
-                    if (await vm.AreThereOpenHandlingsLeft() == "No")
-                    {
-                        //if (vm.IsMesRelated)
-                        //{
-                        //prompt user if to close the process
-                        if (await DisplayAlert("Zamknąć zgłoszenie?", "Jesteś ostatnią osobą obsługującą to zgłoszenie. Możesz pozostawić to zgłoszenie otwarte lub zamknąć je. Co mam zrobić?", "Zamknij", "Pozostaw"))
-                        {
-                            _ToClose = true;
-                        }
-                        else
-                        {
-                            _toPause = true;
-                        }
-                        //}
-                        //else
-                        //{
-                        //    _ToClose = true;
-                        //}
-                    }
-                    string _Result = await vm.End(_ToClose, _toPause);
+                    string _Result = await vm.End(_ToClose, _toPause, _abandonReason);
                     if (_Result == "OK")
                     {
                         await DisplayAlert("Powodzenie", "Obsługa zgłoszenia została zakończona!", "OK");
@@ -145,7 +156,7 @@ namespace TestZXing
                     else
                     {
                         await DisplayAlert("Wystąpił błąd", _Result, "OK");
-                    }
+                    } 
                 }
             }
             else

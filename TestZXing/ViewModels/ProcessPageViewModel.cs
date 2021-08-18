@@ -1276,7 +1276,7 @@ namespace TestZXing.ViewModels
             return _res;
         }
 
-        public async Task<string> End(bool toClose = false, bool toPause = false)
+        public async Task<string> End(bool toClose = false, bool toPause = false, int? abandonReason = null)
         {
             string _Result = "OK";
  
@@ -1328,7 +1328,7 @@ namespace TestZXing.ViewModels
                     {
                         //Save actions if there are any
 
-                        _Result = await ActionListVm.Save(_this.HandlingId, _thisProcess.ProcessId);
+                        _Result = await ActionListVm.Save(_this.HandlingId, _thisProcess.ProcessId, abandonReason);
                     }
                     if (_Result == "OK" && PartsApplicable)
                     {

@@ -17,6 +17,10 @@ namespace TestZXing.Models
         public ObservableCollection<T> Items { get; set; }
         protected abstract string ObjectName { get; }
         protected abstract string PluralizedObjectName { get; }
+        public string FilterString { get; set; } = null;
+        public string QueryString { get; set; } = null;
+
+        protected virtual string ArchiveString { get; set; } = null;
 
         public Keeper()
         {
@@ -27,9 +31,36 @@ namespace TestZXing.Models
         {
             string url = Secrets.ApiAddress + $"Get{PluralizedObjectName}?token=" + Secrets.TenantToken;
             DataService ds = new DataService();
+            if (this.ArchiveString != null)
+            {
+                if (!this.QueryString.ContainsNullSafe("IsArchived") && !this.FilterString.ContainsNullSafe("IsArchived") && !query.ContainsNullSafe("IsArchived"))
+                {
+                    if (!string.IsNullOrEmpty(this.FilterString))
+                    {
+                        FilterString += " AND " + ArchiveString;
+                    }
+                    else
+                    {
+                        FilterString = ArchiveString;
+                    }
+                }
+            }
             if (page != null){ url += $"&page={page}"; }
             if (pageSize != null) { url += $"&pageSize={pageSize}"; }
-            if (query != null){ url += $"&query={query}"; }
+            if (query != null)
+            {
+                QueryString = query;
+                url += "&query=" + query;
+                if (this.FilterString != null)
+                {
+                    url += "AND " + this.FilterString;
+                }
+            }
+            else
+            {
+
+                url += "&query=" + this.FilterString;
+            }
 
             try
             {

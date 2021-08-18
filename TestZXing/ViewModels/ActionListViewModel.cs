@@ -286,17 +286,23 @@ namespace TestZXing.ViewModels
             return _res;
         }
 
-        public async Task<string> Save(int handlingId, int processId)
+        public async Task<string> Save(int handlingId, int processId, int? abandonReason=null)
         {
             List<Task<string>> listOfTask = new List<Task<string>>();
 
-            foreach (ProcessAction pa in CheckedItems.Where(p => (bool)p.IsMutable))
-            {
 
+            foreach (ProcessAction pa in Items.Where(i => (bool)i.IsMutable))
+            {
                 pa.HandlingId = handlingId;
                 pa.ProcessId = processId;
-                if ((bool)pa.IsMutable && (bool)pa.IsChecked)
+                pa.AbandonReasonId = abandonReason;
+
+                if ((bool)pa.IsMutable && ((bool)pa.IsChecked || (pa.IsChecked==false && abandonReason!=null)))
                 {
+                    //save changes to process action only when it's mutable and:
+                    //- it's checked
+                    //- it's not checked and the user provided a reason why he abandoned it
+
                     if (pa.ProcessActionId == 0)
                     {
                         listOfTask.Add(pa.Add());
