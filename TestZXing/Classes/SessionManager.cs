@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using TestZXing.Interfaces;
 using TestZXing.Static;
@@ -65,9 +66,13 @@ namespace TestZXing.Classes
                         {
                             if (!RuntimeSettings.UploadKeeper.IsWorking)
                             {
-                                DependencyService.Get<IToaster>().ShortAlert($"Synchronizuje pliki..");
                                 await RuntimeSettings.UploadKeeper.RestoreUploadQueue();
-                                await RuntimeSettings.UploadKeeper.Upload();
+                                if (RuntimeSettings.UploadKeeper.Items.Any())
+                                {
+                                    DependencyService.Get<IToaster>().ShortAlert($"Synchronizuje pliki..");
+                                    await RuntimeSettings.UploadKeeper.Upload();
+                                }
+                                
                             }
                         }
                         
