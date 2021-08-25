@@ -295,7 +295,10 @@ namespace TestZXing.ViewModels
             {
                 pa.HandlingId = handlingId;
                 pa.ProcessId = processId;
-                pa.AbandonReasonId = abandonReason;
+                if(pa.IsChecked == false)
+                {
+                    pa.AbandonReasonId = abandonReason;
+                }
 
                 if ((bool)pa.IsMutable && ((bool)pa.IsChecked || (pa.IsChecked==false && abandonReason!=null)))
                 {
