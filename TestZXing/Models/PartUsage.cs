@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TestZXing.Interfaces;
+using TestZXing.Static;
 using TestZXing.Views;
 using Xamarin.Forms;
 
@@ -35,11 +36,19 @@ namespace TestZXing.Models
 
         public async Task ShowPart()
         {
-            Part p = await Keeper.GetById(PartId);
-            if(p != null)
+            try
             {
-                Application.Current.MainPage.Navigation.PushAsync(new PartPage(p));
+                Part p = await Keeper.GetById(PartId);
+                if (p != null)
+                {
+                    Application.Current.MainPage.Navigation.PushAsync(new PartPage(p));
+                }
             }
+            catch (Exception)
+            {
+                await App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+            }
+            
         }
 
         public int PartUsageId { get; set; }

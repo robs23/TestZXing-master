@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
@@ -7,7 +6,6 @@ using Android.OS;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using Microsoft.AppCenter.Distribute;
 using Plugin.CurrentActivity;
 using System.Threading.Tasks;
 using System.IO;
@@ -32,7 +30,7 @@ namespace TestZXing.Droid
             Rg.Plugins.Popup.Popup.Init(this, bundle);
 
             //Distribute.ReleaseAvailable = OnReleaseAvailable;
-            AppCenter.Start($"{Static.Secrets.AppCenterSecret}", typeof(Analytics), typeof(Crashes), typeof(Distribute));
+            AppCenter.Start($"{Static.Secrets.AppCenterSecret}", typeof(Analytics), typeof(Crashes));
                 
             global::Xamarin.Forms.Forms.Init(this, bundle);
             Android.Glide.Forms.Init(this, new GlideWithPlaceholder(), false);

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
+using TestZXing.Static;
 using TestZXing.ViewModels;
 using TestZXing.Views;
 using Xamarin.Forms;
@@ -198,7 +199,14 @@ namespace TestZXing
             }
             else
             {
-                await Save();
+                try
+                {
+                    await Save();
+                }
+                catch (Exception)
+                {
+                    await DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+                }
             }
             
 
@@ -213,14 +221,21 @@ namespace TestZXing
                 {
                     Debug.WriteLine("Not initalized");
                     //initialize only when not yet initialized
-                    if (vm.IsNew && vm._thisProcess.Status != "Planowany" && vm._thisProcess.Status != "Zakończony")
+                    try
                     {
-                        await vm.Initialize();
-                    }
-                    else
-                    {
+                        if (vm.IsNew && vm._thisProcess.Status != "Planowany" && vm._thisProcess.Status != "Zakończony")
+                        {
+                            await vm.Initialize();
+                        }
+                        else
+                        {
 
-                        await vm.Initialize(vm._thisProcess.ActionTypeId);
+                            await vm.Initialize(vm._thisProcess.ActionTypeId);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
                     }
                     BindingContext = vm;
                 }

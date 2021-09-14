@@ -105,7 +105,15 @@ namespace TestZXing.Models
         public async Task GetPlannedProcesses()
         {
             AssignedProcessesViewModel vm = new AssignedProcessesViewModel();
-            vm.Initialize();
+            try
+            {
+                vm.Initialize();
+            }
+            catch (Exception)
+            {
+
+                await App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+            }
         }
 
         public async Task UpdateStatus()

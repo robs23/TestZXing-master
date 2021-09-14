@@ -1,7 +1,6 @@
 ﻿using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using Microsoft.AppCenter.Distribute;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -37,9 +36,8 @@ namespace TestZXing
         protected async override void OnStart()
         {
             // Handle when your app starts
-            AppCenter.Start($"android={Static.Secrets.AppCenterSecret}", typeof(Analytics), typeof(Crashes), typeof(Distribute));
+            AppCenter.Start($"android={Static.Secrets.AppCenterSecret}", typeof(Analytics), typeof(Crashes));
             Analytics.SetEnabledAsync(true);
-            Distribute.SetEnabledAsync(true);
             FileKeeper files = new FileKeeper(uploadKeeper: true);
             RuntimeSettings.UploadKeeper = files; 
             //if (await Crashes.HasCrashedInLastSessionAsync())

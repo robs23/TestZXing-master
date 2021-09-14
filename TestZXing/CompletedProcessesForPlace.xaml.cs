@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
+using TestZXing.Static;
 using TestZXing.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -26,7 +27,14 @@ namespace TestZXing
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            await vm.Initialize();
+            try
+            {
+                await vm.Initialize();
+            }
+            catch (Exception)
+            {
+                await App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+            }
         }
 
         private async void btnClose_Clicked(object sender, EventArgs e)

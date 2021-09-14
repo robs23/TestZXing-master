@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestZXing.Models;
+using TestZXing.Static;
 using TestZXing.ViewModels;
 using TestZXing.Views;
 using Xamarin.Forms;
@@ -55,21 +56,28 @@ namespace TestZXing
         {
             string _Res;
 
-            if (this.CurrentPage.Title.ToLower() == "moje")
+            try
             {
-                vm.ActiveVm = vm.UserProcesses;
-                _Res = await vm.UserProcesses.ExecuteLoadDataCommand();
+                if (this.CurrentPage.Title.ToLower() == "moje")
+                {
+                    vm.ActiveVm = vm.UserProcesses;
+                    _Res = await vm.UserProcesses.ExecuteLoadDataCommand();
 
+                }
+                else if (this.CurrentPage.Title.ToLower() == "wszystkie")
+                {
+                    vm.ActiveVm = vm.AllProcesses;
+                    _Res = await vm.AllProcesses.ExecuteLoadDataCommand();
+                }
+                else
+                {
+                    vm.ActiveVm = vm.MaintenanceOnly;
+                    _Res = await vm.MaintenanceOnly.ExecuteLoadDataCommand();
+                }
             }
-            else if (this.CurrentPage.Title.ToLower() == "wszystkie")
+            catch (Exception ex)
             {
-                vm.ActiveVm = vm.AllProcesses;
-                _Res = await vm.AllProcesses.ExecuteLoadDataCommand();
-            }
-            else
-            {
-                vm.ActiveVm = vm.MaintenanceOnly;
-                _Res = await vm.MaintenanceOnly.ExecuteLoadDataCommand();
+                DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
             }
         }
     }

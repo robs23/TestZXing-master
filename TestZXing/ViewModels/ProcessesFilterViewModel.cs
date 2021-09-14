@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TestZXing.Models;
+using TestZXing.Static;
 using Xamarin.Forms;
 using AsyncCommand = MvvmHelpers.Commands.AsyncCommand;
 
@@ -122,7 +123,14 @@ namespace TestZXing.ViewModels
             SelectedTimeVsPlanStatus = null;
             IsSet = false;
             if (PopupNavigation.Instance.PopupStack.Count > 0) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide handlings screen
-            CallerVm.OnFilterUpdate();
+            try
+            {
+                CallerVm.OnFilterUpdate();
+            }
+            catch (Exception)
+            {
+                await App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+            }
             
         }
 
@@ -130,7 +138,14 @@ namespace TestZXing.ViewModels
         {
             IsSet = !string.IsNullOrEmpty(FilterString);
             if (PopupNavigation.Instance.PopupStack.Count > 0) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide handlings screen
-            CallerVm.OnFilterUpdate();
+            try
+            {
+                await CallerVm.OnFilterUpdate();
+            }
+            catch (Exception)
+            {
+                await App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+            }
             
         }
 

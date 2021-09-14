@@ -57,11 +57,12 @@ namespace TestZXing.ViewModels
         public async Task OnFilterUpdate()
         {
             //called when FilterString of Filter has been updated
-            OnPropertyChanged(nameof(FilterIcon));
             AllProcesses.FilterString = Filter.FilterString;
             UserProcesses.FilterString = Filter.FilterString;
             MaintenanceOnly.FilterString = Filter.FilterString;
             await ActiveVm.ExecuteLoadDataCommand();
+            OnPropertyChanged(nameof(FilterIcon));
+
         }
 
         public async Task SetUpFilter()

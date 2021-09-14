@@ -249,7 +249,7 @@ namespace TestZXing.ViewModels
             }
             catch(Exception ex)
             {
-                throw;
+                await App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
             }
         }
 
@@ -318,6 +318,7 @@ namespace TestZXing.ViewModels
                 ActionTypes = new ObservableCollection<ActionType>();
                 ActionTypesKeeper keeper = new ActionTypesKeeper();
                 await keeper.Reload();
+                
                 foreach (ActionType at in keeper.Items)
                 {
                     ActionTypes.Add(at);
@@ -799,7 +800,14 @@ namespace TestZXing.ViewModels
                                     //there's open process of this type on the resource, let's use it!
                                     _thisProcess = nProcess;
                                         IsProcessOpen = true;
-                                        _this = await GetHandling();
+                                        try
+                                        {
+                                            _this = await GetHandling();
+                                        }
+                                        catch (Exception)
+                                        {
+                                            App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+                                        }
                                         OnPropertyChanged(nameof(NextState));
                                         OnPropertyChanged(nameof(NextStateColor));
                                     }
@@ -810,10 +818,17 @@ namespace TestZXing.ViewModels
                             {
                                 Task.Run(async () =>
                                 {
-                                    _this = await GetHandling();
-                                    Task.Run(() => InitializeActions());
-                                    OnPropertyChanged(nameof(NextState));
-                                    OnPropertyChanged(nameof(NextStateColor));
+                                    try
+                                    {
+                                        _this = await GetHandling();
+                                        Task.Run(() => InitializeActions());
+                                        OnPropertyChanged(nameof(NextState));
+                                        OnPropertyChanged(nameof(NextStateColor));
+                                    }
+                                    catch (Exception)
+                                    {
+                                        await App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+                                    }
                                 });
                             } 
                         }
@@ -1197,7 +1212,7 @@ namespace TestZXing.ViewModels
             }
             catch (Exception ex)
             {
-
+                _Result = ex.Message;
             }
             IsWorking = false;
             return _Result;

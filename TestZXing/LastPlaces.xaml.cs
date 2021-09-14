@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using TestZXing.Models;
+using TestZXing.Static;
 using TestZXing.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -31,7 +32,7 @@ namespace TestZXing
             }catch(Exception ex)
             {
                 vm.IsWorking = false;
-                DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                await DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
             }
             
         }

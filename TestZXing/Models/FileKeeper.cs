@@ -52,7 +52,14 @@ namespace TestZXing.Models
                     args = $"ProcessId={ProcessId}";
                 }
                 //Bring from the cloud Db
-                await this.Reload(args);
+                try
+                {
+                    await this.Reload(args);
+                }
+                catch (Exception)
+                {
+                    await App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+                }
             }
         }
 

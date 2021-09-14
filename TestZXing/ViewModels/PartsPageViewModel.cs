@@ -11,6 +11,7 @@ using System.Windows.Input;
 using TestZXing.Classes;
 using TestZXing.Interfaces;
 using TestZXing.Models;
+using TestZXing.Static;
 using TestZXing.Views;
 using Xamarin.Forms;
 
@@ -113,7 +114,7 @@ namespace TestZXing.ViewModels
             }
             catch(Exception ex)
             {
-
+                await App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
             }
         }
 
