@@ -99,13 +99,13 @@ namespace TestZXing
             _Res = await vm.Validate(true);
             if (_Res == "OK" || _Res.Contains("Skippable"))
             {
-                //User accepted that not all required actions have been checked and wants to end anyway
+                //Validation went ok, possibly some required ProcessActions are not checked
                 if (await vm.AreThereOpenHandlingsLeft() == "No")
                 {
                     if (vm.Type.Leaveable==true)
                     {
                         //prompt user if to close the process
-                    if (await DisplayAlert("Zamknąć zgłoszenie?", "Jesteś ostatnią osobą obsługującą to zgłoszenie. Możesz pozostawić to zgłoszenie otwarte lub zamknąć je. Co mam zrobić?", "Zamknij", "Pozostaw"))
+                        if (await DisplayAlert("Zamknąć zgłoszenie?", "Jesteś ostatnią osobą obsługującą to zgłoszenie. Możesz pozostawić to zgłoszenie otwarte lub zamknąć je. Co mam zrobić?", "Zamknij", "Pozostaw"))
                         {
                             _ToClose = true;
                         }
@@ -119,7 +119,7 @@ namespace TestZXing
                         _ToClose = true;
                     }
                 }
-                if (_Res == "ActionListViewModelSkippable")
+                if (_Res == "ActionListViewModelSkippable" && _ToClose == true)
                 {
                     if (vm.AbandonReasons.Items.Any())
                     {

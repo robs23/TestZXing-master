@@ -17,6 +17,7 @@ namespace TestZXing.ViewModels
 {
     public class ActionListViewModel : INotifyPropertyChanged
     {
+        private readonly NLog.ILogger Logger = NLog.LogManager.GetCurrentClassLogger();
         public ActionListViewModel(int ProcessId, int PlaceId)
         {
             this.ProcessId = ProcessId;
@@ -288,44 +289,62 @@ namespace TestZXing.ViewModels
 
         public async Task<string> Save(int handlingId, int processId, int? abandonReason=null)
         {
-            List<Task<string>> listOfTask = new List<Task<string>>();
-
-
-            foreach (ProcessAction pa in Items.Where(i => (bool)i.IsMutable))
+            try
             {
-                pa.HandlingId = handlingId;
-                pa.ProcessId = processId;
-                if(pa.IsChecked == false)
+                Logger.Info("ActionListViewModel is starting. HandlingId={handlingId}, ProcessId={processId}, AbandonReason={abandonReason}",handlingId, processId, abandonReason);
+
+                List<Task<string>> listOfTask = new List<Task<string>>();
+                foreach (ProcessAction pa in CheckedItems.Where(i => i.IsMutable == true))
                 {
-                    pa.AbandonReasonId = abandonReason;
+                    Logger.Info("ProcessAction: ID={ProcessActionId}, IsChecked={IsChecked}, IsMutable={IsMutable}", pa.ProcessActionId, pa.IsChecked, pa.IsMutable);
+                    pa.HandlingId = handlingId;
+                    pa.ProcessId = processId;
+                    if (pa.IsChecked == false || pa.IsChecked == null)
+                    {
+                        pa.AbandonReasonId = abandonReason;
+                    }
+
+                    if (pa.IsMutable == true && (pa.IsChecked == true || (pa.IsChecked == false && abandonReason != null)))
+                    {
+                        //save changes to process action only when it's mutable and:
+                        //- it's checked
+                        //- it's not checked and the user provided a reason why he abandoned it
+
+                        if (pa.ProcessActionId == 0)
+                        {
+                            listOfTask.Add(pa.Add());
+                        }
+                        else
+                        {
+                            listOfTask.Add(pa.Edit());
+                        }
+                    }
                 }
 
-                if ((bool)pa.IsMutable && ((bool)pa.IsChecked || (pa.IsChecked==false && abandonReason!=null)))
+                IEnumerable<string> results = await Task.WhenAll<string>(listOfTask);
+                Task.Run(() => TakeSnapshot());
+                if (results.Where(r => r != "OK").Any())
                 {
-                    //save changes to process action only when it's mutable and:
-                    //- it's checked
-                    //- it's not checked and the user provided a reason why he abandoned it
-
-                    if (pa.ProcessActionId == 0)
-                    {
-                        listOfTask.Add(pa.Add());
-                    }
-                    else
-                    {
-                        listOfTask.Add(pa.Edit());
-                    }
+                    return string.Join("; ", results.Where(r => r != "OK"));
+                }
+                else
+                {
+                    return "OK";
                 }
             }
-
-            IEnumerable<string> results = await Task.WhenAll<string>(listOfTask);
-            Task.Run(() => TakeSnapshot());
-            if (results.Where(r => r != "OK").Any())
+            catch(InvalidCastException ex)
             {
-                return string.Join("; ", results.Where(r => r != "OK"));
+                Logger.Error(ex);
+                string additionalInfo = $"handlingId={handlingId}, processId={processId}, abandonReason={abandonReason}";
+                Static.Functions.CreateError(ex, "InvalidCast", nameof(this.Save), this.GetType().Name, additionalInfo);
+                return ex.Message;
             }
-            else
+            catch (Exception ex)
             {
-                return "OK";
+                Logger.Error(ex);
+                string additionalInfo = $"handlingId={handlingId}, processId={processId}, abandonReason={abandonReason}";
+                Static.Functions.CreateError(ex, "No connection", nameof(this.Save), this.GetType().Name, additionalInfo);
+                return ex.Message;
             }
 
         }

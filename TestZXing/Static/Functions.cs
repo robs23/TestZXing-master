@@ -54,7 +54,7 @@ namespace TestZXing.Static
             }
         }
 
-        public static async Task CreateError(Exception ex, string text, string methodName, string className)
+        public static async Task CreateError(Exception ex, string text, string methodName, string className, string additionalInfo = null)
         {
 
             string UserName = string.Empty;
@@ -110,6 +110,12 @@ namespace TestZXing.Static
 
             WiFiInfo wi = await DependencyService.Get<IWifiHandler>().GetConnectedWifi();
 
+            string _additionalInfo = "Brak";
+            if(additionalInfo != null)
+            {
+                _additionalInfo = additionalInfo;
+            }
+
             var properties = new Dictionary<string, string>
                 {
                     {"Type", text},
@@ -120,7 +126,8 @@ namespace TestZXing.Static
                     {"Aktywne połączenia", ActiveConnections },
                     {"SSID (BSSID) aktywnej sieci", wi.SSID + $"({wi.BSSID})" },
                     {"Adres MAC", macAddress },
-                    {"Status pingu", pingStatus}
+                    {"Status pingu", pingStatus},
+                    {"Dodatkowe info", _additionalInfo}
                 };
 
             
@@ -400,6 +407,70 @@ namespace TestZXing.Static
 
             return imageUrl;
 
+        }
+
+        public static async Task OpenLatestLog()
+        {
+            var logName = await GetLogName();
+            if(logName != null)
+            {
+                await Launcher.OpenAsync(new OpenFileRequest
+                {
+                    File = new ReadOnlyFile(logName)
+                });
+            }
+        }
+
+        public static async Task<string> GetLogName()
+        {
+            string folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string logFolder = System.IO.Path.Combine(folder, "logs");
+            if (System.IO.Directory.Exists(logFolder))
+            {
+                var logs = System.IO.Directory.GetFiles(logFolder);
+
+                string res = await Application.Current.MainPage.DisplayActionSheet("Wybierz log to otwarcia", "Anuluj", null, logs);
+                if (res != "Anuluj")
+                {
+                    return res;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                DependencyService.Get<IToaster>().LongAlert($"Folder {logFolder} NIE istnieje..");
+                return null;
+            }
+        }
+
+        public static async Task SendLogByEmail(string path)
+        {
+            try
+            {
+                List<string> recipients = new List<string>();
+                recipients.Add("robert.roszak@gmail.com");
+
+                var message = new EmailMessage
+                {
+                    Subject = $"JDE Scan: Log użytkownika {RuntimeSettings.CurrentUser.FullName}",
+                    Body = path,
+                    To = recipients,
+                };
+
+                message.Attachments.Add(new EmailAttachment(path));
+                await Email.ComposeAsync(message);
+            }
+            catch (FeatureNotSupportedException fbsEx)
+            {
+                // Email is not supported on this device
+            }
+            catch (Exception ex)
+            {
+                // Some other exception occurred
+            }
         }
 
     }

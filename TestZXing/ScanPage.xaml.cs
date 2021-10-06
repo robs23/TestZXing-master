@@ -286,5 +286,15 @@ namespace TestZXing
             //await keeper.Upload();
             Application.Current.MainPage.Navigation.PushAsync(new UploadQueue());
         }
+
+        private async void btnSendLog_Clicked(object sender, EventArgs e)
+        {
+            var path = await Functions.GetLogName();
+            if(path != null)
+            {
+                await Functions.SendLogByEmail(path);
+            }
+            
+        }
     }
 }

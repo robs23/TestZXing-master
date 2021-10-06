@@ -42,6 +42,11 @@
                      Priority="2"
                      Order="Secondary"
                      Clicked="btnSyncFiles_Clicked"/>
+        <ToolbarItem Name="btnSendLog"
+                     Text="Pokaż bieżący log"
+                     Priority="2"
+                     Order="Secondary"
+                     Clicked="btnSendLog_Clicked"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="15,20">
