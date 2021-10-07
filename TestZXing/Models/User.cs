@@ -76,7 +76,11 @@ namespace TestZXing.Models
             {
                 //App.Current.Properties.Add("UserId", UserId);
                 //App.Current.Properties.Add("UserExpirationTime")
-                Task.Run(() => GetPlannedProcesses());
+
+                //-------- Planned processes reminder turned off----------------
+                //Task.Run(() => GetPlannedProcesses());
+                //-------- Planned processes reminder turned off----------------
+
                 HttpClient httpClient = new HttpClient(new NativeMessageHandler() { Timeout = new TimeSpan(0, 0, 20), EnableUntrustedCertificates = true, DisableCaching = true });
                 string url = Secrets.ApiAddress + "LogIn?token=" + Secrets.TenantToken + "&id=" + this.UserId;
                 var serializedProduct = JsonConvert.SerializeObject(this);

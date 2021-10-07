@@ -428,11 +428,32 @@ namespace TestZXing.Static
             if (System.IO.Directory.Exists(logFolder))
             {
                 var logs = System.IO.Directory.GetFiles(logFolder);
+                string[] logNames = new string[logs.Length];
+                for (int i = 0; i < logs.Length; i++)
+                {
+                    var logNameArray = logs[i].Split('/');
+                    if (logNameArray.Length > 0)
+                    {
+                        logNames[i] = logNameArray[logNameArray.Length - 1];
+                    }
+                    else
+                    {
+                        logNames[i] = logs[i];
+                    }
+                }
 
-                string res = await Application.Current.MainPage.DisplayActionSheet("Wybierz log to otwarcia", "Anuluj", null, logs);
+
+                string res = await Application.Current.MainPage.DisplayActionSheet("Wybierz log to otwarcia", "Anuluj", null, logNames);
                 if (res != "Anuluj")
                 {
-                    return res;
+                    for (int i = 0; i < logNames.Length; i++)
+                    {
+                        if(res == logNames[i])
+                        {
+                            return logs[i];
+                        }
+                    }
+                    return null;
                 }
                 else
                 {
