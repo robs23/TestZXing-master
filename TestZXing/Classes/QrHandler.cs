@@ -24,8 +24,6 @@ namespace TestZXing.Classes
 
         public async Task<string> Scan()
         {
-            
-
             try
             {
                 PermissionStatus status = await CrossPermissions.Current.CheckPermissionStatusAsync<CameraPermission>();

@@ -82,11 +82,11 @@ namespace TestZXing.ViewModels
                 }
                 if (!Filter.Areas.Any(i => i.AreaId == p.AreaId))
                 {
-                    Filter.Areas.Add(new Area() { AreaId = (int)p.AreaId, Name = p.AreaName });
+                    Filter.Areas.Add(new Area() { AreaId = p.AreaId ?? 0, Name = p.AreaName });
                 }
                 if (!Filter.Sets.Any(i => i.SetId == p.SetId))
                 {
-                    Filter.Sets.Add(new Set() { SetId = (int)p.SetId, Name = p.SetName });
+                    Filter.Sets.Add(new Set() { SetId = p.SetId ?? 0, Name = p.SetName });
                 }
                 if (!Filter.TimeVsPlanStatuses.Any(i => i == p.TimingVsPlan))
                 {

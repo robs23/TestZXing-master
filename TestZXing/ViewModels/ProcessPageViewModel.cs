@@ -353,15 +353,27 @@ namespace TestZXing.ViewModels
                     Places = new ObservableCollection<Place>();
                     PlacesKeeper pKeeper = new PlacesKeeper();
                     List<Place> _p = new List<Place>();
-                    _p = await pKeeper.GetPlacesBySetName(MesString.SetName);
-                    foreach(Place p in _p)
+                    if(MesString.SetName != null) 
                     {
-                        Places.Add(p);
-                        if(p.PlaceId == _thisProcess.PlaceId)
+                        _p = await pKeeper.GetPlacesBySetName(MesString.SetName);
+                    }
+                    else
+                    {
+                        await pKeeper.Reload();
+                        _p = pKeeper.Items;
+                    }
+                    
+                    if(_p != null)
+                    {
+                        foreach (Place p in _p)
                         {
-                            index = i;
+                            Places.Add(p);
+                            if (p.PlaceId == _thisProcess.PlaceId)
+                            {
+                                index = i;
+                            }
+                            i++;
                         }
-                        i++;
                     }
                 }
                 if (IsMesRelated && index >= 0)
@@ -1237,55 +1249,30 @@ namespace TestZXing.ViewModels
                         _res = "Pole Czynności naprawcze nie może być puste. Uzupełnij opis czynności naprawczych!";
                     }
                 }
-                else
-                {
-                    if (string.IsNullOrEmpty(this.Output))
-                    {
-                        _res = "Pole Rezultat nie może być puste! Opisz co udało się zrobić.";
-                    }
-                }
-                if (IsMesRelated)
-                {
-                    if (_thisProcess.PlaceId == 0)
-                    {
-                        _res = "Nie wybrano zasobu! Wybierz zasób z listy rozwijanej!";
-                    }
-                }
-                if (_thisProcess.ActionTypeId == 0)
-                {
-                    _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
-                }
+
             }
-            else
+
+            if (_thisProcess.PlaceId == 0)
             {
-                if (RequireInitialDiagnosis)
-                {
-                    if (string.IsNullOrEmpty(_thisProcess.InitialDiagnosis))
-                    {
-                        _res = "Pole Wstępne rozpoznanie nie może być puste. Uzupełnij wstępne rozpoznanie!";
-                    }
-                }
-                if (IsMesRelated)
-                {
-                    if (_thisProcess.PlaceId == 0)
-                    {
-                        _res = "Nie wybrano zasobu! Wybierz zasób z listy rozwijanej!";
-                    }
-                }
-                if (_thisProcess.ActionTypeId == 0)
-                {
-                    _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
-                }
+                _res = "Nie wybrano zasobu! Wybierz zasób z listy rozwijanej!";
             }
-            _res = await ValidateQr(EndValidation);
-            
-            if(_res=="OK" && EndValidation && ActionsApplicable)
+
+            if (_thisProcess.ActionTypeId == 0)
             {
-                _res = ActionListVm.Validate();
+                _res = "Nie wybrano typu zgłoszenia! Wybierz typ złgoszenia z listy rozwijanej!";
             }
-            if(_res=="OK" && PartsApplicable)
+            if(_res == "OK")
             {
-                _res = AssignedPartsVm.Validate();
+                _res = await ValidateQr(EndValidation);
+
+                if (_res == "OK" && EndValidation && ActionsApplicable)
+                {
+                    _res = ActionListVm.Validate();
+                }
+                if (_res == "OK" && PartsApplicable)
+                {
+                    _res = AssignedPartsVm.Validate();
+                }
             }
             
             return _res;

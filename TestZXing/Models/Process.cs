@@ -385,7 +385,7 @@ namespace TestZXing.Models
                 if (!string.IsNullOrEmpty(myUser.MesLogin) && !string.IsNullOrEmpty(manager.MesLogin))
                 {
                     string adjustment = "N";
-                    if (this.ActionTypeName == "Regulacja")
+                    if (this.ActionTypeName != "Awaria")
                     {
                         adjustment = "T";
                     }
