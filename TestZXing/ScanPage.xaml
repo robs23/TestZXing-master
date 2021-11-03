@@ -47,6 +47,12 @@
                      Priority="2"
                      Order="Secondary"
                      Clicked="btnSendLog_Clicked"/>
+        <ToolbarItem Name="btnRequestNetwork"
+                     Text="Wymuś połączenie"
+                     Priority="2"
+                     Order="Secondary"
+                     Clicked="btnRequestNetwork_Clicked"
+                     />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="15,20">

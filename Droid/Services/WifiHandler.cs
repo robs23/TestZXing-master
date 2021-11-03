@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Net.Wifi;
+using Android.Support.V7.App;
+using Android.Net;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -27,12 +29,26 @@ namespace TestZXing.Droid.Services
     public class WifiHandler : IWifiHandler
     {
         private Context context = null;
+        private NetworkCallback _callback;
+        private string _callbackStatus;
         string preferredWifi = Static.Secrets.PreferredWifi;
         string prefferedWifiPassword = Static.Secrets.PrefferedWifiPassword;
 
         public WifiHandler()
         {
             this.context = Android.App.Application.Context;
+            _callback = new NetworkCallback
+            {
+                NetworkAvailable = network =>
+                {
+                    // we are connected!
+                    _callbackStatus = $"Request network available";
+                },
+                NetworkUnavailable = () =>
+                {
+                    _callbackStatus = $"Request network unavailable";
+                }
+            };
         }
 
         public async Task<WiFiInfo> ConnectPreferredWifi()
@@ -286,6 +302,71 @@ namespace TestZXing.Droid.Services
             {
                 // NOTE release scan, which we are using now, or we throw an error?
                 receiverARE.Set();
+            }
+        }
+
+        private void SuggestNetwork()
+        {
+            var suggestion = new WifiNetworkSuggestion.Builder()
+                .SetSsid(Static.Secrets.PreferredWifi)
+                .SetWpa2Passphrase(Static.Secrets.PrefferedWifiPassword)
+                .Build();
+
+            var suggestions = new[] { suggestion };
+
+            var wifiManager = Application.Context.GetSystemService(Context.WifiService) as WifiManager;
+            var status = wifiManager.AddNetworkSuggestions(suggestions);
+
+            var statusText = status switch
+            {
+                NetworkStatus.SuggestionsSuccess => "Suggestion Success",
+                NetworkStatus.SuggestionsErrorAddDuplicate => "Suggestion Duplicate Added",
+                NetworkStatus.SuggestionsErrorAddExceedsMaxPerApp => "Suggestion Exceeds Max Per App"
+            };
+
+            string _status = statusText;
+        }
+
+        private bool _requested;
+        public async Task RequestNetwork()
+        {
+            var specifier = new WifiNetworkSpecifier.Builder()
+                .SetSsid(Static.Secrets.PreferredWifi)
+                .SetWpa2Passphrase(Static.Secrets.PrefferedWifiPassword)
+                .Build();
+
+            var request = new NetworkRequest.Builder()
+                .AddTransportType(TransportType.Wifi)
+                .RemoveCapability(NetCapability.Internet)
+                .SetNetworkSpecifier(specifier)
+                .Build();
+            
+            var connectivityManager = Application.Context.GetSystemService(Context.ConnectivityService) as ConnectivityManager;
+
+            if (_requested)
+            {
+                connectivityManager.UnregisterNetworkCallback(_callback);
+            }
+
+            connectivityManager.RequestNetwork(request, _callback);
+            _requested = true;
+        }
+
+        private class NetworkCallback : ConnectivityManager.NetworkCallback
+        {
+            public Action<Network> NetworkAvailable { get; set; }
+            public Action NetworkUnavailable { get; set; }
+
+            public override void OnAvailable(Network network)
+            {
+                base.OnAvailable(network);
+                NetworkAvailable?.Invoke(network);
+            }
+
+            public override void OnUnavailable()
+            {
+                base.OnUnavailable();
+                NetworkUnavailable?.Invoke();
             }
         }
     }

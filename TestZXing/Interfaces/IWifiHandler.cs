@@ -17,6 +17,8 @@ namespace TestZXing.Interfaces
 
         Task<WiFiInfo> ConnectPreferredWifi();
 
+        Task RequestNetwork();
+
         bool IsWifiConnected();
 
         Task SetWifiOn();
