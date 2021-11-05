@@ -18,10 +18,11 @@ namespace TestZXing.Interfaces
         Task<WiFiInfo> ConnectPreferredWifi();
 
         Task RequestNetwork();
+        Task SuggestNetwork();
 
         bool IsWifiConnected();
 
-        Task SetWifiOn();
+        Task<bool> SetWifiOn();
 
         Task<bool> PingHost(string host = null, int timeout=3);
 

@@ -22,6 +22,7 @@ using TestZXing.Droid.Services;
 using TestZXing.Interfaces;
 using TestZXing.Models;
 using TestZXing.ViewModels;
+using Plugin.CurrentActivity;
 
 [assembly: Xamarin.Forms.Dependency(typeof(WifiHandler))]
 namespace TestZXing.Droid.Services
@@ -33,6 +34,7 @@ namespace TestZXing.Droid.Services
         private string _callbackStatus;
         string preferredWifi = Static.Secrets.PreferredWifi;
         string prefferedWifiPassword = Static.Secrets.PrefferedWifiPassword;
+        public bool IsWifiEnablingFinished { get; set; }
 
         public WifiHandler()
         {
@@ -59,11 +61,8 @@ namespace TestZXing.Droid.Services
             var formattedSsid = $"\"{preferredWifi}\"";
             var formattedPassword = $"\"{prefferedWifiPassword}\"";
 
-            //wifiMgr.Disconnect();
-            if (!wifiMgr.IsWifiEnabled)
-            {
-                wifiMgr.SetWifiEnabled(true);
-            }
+            bool wifiEnabled = await SetWifiOn();
+
             w = await GetConnectedWifi(true);
             if (w == null || w.SSID != formattedSsid)
             {
@@ -245,9 +244,22 @@ namespace TestZXing.Droid.Services
             return Task.FromResult(pingable);
         }
 
-        public Task SetWifiOn()
+        public async Task<bool> SetWifiOn()
         {
-            throw new NotImplementedException();
+            var wifiMgr = (WifiManager)context.GetSystemService(Context.WifiService);
+            if (!wifiMgr.IsWifiEnabled)
+            {
+                Intent intent = new Intent(Android.Provider.Settings.Panel.ActionWifi);
+                //intent.SetFlags(ActivityFlags.ClearWhenTaskReset | ActivityFlags.NewTask);
+                CrossCurrentActivity.Current.Activity.StartActivityForResult(intent, 100);
+                //Android.App.Application.Context.StartActivity(intent);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
         }
 
         class WifiReceiver : BroadcastReceiver
@@ -305,7 +317,7 @@ namespace TestZXing.Droid.Services
             }
         }
 
-        private void SuggestNetwork()
+        public async Task SuggestNetwork()
         {
             var suggestion = new WifiNetworkSuggestion.Builder()
                 .SetSsid(Static.Secrets.PreferredWifi)
@@ -330,26 +342,30 @@ namespace TestZXing.Droid.Services
         private bool _requested;
         public async Task RequestNetwork()
         {
-            var specifier = new WifiNetworkSpecifier.Builder()
+            if(await SetWifiOn())
+            {
+                var specifier = new WifiNetworkSpecifier.Builder()
                 .SetSsid(Static.Secrets.PreferredWifi)
                 .SetWpa2Passphrase(Static.Secrets.PrefferedWifiPassword)
                 .Build();
 
-            var request = new NetworkRequest.Builder()
-                .AddTransportType(TransportType.Wifi)
-                .RemoveCapability(NetCapability.Internet)
-                .SetNetworkSpecifier(specifier)
-                .Build();
-            
-            var connectivityManager = Application.Context.GetSystemService(Context.ConnectivityService) as ConnectivityManager;
+                var request = new NetworkRequest.Builder()
+                    .AddTransportType(TransportType.Wifi)
+                    .RemoveCapability(NetCapability.Internet)
+                    .SetNetworkSpecifier(specifier)
+                    .Build();
 
-            if (_requested)
-            {
-                connectivityManager.UnregisterNetworkCallback(_callback);
+                var connectivityManager = Application.Context.GetSystemService(Context.ConnectivityService) as ConnectivityManager;
+
+                if (_requested)
+                {
+                    connectivityManager.UnregisterNetworkCallback(_callback);
+                }
+
+                connectivityManager.RequestNetwork(request, _callback);
+                _requested = true;
             }
-
-            connectivityManager.RequestNetwork(request, _callback);
-            _requested = true;
+            
         }
 
         private class NetworkCallback : ConnectivityManager.NetworkCallback
