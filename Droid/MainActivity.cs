@@ -81,7 +81,7 @@ namespace TestZXing.Droid
         {
             if(requestCode == (int)Static.Enums.IntentRequestCodes.TURN_ON_WIFI_AND_REQUEST_NETWORK)
             {
-                await new WifiHandler().RequestNetwork();
+                Static.RuntimeSettings.IsWifiEnablingFinished = true;   
             }
         }
     }

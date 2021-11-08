@@ -195,7 +195,7 @@ namespace TestZXing.Static
                         var formattedSsid = $"\"{Static.Secrets.PreferredWifi}\"";
                         if (w.SSID == formattedSsid)
                         {
-                            tryCount = 1;
+                            //tryCount = 1;
                         }
                     }
                     

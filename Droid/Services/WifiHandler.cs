@@ -32,9 +32,10 @@ namespace TestZXing.Droid.Services
         private Context context = null;
         private NetworkCallback _callback;
         private string _callbackStatus;
+        private ConnectivityManager connectivityManager;
         string preferredWifi = Static.Secrets.PreferredWifi;
         string prefferedWifiPassword = Static.Secrets.PrefferedWifiPassword;
-        public bool IsWifiEnablingFinished { get; set; }
+
 
         public WifiHandler()
         {
@@ -44,11 +45,13 @@ namespace TestZXing.Droid.Services
                 NetworkAvailable = network =>
                 {
                     // we are connected!
-                    _callbackStatus = $"Request network available";
+                    _callbackStatus = $"Request network connected";
+                    Static.RuntimeSettings.IsWifiRequestingFinished = true;
                 },
                 NetworkUnavailable = () =>
                 {
                     _callbackStatus = $"Request network unavailable";
+                    Static.RuntimeSettings.IsWifiRequestingFinished = true;
                 }
             };
         }
@@ -63,33 +66,16 @@ namespace TestZXing.Droid.Services
 
             bool wifiEnabled = await SetWifiOn();
 
-            w = await GetConnectedWifi(true);
-            if (w == null || w.SSID != formattedSsid)
+            if (wifiEnabled)
             {
-                //no wifi is connected or other wifi is connected
-
-                var wifiConfig = new WifiConfiguration
+                w = await GetConnectedWifi(true);
+                if (w == null || w.SSID != formattedSsid)
                 {
-                    Ssid = formattedSsid,
-                    PreSharedKey = formattedPassword
-                };
-                var addNetwork = wifiMgr.AddNetwork(wifiConfig);
-                var network = wifiMgr.ConfiguredNetworks.FirstOrDefault(n => n.Ssid == formattedSsid);
-
-                if (network == null)
-                {
-                    w = null;
-                }
-                else
-                {
-                    if(w.SSID != formattedSsid && w.SSID != "<unknown ssid>")
-                    {
-                        wifiMgr.Disconnect();
-                    }
-                    var enableNetwork = wifiMgr.EnableNetwork(network.NetworkId, true);
-                    wifiMgr.Reconnect();
-                }
-                throw new NoPreferredConnectionException();
+                    //no wifi is connected or other wifi is connected
+                    await RequestNetwork();
+                    w = await GetConnectedWifi(true);
+                    throw new NoPreferredConnectionException();
+                } 
             }
 
             return w;
@@ -250,16 +236,20 @@ namespace TestZXing.Droid.Services
             if (!wifiMgr.IsWifiEnabled)
             {
                 Intent intent = new Intent(Android.Provider.Settings.Panel.ActionWifi);
-                //intent.SetFlags(ActivityFlags.ClearWhenTaskReset | ActivityFlags.NewTask);
                 CrossCurrentActivity.Current.Activity.StartActivityForResult(intent, 100);
-                //Android.App.Application.Context.StartActivity(intent);
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+                //await result
+                while (!Static.RuntimeSettings.IsWifiEnablingFinished)
+                {
 
+                }
+                Static.RuntimeSettings.IsWifiRequestingFinished = false; // <== reset value
+                if (!wifiMgr.IsWifiEnabled)
+                {
+                    //user aborted wifi enabling
+                    return false;
+                }
+            }
+            return true;
         }
 
         class WifiReceiver : BroadcastReceiver
@@ -342,29 +332,31 @@ namespace TestZXing.Droid.Services
         private bool _requested;
         public async Task RequestNetwork()
         {
-            if(await SetWifiOn())
-            {
-                var specifier = new WifiNetworkSpecifier.Builder()
-                .SetSsid(Static.Secrets.PreferredWifi)
-                .SetWpa2Passphrase(Static.Secrets.PrefferedWifiPassword)
+            var specifier = new WifiNetworkSpecifier.Builder()
+            .SetSsid(Static.Secrets.PreferredWifi)
+            .SetWpa2Passphrase(Static.Secrets.PrefferedWifiPassword)
+            .Build();
+
+            var request = new NetworkRequest.Builder()
+                .AddTransportType(TransportType.Wifi)
+                .RemoveCapability(NetCapability.Internet)
+                .SetNetworkSpecifier(specifier)
                 .Build();
 
-                var request = new NetworkRequest.Builder()
-                    .AddTransportType(TransportType.Wifi)
-                    .RemoveCapability(NetCapability.Internet)
-                    .SetNetworkSpecifier(specifier)
-                    .Build();
+            var connectivityManager = Application.Context.GetSystemService(Context.ConnectivityService) as ConnectivityManager;
 
-                var connectivityManager = Application.Context.GetSystemService(Context.ConnectivityService) as ConnectivityManager;
-
-                if (_requested)
-                {
-                    connectivityManager.UnregisterNetworkCallback(_callback);
-                }
-
-                connectivityManager.RequestNetwork(request, _callback);
-                _requested = true;
+            if (_requested)
+            {
+                connectivityManager.UnregisterNetworkCallback(_callback);
             }
+
+            connectivityManager.RequestNetwork(request, _callback);
+            _requested = true;
+            while (!Static.RuntimeSettings.IsWifiRequestingFinished)
+            {
+                //wait for any action from the user
+            }
+            Static.RuntimeSettings.IsWifiRequestingFinished = false; // <== reset value
             
         }
 
@@ -377,6 +369,7 @@ namespace TestZXing.Droid.Services
             {
                 base.OnAvailable(network);
                 NetworkAvailable?.Invoke(network);
+
             }
 
             public override void OnUnavailable()
