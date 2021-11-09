@@ -15,6 +15,7 @@ namespace TestZXing
     public partial class HandlingsPage : Rg.Plugins.Popup.Pages.PopupPage
     {
         HandlingsPageViewModel vm;
+        bool IsShowing = false;
 
         public HandlingsPage(int processId)
         {
@@ -26,13 +27,18 @@ namespace TestZXing
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            try
+            if (!IsShowing)
             {
-                await vm.Initialize();
-            }
-            catch (Exception)
-            {
-                DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+                IsShowing = true;
+                try
+                {
+                    await vm.Initialize();
+                }
+                catch (Exception)
+                {
+                    DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+                }
+                IsShowing = false;
             }
         }
 

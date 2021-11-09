@@ -20,6 +20,7 @@ namespace TestZXing
         ProcessInPlaceViewModel vm;
         List<Process> Pros;
         bool IsQrConfirmed;
+        bool IsShowing = false;
 
         public ScanningResults (Place nPlace, bool isQrConfirmed=false)
 		{
@@ -60,15 +61,20 @@ namespace TestZXing
 
         protected override void OnAppearing()
         {
-            vm.Initialize();
-            vm.RefreshStatus();
-            
-            if (Place != null)
+            if (!IsShowing)
             {
-                if (Place.PlaceId != 0)
+                IsShowing = true;
+                vm.Initialize();
+                vm.RefreshStatus();
+
+                if (Place != null)
                 {
-                    UpdateList();
+                    if (Place.PlaceId != 0)
+                    {
+                        UpdateList();
+                    }
                 }
+                IsShowing = false;
             }
         }
 

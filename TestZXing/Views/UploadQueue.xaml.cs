@@ -14,6 +14,8 @@ namespace TestZXing.Views
     public partial class UploadQueue : ContentPage
     {
         UploadQueueViewModel vm;
+        bool IsShowing = false;
+
         public UploadQueue()
         {
             InitializeComponent();
@@ -24,9 +26,14 @@ namespace TestZXing.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            if (!vm.IsInitialized)
+            if (!IsShowing)
             {
-                vm.Initialize();
+                IsShowing = true;
+                if (!vm.IsInitialized)
+                {
+                    vm.Initialize();
+                }
+                IsShowing = false;
             }
         }
 

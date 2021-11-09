@@ -17,6 +17,8 @@ namespace TestZXing
     public partial class LastPlaces : ContentPage
     {
         LastPlacesViewModel vm;
+        bool IsShowing = false;
+
         public LastPlaces()
         {
             InitializeComponent();
@@ -25,16 +27,21 @@ namespace TestZXing
 
         protected async override void OnAppearing()
         {
-            try
+            if (!IsShowing)
             {
-                await vm.Initialize();
-                BindingContext = vm;
-            }catch(Exception ex)
-            {
-                vm.IsWorking = false;
-                await DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+                IsShowing = true;
+                try
+                {
+                    await vm.Initialize();
+                    BindingContext = vm;
+                }
+                catch (Exception ex)
+                {
+                    vm.IsWorking = false;
+                    await DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+                }
+                IsShowing = false;
             }
-            
         }
 
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)

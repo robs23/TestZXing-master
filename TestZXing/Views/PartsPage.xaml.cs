@@ -17,6 +17,7 @@ namespace TestZXing
     {
         //SQLiteConnection db = new SQLiteConnection(Static.RuntimeSettings.LocalDbPath);
         PartsPageViewModel vm;
+        bool IsShowing = false;
 
         public PartsPage()
         {
@@ -35,10 +36,15 @@ namespace TestZXing
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            if (!vm.IsInitialized)
+            if (!IsShowing)
             {
-                vm.Initialize();
-                txtSearch.Focus();
+                IsShowing = true;
+                if (!vm.IsInitialized)
+                {
+                    vm.Initialize();
+                    txtSearch.Focus();
+                }
+                IsShowing = false;
             }
             
             

@@ -25,6 +25,7 @@ namespace TestZXing
         UsersKeeper keeper;
         LoginViewModel vm;
         ZXingScannerPage scanPage;
+        bool IsShowing = false;
 
         public LoginPage()
         {
@@ -36,57 +37,63 @@ namespace TestZXing
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            try
+            if (!IsShowing)
             {
-                await PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
-                User SavedUser = null; //keeper.GetUserFromCredentials();
-                if (SavedUser == null)
+                try
                 {
-                    //there are no saved user credentials
-                    //he must have logged out or chose not to be remembered
-                    string _Result = await keeper.Reload();
-                    if (_Result == "OK")
+                    IsShowing = true;
+                    await PopupNavigation.Instance.PushAsync(new LoadingScreen(), true); // Show loading screen
+                    User SavedUser = null; //keeper.GetUserFromCredentials();
+                    if (SavedUser == null)
                     {
-                        if (keeper.Items.Any())
+                        //there are no saved user credentials
+                        //he must have logged out or chose not to be remembered
+                        string _Result = await keeper.Reload();
+                        if (_Result == "OK")
                         {
-                            vm = new LoginViewModel(keeper.Items);
-                            BindingContext = vm;
+                            if (keeper.Items.Any())
+                            {
+                                vm = new LoginViewModel(keeper.Items);
+                                BindingContext = vm;
+                            }
+                            else
+                            {
+                                await DisplayAlert("Brak użytkowników", "Brak użytkowników na liście!", "OK");
+                            }
                         }
                         else
                         {
-                            await DisplayAlert("Brak użytkowników", "Brak użytkowników na liście!", "OK");
+                            if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
+                            await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                            var closer = DependencyService.Get<ICloseApplication>();
+                            closer?.closeApplication();
                         }
                     }
                     else
                     {
-                        if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }  // Hide loading screen
-                        await DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
-                        var closer = DependencyService.Get<ICloseApplication>();
-                        closer?.closeApplication();
+                        //Log SavedUser in
+                        RuntimeSettings.UserId = SavedUser.UserId;
+                        RuntimeSettings.CurrentUser = SavedUser;
+                        RuntimeSettings.TenantId = SavedUser.TenantId;
+                        SavedUser.Login();
+                        //CreateBackup();
+                        await Application.Current.MainPage.Navigation.PushAsync(new ScanPage());
                     }
+
+
                 }
-                else
+                catch (Exception ex)
                 {
-                    //Log SavedUser in
-                    RuntimeSettings.UserId = SavedUser.UserId;
-                    RuntimeSettings.CurrentUser = SavedUser;
-                    RuntimeSettings.TenantId = SavedUser.TenantId;
-                    SavedUser.Login();
-                    //CreateBackup();
-                    await Application.Current.MainPage.Navigation.PushAsync(new ScanPage());
+                    string error = ex.Message;
+                    await DisplayAlert("Błąd", error, "OK");
                 }
-                
+                finally
+                {
 
+                }
+                IsShowing = false;
             }
-            catch (Exception ex)
-            {
-                string error = ex.Message;
-                await DisplayAlert("Błąd", error, "OK");
-            }
-            finally
-            {
-
-            }
+            
             if (PopupNavigation.Instance.PopupStack.Any()) { await PopupNavigation.Instance.PopAllAsync(true); }
         }
 

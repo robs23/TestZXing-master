@@ -18,6 +18,8 @@ namespace TestZXing
     public partial class ProcessPage : ContentPage
     {
         ProcessPageViewModel vm;
+        bool IsShowing = false;
+
         public ProcessPage(int PlaceId, bool IsQrConfirmed=false)
         {
             //new one
@@ -215,36 +217,41 @@ namespace TestZXing
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            try
+            if (!IsShowing)
             {
-                if (!vm.IsInitialized)
+                try
                 {
-                    Debug.WriteLine("Not initalized");
-                    //initialize only when not yet initialized
-                    try
+                    IsShowing = true;
+                    if (!vm.IsInitialized)
                     {
-                        if (vm.IsNew && vm._thisProcess.Status != "Planowany" && vm._thisProcess.Status != "Zakończony")
+                        Debug.WriteLine("Not initalized");
+                        //initialize only when not yet initialized
+                        try
                         {
-                            await vm.Initialize();
-                        }
-                        else
-                        {
+                            if (vm.IsNew && vm._thisProcess.Status != "Planowany" && vm._thisProcess.Status != "Zakończony")
+                            {
+                                await vm.Initialize();
+                            }
+                            else
+                            {
 
-                            await vm.Initialize(vm._thisProcess.ActionTypeId);
+                                await vm.Initialize(vm._thisProcess.ActionTypeId);
+                            }
                         }
+                        catch (Exception)
+                        {
+                            DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+                        }
+                        BindingContext = vm;
                     }
-                    catch (Exception)
-                    {
-                        DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
-                    }
-                    BindingContext = vm;
+
                 }
-                
-            }
-            catch (Exception ex)
-            {
-                btnChangeState.IsEnabled = false;
-                DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                catch (Exception ex)
+                {
+                    btnChangeState.IsEnabled = false;
+                    DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                }
+                IsShowing = false;
             }
         }
 

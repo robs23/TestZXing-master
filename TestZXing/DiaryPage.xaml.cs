@@ -17,6 +17,7 @@ namespace TestZXing
     public partial class DiaryPage : ContentPage
     {
         DiaryViewModel vm;
+        bool IsShowing = false;
 
         public DiaryPage()
         {
@@ -49,15 +50,20 @@ namespace TestZXing
 
         protected async override void OnAppearing()
         {
-            try
+            if (!IsShowing)
             {
-                await vm.Initialize();
-                BindingContext = vm;
-            }
-            catch (Exception ex)
-            {
-                vm.IsWorking = false;
-                DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                IsShowing = true;
+                try
+                {
+                    await vm.Initialize();
+                    BindingContext = vm;
+                }
+                catch (Exception ex)
+                {
+                    vm.IsWorking = false;
+                    DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                }
+                IsShowing = false;
             }
 
         }

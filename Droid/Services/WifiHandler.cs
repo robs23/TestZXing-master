@@ -32,7 +32,7 @@ namespace TestZXing.Droid.Services
         private Context context = null;
         private NetworkCallback _callback;
         private string _callbackStatus;
-        private ConnectivityManager connectivityManager;
+        private ConnectivityManager _connectivityManager;
         string preferredWifi = Static.Secrets.PreferredWifi;
         string prefferedWifiPassword = Static.Secrets.PrefferedWifiPassword;
 
@@ -40,12 +40,14 @@ namespace TestZXing.Droid.Services
         public WifiHandler()
         {
             this.context = Android.App.Application.Context;
+            _connectivityManager = Application.Context.GetSystemService(Context.ConnectivityService) as ConnectivityManager;
             _callback = new NetworkCallback
             {
                 NetworkAvailable = network =>
                 {
                     // we are connected!
                     _callbackStatus = $"Request network connected";
+                    //_connectivityManager.BindProcessToNetwork(network);
                     Static.RuntimeSettings.IsWifiRequestingFinished = true;
                 },
                 NetworkUnavailable = () =>
@@ -343,14 +345,13 @@ namespace TestZXing.Droid.Services
                 .SetNetworkSpecifier(specifier)
                 .Build();
 
-            var connectivityManager = Application.Context.GetSystemService(Context.ConnectivityService) as ConnectivityManager;
 
             if (_requested)
             {
-                connectivityManager.UnregisterNetworkCallback(_callback);
+                _connectivityManager.UnregisterNetworkCallback(_callback);
             }
 
-            connectivityManager.RequestNetwork(request, _callback);
+            _connectivityManager.RequestNetwork(request, _callback);
             _requested = true;
             while (!Static.RuntimeSettings.IsWifiRequestingFinished)
             {

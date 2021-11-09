@@ -16,6 +16,7 @@ namespace TestZXing
     public partial class CompletedProcessesForPlace
     {
         CompletedProcessesInPlaceViewModel vm;
+        bool IsShowing = false;
 
         public CompletedProcessesForPlace(Place place)
         {
@@ -27,13 +28,18 @@ namespace TestZXing
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            try
+            if (!IsShowing)
             {
-                await vm.Initialize();
-            }
-            catch (Exception)
-            {
-                await App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+                IsShowing = true;
+                try
+                {
+                    await vm.Initialize();
+                }
+                catch (Exception)
+                {
+                    await App.Current.MainPage.DisplayAlert(RuntimeSettings.ConnectionErrorTitle, RuntimeSettings.ConnectionErrorText, "OK");
+                }
+                IsShowing = false;
             }
         }
 

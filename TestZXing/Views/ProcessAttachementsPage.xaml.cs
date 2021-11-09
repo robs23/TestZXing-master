@@ -14,6 +14,8 @@ namespace TestZXing.Views
     public partial class ProcessAttachementsPage : ContentPage
     {
         ProcessAttachmentsViewModel vm = new ProcessAttachmentsViewModel();
+        bool IsShowing = false;
+
         public ProcessAttachementsPage(ProcessAttachmentsViewModel _vm)
         {
             InitializeComponent();
@@ -55,11 +57,16 @@ namespace TestZXing.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            if (!vm.IsInitialized)
+            if (!IsShowing)
             {
-                vm.Initialize();
+                IsShowing = true;
+                if (!vm.IsInitialized)
+                {
+                    vm.Initialize();
+                }
+                vm.Update();
+                IsShowing = false;
             }
-            vm.Update();
 
 
         }

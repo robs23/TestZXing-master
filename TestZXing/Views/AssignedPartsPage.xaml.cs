@@ -15,6 +15,7 @@ namespace TestZXing.Views
     public partial class AssignedPartsPage : ContentPage
     {
         AssignedPartsViewModel vm;
+        bool IsShowing = false;
 
         public AssignedPartsPage(AssignedPartsViewModel _vm)
         {
@@ -26,11 +27,16 @@ namespace TestZXing.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            if (!vm.IsInitialized)
+            if (!IsShowing)
             {
-                vm.Initialize();
+                IsShowing = true;
+                if (!vm.IsInitialized)
+                {
+                    vm.Initialize();
+                }
+                vm.Update();
+                IsShowing = false;
             }
-            vm.Update();
 
 
         }

@@ -14,6 +14,7 @@ namespace TestZXing.Views
     public partial class PartPage : ContentPage
     {
         PartPageViewModel vm;
+        bool IsShowing = false;
 
         public PartPage(Part part)
         {
@@ -25,27 +26,32 @@ namespace TestZXing.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            try
+            if (!IsShowing)
             {
-                if (!vm.IsInitialized)
+                IsShowing = true;
+                try
                 {
-                    //initialize only when not yet initialized
-                    await vm.Initialize();
-                    
-                    BindingContext = vm;
-                }
-                else
-                {
-                    if (!vm.IsSaveable)
+                    if (!vm.IsInitialized)
                     {
-                        vm.IsSaveable = await vm.IsDirty();
-                    }
-                }
+                        //initialize only when not yet initialized
+                        await vm.Initialize();
 
-            }
-            catch (Exception ex)
-            {
-                DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                        BindingContext = vm;
+                    }
+                    else
+                    {
+                        if (!vm.IsSaveable)
+                        {
+                            vm.IsSaveable = await vm.IsDirty();
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    DisplayAlert("Brak połączenia", "Nie można połączyć się z serwerem. Prawdopodobnie utraciłeś połączenie internetowe. Upewnij się, że masz połączenie z internetem i spróbuj jeszcze raz", "OK");
+                }
+                IsShowing = false;
             }
         }
 

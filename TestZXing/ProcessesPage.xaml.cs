@@ -17,6 +17,7 @@ namespace TestZXing
     public partial class ProcessesPage : TabbedPage
     {
         ProcessesPageViewModel vm;
+        bool IsShowing = false;
 
 
         public ProcessesPage()
@@ -42,13 +43,18 @@ namespace TestZXing
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            if (!vm.IsInitialized)
+            if (!IsShowing)
             {
-                vm.Initialize();
-            }
-            else
-            {
-                vm.Repaint();
+                IsShowing = true;
+                if (!vm.IsInitialized)
+                {
+                    vm.Initialize();
+                }
+                else
+                {
+                    vm.Repaint();
+                }
+                IsShowing = false;
             }
         }
 

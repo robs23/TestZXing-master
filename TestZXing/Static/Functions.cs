@@ -233,6 +233,7 @@ namespace TestZXing.Static
                 catch(Exception ex)
                 {
                     --tryCount;
+                    // --tryCount;
                     if (tryCount <= 0)
                     {
                         throw;
