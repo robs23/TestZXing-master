@@ -17,7 +17,7 @@ namespace TestZXing.Interfaces
 
         Task<WiFiInfo> ConnectPreferredWifi();
 
-        Task RequestNetwork();
+        Task RequestNetwork(string bssid = null);
         Task SuggestNetwork();
 
         bool IsWifiConnected();

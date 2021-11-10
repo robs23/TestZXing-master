@@ -74,7 +74,8 @@ namespace TestZXing.Droid.Services
                 if (w == null || w.SSID != formattedSsid)
                 {
                     //no wifi is connected or other wifi is connected
-                    await RequestNetwork();
+                    string bssid = await GetBestBSSID();
+                    await RequestNetwork(bssid);
                     w = await GetConnectedWifi(true);
                     throw new NoPreferredConnectionException();
                 } 
@@ -332,13 +333,26 @@ namespace TestZXing.Droid.Services
         }
 
         private bool _requested;
-        public async Task RequestNetwork()
+        public async Task RequestNetwork(string bssid = null)
         {
-            var specifier = new WifiNetworkSpecifier.Builder()
-            .SetSsid(Static.Secrets.PreferredWifi)
-            .SetBssid(MacAddress.FromString(Static.Secrets.PreferredBssid))
-            .SetWpa2Passphrase(Static.Secrets.PrefferedWifiPassword)
-            .Build();
+            WifiNetworkSpecifier specifier;
+            
+            if(bssid != null)
+            {
+                specifier = new WifiNetworkSpecifier.Builder()
+                .SetSsid(Static.Secrets.PreferredWifi)
+                .SetBssid(MacAddress.FromString(bssid))
+                .SetWpa2Passphrase(Static.Secrets.PrefferedWifiPassword)
+                .Build();
+            }
+            else
+            {
+                specifier = new WifiNetworkSpecifier.Builder()
+                .SetSsid(Static.Secrets.PreferredWifi)
+                .SetWpa2Passphrase(Static.Secrets.PrefferedWifiPassword)
+                .Build();
+
+            }
 
             var request = new NetworkRequest.Builder()
                 .AddTransportType(TransportType.Wifi)
@@ -366,6 +380,25 @@ namespace TestZXing.Droid.Services
             }
             Static.RuntimeSettings.IsWifiRequestingFinished = false; // <== reset value
             
+        }
+
+        public async Task<string> GetBestBSSID()
+        {
+            string res = null;
+
+            List<WiFiInfo> wis = await GetAvailableWifis(true);
+            if (wis == null)
+            {
+                Toast.MakeText(context, "Odmowa uprawnienia do lokalizacji oznacza każdorazowe ręczne potwierdzenie połączenia..", ToastLength.Short).Show();
+            }
+            else
+            {
+                string status = "";
+
+                res = wis.Where(i => i.SSID == Static.Secrets.PreferredWifi).OrderByDescending(i => i.Signal).FirstOrDefault().BSSID;
+
+            }
+            return res;
         }
 
         private class NetworkCallback : ConnectivityManager.NetworkCallback
