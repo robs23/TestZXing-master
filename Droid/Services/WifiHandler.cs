@@ -336,6 +336,7 @@ namespace TestZXing.Droid.Services
         {
             var specifier = new WifiNetworkSpecifier.Builder()
             .SetSsid(Static.Secrets.PreferredWifi)
+            .SetBssid(MacAddress.FromString(Static.Secrets.PreferredBssid))
             .SetWpa2Passphrase(Static.Secrets.PrefferedWifiPassword)
             .Build();
 
@@ -351,11 +352,17 @@ namespace TestZXing.Droid.Services
                 _connectivityManager.UnregisterNetworkCallback(_callback);
             }
 
-            _connectivityManager.RequestNetwork(request, _callback);
+            _connectivityManager.RequestNetwork(request, _callback, 15000);
             _requested = true;
+            DateTime startedAt = DateTime.Now;
             while (!Static.RuntimeSettings.IsWifiRequestingFinished)
             {
                 //wait for any action from the user
+                //but if we hit 15s of timeout, stop
+                if((DateTime.Now-startedAt).TotalSeconds >= 15)
+                {
+                    break;
+                }
             }
             Static.RuntimeSettings.IsWifiRequestingFinished = false; // <== reset value
             
