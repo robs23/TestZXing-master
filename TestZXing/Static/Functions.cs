@@ -175,6 +175,17 @@ namespace TestZXing.Static
             if (tryCount <= 0)
                 throw new ArgumentOutOfRangeException(nameof(tryCount));
 
+            WiFiInfo w = null;
+
+            try
+            {
+                w = await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
+
+            }catch(Exception ex)
+            {
+
+            }
+
             while (true)
             {
                 try
@@ -191,11 +202,14 @@ namespace TestZXing.Static
                         tryCount = 1;
                     }
                     else{
-                        WiFiInfo w = await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
+                        
                         var formattedSsid = $"\"{Static.Secrets.PreferredWifi}\"";
-                        if (w.SSID == formattedSsid)
+                        if (w != null)
                         {
-                            //tryCount = 1;
+                            if (w.SSID == formattedSsid)
+                            {
+                                tryCount = 1;
+                            } 
                         }
                     }
                     
