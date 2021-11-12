@@ -23,6 +23,7 @@ using TestZXing.Interfaces;
 using TestZXing.Models;
 using TestZXing.ViewModels;
 using Plugin.CurrentActivity;
+using TestZXing.CustomExceptions;
 
 [assembly: Xamarin.Forms.Dependency(typeof(WifiHandler))]
 namespace TestZXing.Droid.Services
@@ -46,14 +47,20 @@ namespace TestZXing.Droid.Services
                 NetworkAvailable = network =>
                 {
                     // we are connected!
-                    _callbackStatus = $"Request network connected";
-                    //_connectivityManager.BindProcessToNetwork(network);
+                    _callbackStatus = $"Requested network connected";
+                    _connectivityManager.BindProcessToNetwork(network);
                     Static.RuntimeSettings.IsWifiRequestingFinished = true;
                 },
                 NetworkUnavailable = () =>
                 {
-                    _callbackStatus = $"Request network unavailable";
+                    _callbackStatus = $"Requested network unavailable";
                     Static.RuntimeSettings.IsWifiRequestingFinished = true;
+                },
+                NetworkLost = network =>
+                {
+                    _callbackStatus = $"Requested network lost";
+                    _connectivityManager.BindProcessToNetwork(null);
+                    _connectivityManager.UnregisterNetworkCallback(_callback);
                 }
             };
         }
@@ -74,11 +81,45 @@ namespace TestZXing.Droid.Services
                 if (w == null || w.SSID != formattedSsid)
                 {
                     //no wifi is connected or other wifi is connected
-                    string bssid = await GetBestBSSID();
-                    await RequestNetwork(bssid);
-                    w = await GetConnectedWifi(true);
+                    if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+                    {
+                        //Android 10 and later
+                        string bssid = await GetBestBSSID();
+                        await RequestNetwork(bssid);
+                        w = await GetConnectedWifi(true);
+                    }
+                    else
+                    {
+                        //Android 9 and earlier
+                        var wifiConfig = new WifiConfiguration
+                        {
+                            Ssid = formattedSsid,
+                            PreSharedKey = formattedPassword
+                        };
+                        var addNetwork = wifiMgr.AddNetwork(wifiConfig);
+                        var network = wifiMgr.ConfiguredNetworks.FirstOrDefault(n => n.Ssid == formattedSsid);
+
+                        if (network == null)
+                        {
+                            w = null;
+                        }
+                        else
+                        {
+                            if (w.SSID != formattedSsid && w.SSID != "<unknown ssid>")
+                            {
+                                wifiMgr.Disconnect();
+                            }
+                            var enableNetwork = wifiMgr.EnableNetwork(network.NetworkId, true);
+                            wifiMgr.Reconnect();
+                        }
+                        
+                    }
                     throw new NoPreferredConnectionException();
-                } 
+                }
+            }
+            else
+            {
+                throw new WifiTurnedOffException();
             }
 
             return w;
@@ -238,19 +279,20 @@ namespace TestZXing.Droid.Services
             var wifiMgr = (WifiManager)context.GetSystemService(Context.WifiService);
             if (!wifiMgr.IsWifiEnabled)
             {
-                Intent intent = new Intent(Android.Provider.Settings.Panel.ActionWifi);
-                CrossCurrentActivity.Current.Activity.StartActivityForResult(intent, 100);
-                //await result
-                while (!Static.RuntimeSettings.IsWifiEnablingFinished)
-                {
+                //Intent intent = new Intent(Android.Provider.Settings.Panel.ActionWifi);
+                //CrossCurrentActivity.Current.Activity.StartActivityForResult(intent, 100);
+                ////await result
+                //while (!Static.RuntimeSettings.IsWifiEnablingFinished)
+                //{
 
-                }
-                Static.RuntimeSettings.IsWifiRequestingFinished = false; // <== reset value
-                if (!wifiMgr.IsWifiEnabled)
-                {
-                    //user aborted wifi enabling
-                    return false;
-                }
+                //}
+                //Static.RuntimeSettings.IsWifiRequestingFinished = false; // <== reset value
+                //if (!wifiMgr.IsWifiEnabled)
+                //{
+                //    //user aborted wifi enabling
+                //    return false;
+                //}
+                return false;
             }
             return true;
         }
@@ -356,7 +398,7 @@ namespace TestZXing.Droid.Services
 
             var request = new NetworkRequest.Builder()
                 .AddTransportType(TransportType.Wifi)
-                .RemoveCapability(NetCapability.Internet)
+                .AddCapability(NetCapability.NotRestricted)
                 .SetNetworkSpecifier(specifier)
                 .Build();
 
@@ -405,6 +447,7 @@ namespace TestZXing.Droid.Services
         {
             public Action<Network> NetworkAvailable { get; set; }
             public Action NetworkUnavailable { get; set; }
+            public Action<Network> NetworkLost { get; set; }
 
             public override void OnAvailable(Network network)
             {

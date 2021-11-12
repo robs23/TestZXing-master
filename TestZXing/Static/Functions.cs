@@ -181,80 +181,91 @@ namespace TestZXing.Static
             {
                 w = await DependencyService.Get<IWifiHandler>().ConnectPreferredWifi();
 
-            }catch(Exception ex)
+            }catch (WifiTurnedOffException ex)
+            {
+                //wifi is off
+                await Application.Current.MainPage.DisplayAlert("Wyłączone WiFi", "Sieć Wifi jest wyłączona. Uruchom Wifi i spróbuj jeszcze raz.", "OK");
+                throw new WifiTurnedOffException("Sieć Wifi jest wyłączona");
+            }
+            catch (Exception ex)
             {
 
             }
+            
+
+
 
             while (true)
-            {
-                try
                 {
-
-                    attempted++;
-                    if (attempted > 1)
+                    try
                     {
-                        DependencyService.Get<IToaster>().LongAlert($"Próba {attempted}");
-                    }
 
-                    if (RuntimeSettings.IsVpnConnection)
-                    {
-                        tryCount = 1;
-                    }
-                    else{
-                        
-                        var formattedSsid = $"\"{Static.Secrets.PreferredWifi}\"";
-                        if (w != null)
+                        attempted++;
+                        if (attempted > 1)
                         {
-                            if (w.SSID == formattedSsid)
-                            {
-                                tryCount = 1;
-                            } 
+                            DependencyService.Get<IToaster>().LongAlert($"Próba {attempted}");
                         }
-                    }
-                    
-                    
-                    PingCts = new CancellationTokenSource();
-                    var ping = Task.Run(() => DependencyService.Get<IWifiHandler>().PingHost(),PingCts.Token);
-                    actionCts = new CancellationTokenSource();
-                    var resTask = Task.Run(() => action(),actionCts.Token);
-                    
-                    Task firstFinieshed = await Task.WhenAny(ping, resTask);
 
-                    if (ping.Status == TaskStatus.RanToCompletion)
-                    {
-                        pingable = await ping;
-                        if (!pingable)
+                        if (RuntimeSettings.IsVpnConnection)
                         {
-                            actionCts.Cancel();
-                            exc = new ServerUnreachableException();
-                            throw exc;
+                            tryCount = 1;
                         }
                         else
                         {
+
+                            var formattedSsid = $"\"{Static.Secrets.PreferredWifi}\"";
+                            if (w != null)
+                            {
+                                if (w.SSID == formattedSsid)
+                                {
+                                    //tryCount = 1;
+                                }
+                            }
+                        }
+
+
+                        PingCts = new CancellationTokenSource();
+                        var ping = Task.Run(() => DependencyService.Get<IWifiHandler>().PingHost(), PingCts.Token);
+                        actionCts = new CancellationTokenSource();
+                        var resTask = Task.Run(() => action(), actionCts.Token);
+
+                        Task firstFinieshed = await Task.WhenAny(ping, resTask);
+
+                        if (ping.Status == TaskStatus.RanToCompletion)
+                        {
+                            pingable = await ping;
+                            if (!pingable)
+                            {
+                                actionCts.Cancel();
+                                exc = new ServerUnreachableException();
+                                throw exc;
+                            }
+                            else
+                            {
+                                res = await resTask;
+                            }
+                        }
+                        else
+                        {
+                            PingCts.Cancel();
                             res = await resTask;
                         }
-                    }
-                    else
-                    {
-                        PingCts.Cancel();
-                        res = await resTask;
-                    }
 
 
-                    return res ; // success!
-                }
-                catch(Exception ex)
-                {
-                    --tryCount;
-                    // --tryCount;
-                    if (tryCount <= 0)
-                    {
-                        throw;
+                        return res; // success!
                     }
-                    await Task.Delay(sleepPeriod);
+                    catch (Exception ex)
+                    {
+                        --tryCount;
+                        // --tryCount;
+                        if (tryCount <= 0)
+                        {
+                            throw;
+                        }
+                        await Task.Delay(sleepPeriod);
+                    }
                 }
-            }
+
         }
 
         public static bool QuickZip(string directoryToZip, string destinationZipFullPath)

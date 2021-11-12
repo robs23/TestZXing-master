@@ -77,7 +77,7 @@ namespace TestZXing.Droid
             new Classes.LogService().Initialize(assembly, assemblyName);
         }
 
-        protected async override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
         {
             if(requestCode == (int)Static.Enums.IntentRequestCodes.TURN_ON_WIFI_AND_REQUEST_NETWORK)
             {
