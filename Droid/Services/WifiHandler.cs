@@ -84,8 +84,8 @@ namespace TestZXing.Droid.Services
                     if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.Q)
                     {
                         //Android 10 and later
-                        string bssid = await GetBestBSSID();
-                        await RequestNetwork(bssid);
+                        //string bssid = await GetBestBSSID();
+                        string status = await SuggestNetwork();
                         w = await GetConnectedWifi(true);
                     }
                     else
@@ -326,20 +326,58 @@ namespace TestZXing.Droid.Services
                 return wiFiInfos;
             }
 
+            public string AddNetworkSuggestion()
+            {
+                var suggestion = new WifiNetworkSuggestion.Builder()
+                .SetSsid(Static.Secrets.PreferredWifi)
+                .SetWpa2Passphrase(Static.Secrets.PrefferedWifiPassword)
+                .Build();
+
+                var suggestions = new[] { suggestion };
+                var status = wifi.AddNetworkSuggestions(suggestions);
+                if (status != NetworkStatus.SuggestionsSuccess)
+                {
+                    status = wifi.RemoveNetworkSuggestions(suggestions);
+                    status = wifi.AddNetworkSuggestions(suggestions);
+                }
+
+                var statusText = status switch
+                {
+                    NetworkStatus.SuggestionsSuccess => "Pomyślnie zasugerowano sieć",
+                    NetworkStatus.SuggestionsErrorAddDuplicate => "Sugestia takiej sieci już istnieje",
+                    NetworkStatus.SuggestionsErrorAddExceedsMaxPerApp => "Przekroczono limit ilości sugestii"
+                };
+
+                //var toast = Toast.MakeText(Application.Context, statusText, ToastLength.Long);
+                //toast.Show();
+
+                return statusText;
+            }
+
 
             public override void OnReceive(Context context, Intent intent)
             {
-                IList<ScanResult> scanwifinetworks = wifi.ScanResults;
-                foreach (ScanResult wifinetwork in scanwifinetworks)
+                if (intent.Action.Equals(WifiManager.ActionWifiNetworkSuggestionPostConnection))
                 {
-                    bool isConnected = false;
-                    if(wifinetwork.Bssid == connectedSSID)
+                    //wifi suggestion finished
+                    var toast = Toast.MakeText(Application.Context, "Sugestia sieci zakońoczna", ToastLength.Long);
+                    toast.Show();
+                }
+                else
+                {
+                    //wifi scan finished
+                    IList<ScanResult> scanwifinetworks = wifi.ScanResults;
+                    foreach (ScanResult wifinetwork in scanwifinetworks)
                     {
-                        isConnected = true;
+                        bool isConnected = false;
+                        if (wifinetwork.Bssid == connectedSSID)
+                        {
+                            isConnected = true;
+                        }
+                        WiFiInfo nWF = new WiFiInfo { SSID = wifinetwork.Ssid, BSSID = wifinetwork.Bssid, Signal = wifinetwork.Level, IsConnected = isConnected };
+                        wiFiInfos.Add(nWF);
+                        //wifiNetworks.Add(wifinetwork.Ssid);
                     }
-                    WiFiInfo nWF = new WiFiInfo { SSID = wifinetwork.Ssid, BSSID=wifinetwork.Bssid, Signal = wifinetwork.Level, IsConnected=isConnected};
-                    wiFiInfos.Add(nWF);
-                    //wifiNetworks.Add(wifinetwork.Ssid);
                 }
 
                 receiverARE.Set();
@@ -352,26 +390,33 @@ namespace TestZXing.Droid.Services
             }
         }
 
-        public async Task SuggestNetwork()
+        public async Task<string> SuggestNetwork()
         {
-            var suggestion = new WifiNetworkSuggestion.Builder()
-                .SetSsid(Static.Secrets.PreferredWifi)
-                .SetWpa2Passphrase(Static.Secrets.PrefferedWifiPassword)
-                .Build();
+            string suggestionStatus = "";
 
-            var suggestions = new[] { suggestion };
+            PermissionStatus status = await CrossPermissions.Current.CheckPermissionStatusAsync<LocationPermission>();
 
-            var wifiManager = Application.Context.GetSystemService(Context.WifiService) as WifiManager;
-            var status = wifiManager.AddNetworkSuggestions(suggestions);
-
-            var statusText = status switch
+            if (status != PermissionStatus.Granted)
             {
-                NetworkStatus.SuggestionsSuccess => "Suggestion Success",
-                NetworkStatus.SuggestionsErrorAddDuplicate => "Suggestion Duplicate Added",
-                NetworkStatus.SuggestionsErrorAddExceedsMaxPerApp => "Suggestion Exceeds Max Per App"
-            };
+                status = await CrossPermissions.Current.RequestPermissionAsync<LocationPermission>();
+            }
 
-            string _status = statusText;
+            if (status == PermissionStatus.Granted)
+            {
+                // Get a handle to the Wifi
+                var wifiMgr = (WifiManager)context.GetSystemService(Context.WifiService);
+                var wifiReceiver = new WifiReceiver(wifiMgr);
+
+                await Task.Run(() =>
+                {
+                    // Start a suggestion and register the Broadcast receiver to get response
+                    context.RegisterReceiver(wifiReceiver, new IntentFilter(WifiManager.ActionWifiNetworkSuggestionPostConnection));
+                    suggestionStatus =  wifiReceiver.AddNetworkSuggestion();
+                });
+
+                
+            }
+            return suggestionStatus;
         }
 
         private bool _requested;

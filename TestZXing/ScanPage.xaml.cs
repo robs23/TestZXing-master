@@ -299,7 +299,8 @@ namespace TestZXing
 
         private async void btnRequestNetwork_Clicked(object sender, EventArgs e)
         {
-            await DependencyService.Get<IWifiHandler>().SuggestNetwork();
+            string status = await DependencyService.Get<IWifiHandler>().SuggestNetwork();
+            DependencyService.Get<IToaster>().LongAlert(status);
         }
     }
 }
