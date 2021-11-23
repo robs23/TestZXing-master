@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,6 +12,7 @@ namespace TestZXing.Models
             set => value = UserLogId;
             get => UserLogId;
         }
+        [PrimaryKey]
         public int UserLogId { get; set; }
         public string Platform { get; set; }
         public string Device { get; set; }
