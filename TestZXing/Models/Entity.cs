@@ -1,5 +1,6 @@
 ﻿using ModernHttpClient;
 using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using Xamarin.Essentials;
 
 namespace TestZXing.Models
 {
-    public abstract class Entity<T> 
+    public abstract class Entity<T> where T: class, new()//Entity<T>, new()
     {
         public abstract int Id { get; set; }
         public int CreatedBy { get; set; }
@@ -256,6 +257,16 @@ namespace TestZXing.Models
             }
 
             return _Result;
+        }
+
+        public async Task AddToUploadQueue()
+        {
+            var connection = new SQLiteAsyncConnection(RuntimeSettings.LocalDbPath);//() => sqlite.GetConnectionWithLock());
+            await connection.CreateTableAsync<T>();
+
+            IRepository<T> repo = new Repository<T>(connection);
+
+            var userLogId = await repo.Insert(new T());
         }
 
     }

@@ -6,8 +6,8 @@ namespace TestZXing.Interfaces
 {
     public interface IOfflineEntity
     {
-        int Id { get; set; }
-        bool IsSyncing { get; set; }
-        bool IsSynced { get; set; }
+        public int Id { get; set; }
+        public bool IsSyncing { get; set; }
+        public bool IsSynced { get; set; }
     }
 }

@@ -185,6 +185,5 @@ namespace TestZXing.Models
                 throw;
             }
         }
-
     }
 }
