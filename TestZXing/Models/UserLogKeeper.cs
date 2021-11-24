@@ -6,8 +6,6 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using TestZXing.Static;
 using SQLite;
-using System.Collections.ObjectModel;
-using TestZXing.Interfaces;
 
 namespace TestZXing.Models
 {
@@ -17,5 +15,6 @@ namespace TestZXing.Models
 
         protected override string PluralizedObjectName => "UserLogs";
         public bool IsWorking { get; set; } = false;
+
     }
 }
