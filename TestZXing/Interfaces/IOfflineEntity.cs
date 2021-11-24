@@ -12,19 +12,19 @@ namespace TestZXing.Interfaces
         //public bool IsSyncing { get; set; }
         //public bool IsSynced { get; set; }
 
-        public void AddToSyncQueue()
-        {
-            try
-            {
-                var connection = new SQLiteConnection(RuntimeSettings.LocalDbPath);
-                connection.CreateTable<T>();
-                connection.Insert(this);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+        //public void AddToSyncQueue()
+        //{
+        //    try
+        //    {
+        //        var connection = new SQLiteConnection(RuntimeSettings.LocalDbPath);
+        //        connection.CreateTable<T>();
+        //        connection.Insert(this);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
 
-        }
+        //}
     }
 }
