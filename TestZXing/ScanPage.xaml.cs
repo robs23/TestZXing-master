@@ -302,5 +302,24 @@ namespace TestZXing
             string status = await DependencyService.Get<IWifiHandler>().SuggestNetwork();
             DependencyService.Get<IToaster>().LongAlert(status);
         }
+
+        private async void btnReportBug_Clicked(object sender, EventArgs e)
+        {
+            string macAddress = await DependencyService.Get<IWifiHandler>().GetWifiMacAddress();
+
+            UserLog u = new UserLog()
+            {
+                HasTheAppCrashed = false,
+                OnRequest = true,
+                LogName = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                Platform = $"{DeviceInfo.Platform.ToString()} {DeviceInfo.VersionString}",
+                Device = $"{DeviceInfo.Manufacturer} {DeviceInfo.Model} {macAddress}",
+                Comment = "Test",
+                CreatedOn = DateTime.Now,
+                CreatedBy = RuntimeSettings.CurrentUser.UserId,
+                TenantId = RuntimeSettings.CurrentUser.TenantId
+            };
+            u.AddToSyncQueue();
+        }
     }
 }

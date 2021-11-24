@@ -13,7 +13,7 @@ using Xamarin.Essentials;
 
 namespace TestZXing.Models
 {
-    public abstract class Entity<T> where T: class, new()//Entity<T>, new()
+    public abstract class Entity<T> where T: class?, new()//Entity<T>, new()
     {
         public abstract int Id { get; set; }
         public int CreatedBy { get; set; }
@@ -29,6 +29,10 @@ namespace TestZXing.Models
         public bool IsSaved { get; set; } = false;
 
         public bool? IsArchived { get; set; } = false;
+
+        public bool? IsSyncing { get; set; } = false;
+
+        public bool? IsSynced { get; set; } = false;
 
         public virtual async Task<string> Add()
         {
@@ -259,14 +263,15 @@ namespace TestZXing.Models
             return _Result;
         }
 
-        public async Task AddToUploadQueue()
+        public void AddToSyncQueue()
         {
-            var connection = new SQLiteAsyncConnection(RuntimeSettings.LocalDbPath);//() => sqlite.GetConnectionWithLock());
-            await connection.CreateTableAsync<T>();
+            var connection = new SQLiteConnection(RuntimeSettings.LocalDbPath);
+            connection.CreateTable<T>();
+            connection.Insert(this);
 
-            IRepository<T> repo = new Repository<T>(connection);
+            //IRepository<T> repo = new Repository<T>(connection);
 
-            var userLogId = await repo.Insert(new T());
+            //var userLogId = repo.Insert(new T());
         }
 
     }

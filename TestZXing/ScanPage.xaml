@@ -51,8 +51,12 @@
                      Text="Wymuś połączenie"
                      Priority="2"
                      Order="Secondary"
-                     Clicked="btnRequestNetwork_Clicked"
-                     />
+                     Clicked="btnRequestNetwork_Clicked"/>
+        <ToolbarItem Name="btnReportBug"
+                     Text="Raportuj błąd"
+                     Priority="2"
+                     Order="Secondary"
+                     Clicked="btnReportBug_Clicked"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="15,20">
