@@ -2,17 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TestZXing.Interfaces;
 
 namespace TestZXing.Models
 {
-    public class UserLog: Entity<UserLog>
+    public class UserLog: Entity<UserLog>, IOfflineEntity<UserLog>
     {
         public override int Id
         {
             set => value = UserLogId;
             get => UserLogId;
         }
-        [PrimaryKey]
+        [PrimaryKey, AutoIncrement]
         public int UserLogId { get; set; }
         public string Platform { get; set; }
         public string Device { get; set; }

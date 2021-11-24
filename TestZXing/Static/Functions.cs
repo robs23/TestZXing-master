@@ -493,7 +493,7 @@ namespace TestZXing.Static
             }
         }
 
-        public static async Task SendLogByEmail(string path)
+        public static async Task SendFileByEmail(string path)
         {
             try
             {
@@ -502,7 +502,7 @@ namespace TestZXing.Static
 
                 var message = new EmailMessage
                 {
-                    Subject = $"JDE Scan: Log użytkownika {RuntimeSettings.CurrentUser.FullName}",
+                    Subject = $"JDE Scan: Plik użytkownika {RuntimeSettings.CurrentUser.FullName}",
                     Body = path,
                     To = recipients,
                 };

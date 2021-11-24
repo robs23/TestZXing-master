@@ -13,7 +13,7 @@ namespace TestZXing.Interfaces
 {
     public interface IOfflineKeeper<T> where T : class, new()
     {
-        ObservableCollection<IOfflineEntity> Items { get; set; }
+        //ObservableCollection<IOfflineEntity> Items { get; set; }
 
         //public async Task AddToUploadQueue()
         //{

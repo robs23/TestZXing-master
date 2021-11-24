@@ -289,10 +289,11 @@ namespace TestZXing
 
         private async void btnSendLog_Clicked(object sender, EventArgs e)
         {
-            var path = await Functions.GetLogName();
+            //var path = await Functions.GetLogName();
+            var path = RuntimeSettings.LocalDbPath;
             if(path != null)
             {
-                await Functions.SendLogByEmail(path);
+                await Functions.SendFileByEmail(path);
             }
             
         }
@@ -319,7 +320,7 @@ namespace TestZXing
                 CreatedBy = RuntimeSettings.CurrentUser.UserId,
                 TenantId = RuntimeSettings.CurrentUser.TenantId
             };
-            u.AddToSyncQueue();
+            //u.AddToSyncQueue();
         }
     }
 }
