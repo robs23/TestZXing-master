@@ -6,7 +6,7 @@ using TestZXing.Interfaces;
 
 namespace TestZXing.Models
 {
-    public class UserLog: Entity<UserLog>, IOfflineEntity<UserLog>
+    public class UserLog : Entity<UserLog>, IOfflineEntity<UserLog>
     {
         public override int Id
         {
@@ -21,5 +21,22 @@ namespace TestZXing.Models
         public Nullable<bool> HasTheAppCrashed { get; set; }
         public Nullable<bool> OnRequest { get; set; }
         public string Comment { get; set; }
+        public string OfflineDescription { get => LogName; }
+
+        private string _SyncStatus { get; set; }
+        public string SyncStatus
+        {
+            get
+            {
+                return _SyncStatus;
+            }
+            set
+            {
+                if (value != _SyncStatus)
+                {
+                    _SyncStatus = value;
+                }
+            }
+        }
     }
 }

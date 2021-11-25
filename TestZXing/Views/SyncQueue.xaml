@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestZXing.Views.SyncQueue"
+             Title="Kolejka synchronizacji">
+    <ContentPage.Content>
+        <StackLayout Margin="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="7*"/>
+                </Grid.ColumnDefinitions>
+                <Button 
+                    x:Name="btnRemoveAll"
+                    ImageSource="delete.png"
+                    BackgroundColor="Red" 
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    CornerRadius="20" 
+                    TextColor="White" 
+                    HeightRequest="80"
+                    Clicked="btnRemoveAll_Clicked"
+                    IsVisible="{Binding HasItems}"
+                    IsEnabled="{Binding IsIdle}"/>
+                <Button Text="Wyślij pliki" 
+                    Command="{Binding StartSyncCommand}" 
+                    BackgroundColor="Green" 
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    CornerRadius="20" 
+                    TextColor="White" 
+                    HeightRequest="80"
+                    IsVisible="{Binding HasItems}"
+                    IsEnabled="{Binding IsIdle}"/>
+            </Grid>
+
+            <CollectionView x:Name="lstFiles"
+                            ItemsSource="{Binding Items}"
+                            VerticalOptions="FillAndExpand"
+                            EmptyView="{Binding EmptyViewCaption}"
+                            Margin="0,5,0,20"
+                            SelectionMode="Multiple"
+                            SelectionChanged="lstFiles_SelectionChanged">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="4*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding OfflineDescription}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
+                                <Label Text="{Binding CreatedOn}" Grid.Row="1" Grid.Column="0"/>
+                                <Label Text="{Binding SyncStatus}" Grid.Row="1" Grid.Column="1"/>
+                                <ActivityIndicator IsVisible="{Binding IsSyncing}" IsRunning="{Binding IsSyncing}" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"/>
+                                <Image HeightRequest="60" Source="tick_green.png" IsVisible="{Binding IsSynced}" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"/>
+                                <Image HeightRequest="60" Source="exclamation_red.png" IsVisible="{Binding SyncFailed}" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"/>
+                            </Grid>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Button x:Name="btnRemoveSelected"
+                    BackgroundColor="Red"
+                    ImageSource="delete.png"
+                    Clicked="btnRemoveSelected_Clicked"
+                    IsVisible="{Binding RemovableSelected}"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -8,11 +8,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TestZXing.Classes;
+using TestZXing.Interfaces;
 using TestZXing.Static;
 
 namespace TestZXing.Models
 {
-    public abstract class Keeper<T>
+    public abstract class Keeper<T> where T: Entity<T>, new()
     {
         public ObservableCollection<T> Items { get; set; }
         protected abstract string ObjectName { get; }
@@ -21,6 +22,7 @@ namespace TestZXing.Models
         public string QueryString { get; set; } = null;
 
         protected virtual string ArchiveString { get; set; } = null;
+        public bool IsWorking { get; set; } = false;
 
         public Keeper()
         {
@@ -130,6 +132,85 @@ namespace TestZXing.Models
             await this.Reload();
             db.InsertOrReplaceAll(Items);
 
+        }
+
+        public async Task AddToSyncQueue()
+        {
+            var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
+            db.CreateTable<File>();
+            if (Items.Any(i => i.IsSynced == false && i.IsSyncing == false && !db.Table<T>().Any(x => x.Id == i.Id)))
+            {
+                db.InsertOrReplaceAll(Items.Where(i => i.IsSynced == false && i.IsSyncing == false && !db.Table<File>().Any(x => x.Id == i.Id)));
+            }
+
+        }
+
+        public async Task RestoreSyncQueue()
+        {
+            var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
+            Items = new ObservableCollection<T>(db.Table<T>());
+        }
+
+        public async Task Sync()
+        {
+            try
+            {
+                IsWorking = true;
+                if (Items.Any())
+                {
+                    foreach (T i in Items)
+                    {
+                        i.IsSyncing = true;
+                        string res;
+                        if(i.Id > 0)
+                        {
+                            res = await i.Edit();
+                        }
+                        else
+                        {
+                            res = await i.Add();
+                        }
+                        
+                        i.IsSyncing = false;
+                        if (res == "OK")
+                        {
+                            i.IsSynced = true;
+                        }
+                        else
+                        {
+                            i.IsSynced = false;
+                            i.SyncFailed = true;
+                        }
+                    }
+                    await DeleteSynced();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            IsWorking = false;
+
+        }
+
+        public async Task DeleteSynced()
+        {
+            var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
+
+            foreach (T i in Items.Where(i => i.IsSynced == true).ToList())
+            {
+                db.Delete<T>(i.Id);
+                Items.Remove(i);
+            }
+            db.Close();
+        }
+
+        public async Task DeleteFromSyncQueue()
+        {
+            var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
+
+            db.DeleteAll<T>();
+            db.Close();
         }
 
         public async Task<T> GetByToken(string Token)

@@ -20,11 +20,6 @@ namespace TestZXing.Models
 
         protected override string PluralizedObjectName => "Processes";
 
-        public ProcessKeeper()
-        {
-            
-        }
-
 
         public async Task GetUsersOpenProcesses(string query = null)
         {

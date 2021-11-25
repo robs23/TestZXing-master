@@ -19,7 +19,6 @@ namespace TestZXing.Models
         public int? PlaceId { get; set; }
         public int? ProcessId { get; set; }
         public bool UploadKeeper { get; set; }
-        public bool IsWorking { get; set; } = false;
 
         public FileKeeper(int? partId = null, int? placeId = null, int? processId = null, bool uploadKeeper = false)
         {

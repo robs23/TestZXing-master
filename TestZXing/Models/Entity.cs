@@ -13,7 +13,7 @@ using Xamarin.Essentials;
 
 namespace TestZXing.Models
 {
-    public abstract class Entity<T> where T: class, new()//Entity<T>, new()
+    public abstract class Entity<T>//where T: class, new()
     {
         public abstract int Id { get; set; }
         public int CreatedBy { get; set; }
@@ -33,6 +33,23 @@ namespace TestZXing.Models
         public bool? IsSyncing { get; set; } = false;
 
         public bool? IsSynced { get; set; } = false;
+
+        private bool _SyncFailed { get; set; } = false;
+
+        public bool SyncFailed
+        {
+            get
+            {
+                return _SyncFailed;
+            }
+            set
+            {
+                if (value != _SyncFailed)
+                {
+                    _SyncFailed = value;
+                }
+            }
+        }
 
         public virtual async Task<string> Add()
         {
@@ -263,23 +280,13 @@ namespace TestZXing.Models
             return _Result;
         }
 
-        //public void AddToSyncQueue()
-        //{
-        //    try
-        //    {
-        //        var connection = new SQLiteConnection(RuntimeSettings.LocalDbPath);
-        //        connection.CreateTable<T>();
-        //        connection.Insert(this);
-        //    }catch(Exception ex)
-        //    {
-        //        throw;
-        //    }
-            
+        public async Task RemoveFromSyncQueue()
+        {
+            var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
 
-        //    //IRepository<T> repo = new Repository<T>(connection);
-
-        //    //var userLogId = repo.Insert(new T());
-        //}
+            db.Delete<T>(Id);
+            db.Close();
+        }
 
     }
 }
