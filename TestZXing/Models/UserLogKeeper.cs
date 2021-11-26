@@ -10,7 +10,7 @@ using TestZXing.Interfaces;
 
 namespace TestZXing.Models
 {
-    public class UserLogKeeper : Keeper<UserLog>, IOfflineKeeper
+    public class UserLogKeeper : Keeper<UserLog>, IOfflineKeeper, IOfflineTypedKeeper<UserLog>
     {
         protected override string ObjectName => "UserLog";
 

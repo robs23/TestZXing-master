@@ -7,6 +7,11 @@ namespace TestZXing.Models
 {
     public class SyncKeeper
     {
-        List<IOfflineKeeper> Keepers = new List<IOfflineKeeper>();
+        public List<IOfflineKeeper> Keepers { get; set; }
+
+        public SyncKeeper()
+        {
+            Keepers = new List<IOfflineKeeper>();
+        }
     }
 }

@@ -42,6 +42,7 @@ namespace TestZXing
             RuntimeSettings.UploadKeeper = files;
             UserLogKeeper userLogKeeper = new UserLogKeeper();
             RuntimeSettings.UserLogSyncKeeper = userLogKeeper;
+            RuntimeSettings.SyncKeeper.Keepers.Add(userLogKeeper);
             //if (await Crashes.HasCrashedInLastSessionAsync())
             //{
             //    Functions.CreateZipFile();

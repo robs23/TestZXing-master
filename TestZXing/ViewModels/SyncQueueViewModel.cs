@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TestZXing.Interfaces;
 using TestZXing.Models;
 using TestZXing.Static;
 
@@ -14,7 +15,7 @@ namespace TestZXing.ViewModels
 {
     public class SyncQueueViewModel: BaseViewModel
     {
-        UserLogKeeper keeper = new UserLogKeeper();
+        IOfflineTypedKeeper<UserLog> keeper = new UserLogKeeper();
         ObservableCollection<UserLog> _Items = new ObservableCollection<UserLog>();
 
         public SyncQueueViewModel()
@@ -27,7 +28,7 @@ namespace TestZXing.ViewModels
         {
             IsWorking = true;
             base.Initialize();
-            keeper = RuntimeSettings.UserLogSyncKeeper;
+            keeper = RuntimeSettings.SyncKeeper.Keepers.FirstOrDefault();
             if (!keeper.IsWorking)
             {
                 await keeper.RestoreSyncQueue();

@@ -14,5 +14,11 @@ namespace TestZXing.Interfaces
     public interface IOfflineKeeper
     {
         Task Reload(string query, int? page, int? pageSize);
+        bool IsWorking { get; set; }
+        Task RestoreSyncQueue();
+        Task Sync();
+        Task DeleteSynced();
+        Task DeleteFromSyncQueue();
+
     }
 }

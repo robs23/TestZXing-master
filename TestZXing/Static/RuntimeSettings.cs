@@ -40,6 +40,7 @@ namespace TestZXing.Static
         public static string ZippedLogFile { get; set; }
         public static FileKeeper UploadKeeper { get; set; }
         public static UserLogKeeper UserLogSyncKeeper { get; set; }
+        public static SyncKeeper SyncKeeper { get; set; }
 
         public static string ImagePlaceholderName { get { return "image_placeholder_128.png"; } }
 
