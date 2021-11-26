@@ -27,7 +27,7 @@ namespace TestZXing.ViewModels
         {
             IsWorking = true;
             base.Initialize();
-            keeper = new UserLogKeeper();
+            keeper = RuntimeSettings.UserLogSyncKeeper;
             if (!keeper.IsWorking)
             {
                 await keeper.RestoreSyncQueue();
@@ -97,7 +97,7 @@ namespace TestZXing.ViewModels
                 {
                     await rItems[i - 1].RemoveFromSyncQueue();
                     Items.Remove(rItems[i - 1]);
-                    if (SelectedItems.Any(x => x.Id == rItems[i - 1].Id))
+                    if (SelectedItems.Any(x => x.SqliteId == rItems[i - 1].SqliteId))
                     {
                         //remove it also from selected list
                         SelectedItems.Remove(rItems[i - 1]);

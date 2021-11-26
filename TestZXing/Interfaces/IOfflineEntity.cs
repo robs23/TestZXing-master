@@ -7,7 +7,7 @@ using TestZXing.Static;
 
 namespace TestZXing.Interfaces
 {
-    public interface IOfflineEntity<T> where T: Entity<T>, new()
+    public interface IOfflineEntity
     {
         int Id { get; set; }
         string OfflineDescription { get;}

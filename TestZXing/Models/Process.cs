@@ -15,8 +15,13 @@ using Xamarin.Forms;
 
 namespace TestZXing.Models
 {
-    public class Process
+    public class Process: Entity<Process>
     {
+        public override int Id
+        {
+            set => value = ProcessId;
+            get => ProcessId;
+        }
         public int ProcessId { get; set; }
         public string Description { get; set; }
         public DateTime? StartedOn { get; set; }
@@ -41,11 +46,6 @@ namespace TestZXing.Models
         public int? AreaId { get; set; }
         public string AreaName { get; set; }
         public string Output { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public int CreatedBy { get; set; }
-        public string CreatedByName { get; set; }
-        public int TenantId { get; set; }
-        public string TenantName { get; set; }
         public string InitialDiagnosis { get; set; }
         public string RepairActions { get; set; }
         public int? Length { get; set; }

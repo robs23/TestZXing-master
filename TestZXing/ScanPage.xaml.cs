@@ -306,21 +306,32 @@ namespace TestZXing
 
         private async void btnReportBug_Clicked(object sender, EventArgs e)
         {
+            var userLogKeeper = new UserLogKeeper();
+            //await userLogKeeper.DeleteTable();
             string macAddress = await DependencyService.Get<IWifiHandler>().GetWifiMacAddress();
 
-            UserLog u = new UserLog()
+            for (int i = 0; i < 5; i++)
             {
-                HasTheAppCrashed = false,
-                OnRequest = true,
-                LogName = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                Platform = $"{DeviceInfo.Platform.ToString()} {DeviceInfo.VersionString}",
-                Device = $"{DeviceInfo.Manufacturer} {DeviceInfo.Model} {macAddress}",
-                Comment = "Test",
-                CreatedOn = DateTime.Now,
-                CreatedBy = RuntimeSettings.CurrentUser.UserId,
-                TenantId = RuntimeSettings.CurrentUser.TenantId
-            };
-            //u.AddToSyncQueue();
+                UserLog u = new UserLog()
+                {
+                    HasTheAppCrashed = false,
+                    OnRequest = true,
+                    LogName = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    Platform = $"{DeviceInfo.Platform.ToString()} {DeviceInfo.VersionString}",
+                    Device = $"{DeviceInfo.Manufacturer} {DeviceInfo.Model} {macAddress}",
+                    Comment = $"Test {i}",
+                    CreatedOn = DateTime.Now,
+                    CreatedBy = RuntimeSettings.CurrentUser.UserId,
+                    TenantId = RuntimeSettings.CurrentUser.TenantId
+                };
+                userLogKeeper.Items.Add(u); 
+            }
+            await userLogKeeper.AddToSyncQueue();
+        }
+
+        private void btnSyncQueue_Clicked(object sender, EventArgs e)
+        {
+            Application.Current.MainPage.Navigation.PushAsync(new SyncQueue());
         }
     }
 }

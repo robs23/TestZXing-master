@@ -6,15 +6,15 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using TestZXing.Static;
 using SQLite;
+using TestZXing.Interfaces;
 
 namespace TestZXing.Models
 {
-    public class UserLogKeeper : Keeper<UserLog>
+    public class UserLogKeeper : Keeper<UserLog>, IOfflineKeeper
     {
         protected override string ObjectName => "UserLog";
 
         protected override string PluralizedObjectName => "UserLogs";
-        public bool IsWorking { get; set; } = false;
 
     }
 }

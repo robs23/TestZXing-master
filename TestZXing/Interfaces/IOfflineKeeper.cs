@@ -11,26 +11,8 @@ using TestZXing.Static;
 
 namespace TestZXing.Interfaces
 {
-    public interface IOfflineKeeper<T> where T : class, new()
+    public interface IOfflineKeeper
     {
-        //ObservableCollection<IOfflineEntity> Items { get; set; }
-
-        //public async Task AddToUploadQueue()
-        //{
-        //    var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
-        //    db.CreateTable<T>();
-        //    if (Items.Any(i => i.IsSynced == false && i.IsSyncing == false && !db.Table<T>().Any(x => x.Id == i.Id)))
-        //    {
-        //        db.InsertOrReplaceAll(Items.Where(i => i.IsSynced == false && i.IsSyncing == false && !db.Table<T>().Any(x => x.Id == i.Id)));
-        //    }
-
-        //}
-
-        //public async Task RestoreUploadQueue()
-        //{
-        //    var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
-        //    //Items = new ObservableCollection<T>(db.Table<T>());
-        //    Items = new ObservableCollection<IOfflineEntity>(db.Table<IOfflineEntity>().Table)
-        //}
+        Task Reload(string query, int? page, int? pageSize);
     }
 }

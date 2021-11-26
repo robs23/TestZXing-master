@@ -6,14 +6,14 @@ using TestZXing.Interfaces;
 
 namespace TestZXing.Models
 {
-    public class UserLog : Entity<UserLog>, IOfflineEntity<UserLog>
+    public class UserLog : Entity<UserLog>, IOfflineEntity
     {
         public override int Id
         {
             set => value = UserLogId;
             get => UserLogId;
         }
-        [PrimaryKey, AutoIncrement]
+        
         public int UserLogId { get; set; }
         public string Platform { get; set; }
         public string Device { get; set; }

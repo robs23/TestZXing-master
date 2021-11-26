@@ -39,7 +39,9 @@ namespace TestZXing
             AppCenter.Start($"android={Static.Secrets.AppCenterSecret}", typeof(Analytics), typeof(Crashes));
             Analytics.SetEnabledAsync(true);
             FileKeeper files = new FileKeeper(uploadKeeper: true);
-            RuntimeSettings.UploadKeeper = files; 
+            RuntimeSettings.UploadKeeper = files;
+            UserLogKeeper userLogKeeper = new UserLogKeeper();
+            RuntimeSettings.UserLogSyncKeeper = userLogKeeper;
             //if (await Crashes.HasCrashedInLastSessionAsync())
             //{
             //    Functions.CreateZipFile();

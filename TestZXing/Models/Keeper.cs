@@ -137,10 +137,11 @@ namespace TestZXing.Models
         public async Task AddToSyncQueue()
         {
             var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
-            db.CreateTable<File>();
-            if (Items.Any(i => i.IsSynced == false && i.IsSyncing == false && !db.Table<T>().Any(x => x.Id == i.Id)))
+            db.CreateTable<T>();
+            if (Items.Any(i => i.IsSynced == false && i.IsSyncing == false))
             {
-                db.InsertOrReplaceAll(Items.Where(i => i.IsSynced == false && i.IsSyncing == false && !db.Table<File>().Any(x => x.Id == i.Id)));
+                //db.InsertOrReplaceAll(Items.Where(i => i.IsSynced == false && i.IsSyncing == false));
+                db.InsertAll(Items.Where(i => i.IsSynced == false && i.IsSyncing == false));
             }
 
         }
@@ -199,7 +200,7 @@ namespace TestZXing.Models
 
             foreach (T i in Items.Where(i => i.IsSynced == true).ToList())
             {
-                db.Delete<T>(i.Id);
+                db.Delete<T>(i.SqliteId);
                 Items.Remove(i);
             }
             db.Close();
@@ -210,6 +211,13 @@ namespace TestZXing.Models
             var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
 
             db.DeleteAll<T>();
+            db.Close();
+        }
+
+        public async Task DeleteTable()
+        {
+            var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
+            db.DropTable<T>();
             db.Close();
         }
 

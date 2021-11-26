@@ -16,6 +16,8 @@ namespace TestZXing.Models
     public abstract class Entity<T>//where T: class, new()
     {
         public abstract int Id { get; set; }
+        [PrimaryKey, AutoIncrement]
+        public int SqliteId { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedByName { get; set; }
         public DateTime CreatedOn { get; set; }
@@ -284,7 +286,7 @@ namespace TestZXing.Models
         {
             var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
 
-            db.Delete<T>(Id);
+            db.Delete<T>(SqliteId);
             db.Close();
         }
 

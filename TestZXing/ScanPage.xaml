@@ -57,6 +57,12 @@
                      Priority="2"
                      Order="Secondary"
                      Clicked="btnReportBug_Clicked"/>
+        <ToolbarItem Name="btnSyncQueue"
+                     Text="Synchronizuj dane offline"
+                     Priority="2"
+                     Order="Secondary"
+                     Clicked="btnSyncQueue_Clicked"/>
+        
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="15,20">
