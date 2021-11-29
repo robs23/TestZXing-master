@@ -10,8 +10,10 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TestZXing.Classes;
+using TestZXing.Interfaces;
 using TestZXing.Models;
 using TestZXing.Static;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 
@@ -42,23 +44,9 @@ namespace TestZXing
             RuntimeSettings.UploadKeeper = files;
             UserLogKeeper userLogKeeper = new UserLogKeeper();
             RuntimeSettings.UserLogSyncKeeper = userLogKeeper;
+            RuntimeSettings.SyncKeeper = new SyncKeeper();
             RuntimeSettings.SyncKeeper.Keepers.Add(userLogKeeper);
-            //if (await Crashes.HasCrashedInLastSessionAsync())
-            //{
-            //    Functions.CreateZipFile();
-            //    if (!string.IsNullOrEmpty(RuntimeSettings.ZippedLogFile))
-            //    {
-            //        Crashes.GetErrorAttachments = (ErrorReport report) =>
-            //        {
-            //            // Your code goes here.
-            //            return new ErrorAttachmentLog[]
-            //            {
-            //            ErrorAttachmentLog.AttachmentWithBinary(File.ReadAllBytes(RuntimeSettings.ZippedLogFile), "logs.zip", "application/x-zip-compressed")
-            //            };
-            //        };
-            //    }
-                
-            //}
+
         }
 
         protected override void OnSleep()

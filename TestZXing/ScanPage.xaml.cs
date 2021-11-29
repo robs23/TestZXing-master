@@ -1,4 +1,5 @@
-﻿using Plugin.Permissions;
+﻿using Microsoft.AppCenter.Crashes;
+using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Rg.Plugins.Popup.Services;
 using System;
@@ -27,6 +28,7 @@ namespace TestZXing
         Place Place;
         PlacesKeeper Keeper;
         User vm;
+        bool IsActivated = false;
 
         public ScanPage()
         {
@@ -35,6 +37,16 @@ namespace TestZXing
             Place = new Place();
             vm = Static.RuntimeSettings.CurrentUser;
             BindingContext = vm;
+        }
+
+        protected async override void OnAppearing()
+        {
+            base.OnAppearing();
+            if (!IsActivated)
+            {
+                Task.Run(() => RuntimeSettings.UserLogSyncKeeper.ReportLastSessionCrash());
+                IsActivated = true;
+            }
         }
 
         private async void btnScan_Clicked(object sender, EventArgs e)
@@ -185,9 +197,6 @@ namespace TestZXing
             btnScan.IsEnabled = true;
         }
 
-        
-
-        
 
         protected override bool OnBackButtonPressed()
         {
@@ -306,27 +315,28 @@ namespace TestZXing
 
         private async void btnReportBug_Clicked(object sender, EventArgs e)
         {
-            var userLogKeeper = new UserLogKeeper();
-            //await userLogKeeper.DeleteTable();
-            string macAddress = await DependencyService.Get<IWifiHandler>().GetWifiMacAddress();
+            //var userLogKeeper = new UserLogKeeper();
+            ////await userLogKeeper.DeleteTable();
+            //string macAddress = await DependencyService.Get<IWifiHandler>().GetWifiMacAddress();
 
-            for (int i = 0; i < 5; i++)
-            {
-                UserLog u = new UserLog()
-                {
-                    HasTheAppCrashed = false,
-                    OnRequest = true,
-                    LogName = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                    Platform = $"{DeviceInfo.Platform.ToString()} {DeviceInfo.VersionString}",
-                    Device = $"{DeviceInfo.Manufacturer} {DeviceInfo.Model} {macAddress}",
-                    Comment = $"Test {i}",
-                    CreatedOn = DateTime.Now,
-                    CreatedBy = RuntimeSettings.CurrentUser.UserId,
-                    TenantId = RuntimeSettings.CurrentUser.TenantId
-                };
-                userLogKeeper.Items.Add(u); 
-            }
-            await userLogKeeper.AddToSyncQueue();
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    UserLog u = new UserLog()
+            //    {
+            //        HasTheAppCrashed = false,
+            //        OnRequest = true,
+            //        LogName = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+            //        Platform = $"{DeviceInfo.Platform.ToString()} {DeviceInfo.VersionString}",
+            //        Device = $"{DeviceInfo.Manufacturer} {DeviceInfo.Model} {macAddress}",
+            //        Comment = $"Test {i}",
+            //        CreatedOn = DateTime.Now,
+            //        CreatedBy = RuntimeSettings.CurrentUser.UserId,
+            //        TenantId = RuntimeSettings.CurrentUser.TenantId
+            //    };
+            //    userLogKeeper.Items.Add(u); 
+            //}
+            //await userLogKeeper.AddToSyncQueue();
+            Crashes.GenerateTestCrash();
         }
 
         private void btnSyncQueue_Clicked(object sender, EventArgs e)

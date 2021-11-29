@@ -21,6 +21,9 @@ namespace TestZXing.Models
         public Nullable<bool> HasTheAppCrashed { get; set; }
         public Nullable<bool> OnRequest { get; set; }
         public string Comment { get; set; }
+        public string Message { get; set; }
+        public string StackTrace { get; set; }
+        public DateTime? ErrorTime { get; set; }
         public string OfflineDescription { get => LogName; }
 
         private string _SyncStatus { get; set; }

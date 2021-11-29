@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TestZXing.Interfaces
 {
-    public interface IOfflineTypedKeeper<T>: IOfflineKeeper
+    public interface IOfflineKeeper<T>: IOfflineKeeper
     {
         ObservableCollection<T> Items { get; set; }
     }

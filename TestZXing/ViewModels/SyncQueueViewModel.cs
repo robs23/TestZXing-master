@@ -15,7 +15,7 @@ namespace TestZXing.ViewModels
 {
     public class SyncQueueViewModel: BaseViewModel
     {
-        IOfflineTypedKeeper<UserLog> keeper = new UserLogKeeper();
+        IOfflineKeeper<UserLog> keeper = new UserLogKeeper();
         ObservableCollection<UserLog> _Items = new ObservableCollection<UserLog>();
 
         public SyncQueueViewModel()
@@ -28,7 +28,7 @@ namespace TestZXing.ViewModels
         {
             IsWorking = true;
             base.Initialize();
-            keeper = RuntimeSettings.SyncKeeper.Keepers.FirstOrDefault();
+            keeper = (IOfflineKeeper<UserLog>)RuntimeSettings.SyncKeeper.Keepers.FirstOrDefault();
             if (!keeper.IsWorking)
             {
                 await keeper.RestoreSyncQueue();
