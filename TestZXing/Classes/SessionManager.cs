@@ -75,7 +75,25 @@ namespace TestZXing.Classes
                                 
                             }
                         }
-                        
+                        if (RuntimeSettings.SyncKeeper == null)
+                        {
+                            DependencyService.Get<IToaster>().ShortAlert($"Synchronizacja danych offline w tle nie została odpowiednio uruchomiona.. Należy zrestartować aplikację..");
+                        }
+                        else
+                        {
+                            if (!RuntimeSettings.SyncKeeper.IsWorking)
+                            {
+                                await RuntimeSettings.UploadKeeper.RestoreUploadQueue();
+                                if (RuntimeSettings.UploadKeeper.Items.Any())
+                                {
+                                    DependencyService.Get<IToaster>().ShortAlert($"Synchronizuje pliki..");
+                                    await RuntimeSettings.UploadKeeper.Upload();
+                                }
+
+                            }
+                        }
+
+
 
                     });
 

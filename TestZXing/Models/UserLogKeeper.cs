@@ -10,6 +10,7 @@ using TestZXing.Interfaces;
 using Microsoft.AppCenter.Crashes;
 using Xamarin.Forms;
 using Xamarin.Essentials;
+using System.Text.RegularExpressions;
 
 namespace TestZXing.Models
 {
@@ -38,7 +39,7 @@ namespace TestZXing.Models
                         Device = $"{DeviceInfo.Manufacturer} {DeviceInfo.Model} {macAddress}",
                         Comment = null,
                         ErrorTime = report.AppErrorTime.DateTime,
-                        Message = null,
+                        Message = MessageFromStackTrace(report.StackTrace),
                         StackTrace = report.StackTrace,
                         CreatedOn = DateTime.Now,
                         CreatedBy = RuntimeSettings.CurrentUser.UserId,
@@ -49,6 +50,20 @@ namespace TestZXing.Models
                     await AddToSyncQueue();
                 }
             }
+        }
+
+        private string MessageFromStackTrace(string stacktTrace)
+        {
+            string message = stacktTrace;
+            if (!string.IsNullOrEmpty(message))
+            {
+                string[] ats = Regex.Split(message, " at ");
+                if(ats.Length > 1)
+                {
+                    message = ats[0];
+                }
+            }
+            return message;
         }
 
     }
