@@ -29,9 +29,21 @@ namespace TestZXing.Models
 
         public async Task Sync()
         {
+            foreach(var keeper in Keepers)
+            {
+                await keeper.Sync();
+            }
 
         }
-
         
+
+
+        public async Task RestoreSyncQueue()
+        {
+            foreach(var keeper in Keepers)
+            {
+                await keeper.RestoreSyncQueue();
+            }
+        }
     }
 }

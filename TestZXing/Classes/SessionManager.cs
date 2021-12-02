@@ -83,13 +83,8 @@ namespace TestZXing.Classes
                         {
                             if (!RuntimeSettings.SyncKeeper.IsWorking)
                             {
-                                await RuntimeSettings.UploadKeeper.RestoreUploadQueue();
-                                if (RuntimeSettings.UploadKeeper.Items.Any())
-                                {
-                                    DependencyService.Get<IToaster>().ShortAlert($"Synchronizuje pliki..");
-                                    await RuntimeSettings.UploadKeeper.Upload();
-                                }
-
+                                await RuntimeSettings.SyncKeeper.RestoreSyncQueue();
+                                await RuntimeSettings.SyncKeeper.Sync();
                             }
                         }
 
