@@ -10,6 +10,7 @@ namespace TestZXing.Interfaces
     public interface IOfflineEntity
     {
         int Id { get; set; }
+        int SqliteId { get; set; }
         string OfflineDescription { get;}
         string SyncStatus { get; set; }
     }

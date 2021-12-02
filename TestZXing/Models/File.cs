@@ -11,13 +11,15 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using TestZXing.Classes;
+using TestZXing.Interfaces;
 using TestZXing.Static;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace TestZXing.Models
 {
-    public class File : Entity<File>, INotifyPropertyChanged
+    public class File : Entity<File>, INotifyPropertyChanged, IOfflineEntity
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -36,6 +38,8 @@ namespace TestZXing.Models
         public string Name { get; set; }
         public string Token { get; set; }
         public string Link { get; set; }
+        [ForeignKey]
+        public int UserLogId { get; set; }
         private string _ImageSource { get; set; }
         public string ImageSource
         {
@@ -284,5 +288,22 @@ namespace TestZXing.Models
             db.Close();
         }
 
+        public string OfflineDescription { get => Name; }
+
+        private string _SyncStatus { get; set; }
+        public string SyncStatus
+        {
+            get
+            {
+                return _SyncStatus;
+            }
+            set
+            {
+                if (value != _SyncStatus)
+                {
+                    _SyncStatus = value;
+                }
+            }
+        }
     }
 }

@@ -35,8 +35,6 @@ namespace TestZXing.Models
             }
 
         }
-        
-
 
         public async Task RestoreSyncQueue()
         {

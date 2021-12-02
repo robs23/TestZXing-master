@@ -6,11 +6,12 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestZXing.Interfaces;
 using TestZXing.Static;
 
 namespace TestZXing.Models
 {
-    public class FileKeeper : Keeper<File>
+    public class FileKeeper : Keeper<File>, IOfflineKeeper, IOfflineKeeper<File>
     {
         protected override string ObjectName => "File";
 
