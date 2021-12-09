@@ -20,51 +20,7 @@ namespace TestZXing.Models
 
         protected override string PluralizedObjectName => "UserLogs";
 
-        public async Task ReportLastSessionCrash()
-        {
-            if (await Crashes.HasCrashedInLastSessionAsync())
-            {
-                //Functions.CreateZipFile();
-                var report = await Crashes.GetLastSessionCrashReportAsync();
-                if (report != null)
-                {
-                    string macAddress = await DependencyService.Get<IWifiHandler>().GetWifiMacAddress();
 
-                    UserLog u = new UserLog()
-                    {
-                        HasTheAppCrashed = true,
-                        OnRequest = false,
-                        LogName = report.AppErrorTime.ToString("yyyy-MM-dd HH:mm:ss"),
-                        Platform = $"{DeviceInfo.Platform.ToString()} {DeviceInfo.VersionString}",
-                        Device = $"{DeviceInfo.Manufacturer} {DeviceInfo.Model} {macAddress}",
-                        Comment = null,
-                        ErrorTime = report.AppErrorTime.DateTime,
-                        Message = MessageFromStackTrace(report.StackTrace),
-                        StackTrace = report.StackTrace,
-                        CreatedOn = DateTime.Now,
-                        CreatedBy = RuntimeSettings.CurrentUser.UserId,
-                        TenantId = RuntimeSettings.CurrentUser.TenantId
-                    };
-                    Items.Add(u);
-
-                    await AddToSyncQueue();
-                }
-            }
-        }
-
-        private string MessageFromStackTrace(string stacktTrace)
-        {
-            string message = stacktTrace;
-            if (!string.IsNullOrEmpty(message))
-            {
-                string[] ats = Regex.Split(message, " at ");
-                if(ats.Length > 1)
-                {
-                    message = ats[0];
-                }
-            }
-            return message;
-        }
 
     }
 }

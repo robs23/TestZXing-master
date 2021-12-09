@@ -44,7 +44,7 @@ namespace TestZXing
             base.OnAppearing();
             if (!IsActivated)
             {
-                Task.Run(() => RuntimeSettings.UserLogSyncKeeper.ReportLastSessionCrash());
+                Task.Run(() => RuntimeSettings.LogService.ReportLastSessionCrash());
                 IsActivated = true;
             }
         }

@@ -42,10 +42,10 @@ namespace TestZXing
             Analytics.SetEnabledAsync(true);
             FileKeeper files = new FileKeeper(uploadKeeper: true);
             RuntimeSettings.UploadKeeper = files;
-            UserLogKeeper userLogKeeper = new UserLogKeeper();
-            RuntimeSettings.UserLogSyncKeeper = userLogKeeper;
+            LogService logService = new LogService();
+            RuntimeSettings.LogService = logService;
             RuntimeSettings.SyncKeeper = new SyncKeeper();
-            RuntimeSettings.SyncKeeper.Keepers.Add(userLogKeeper);
+            RuntimeSettings.SyncKeeper.Keepers.Add(logService.UserLogKeeper);
 
         }
 
