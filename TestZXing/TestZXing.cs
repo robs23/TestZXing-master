@@ -46,7 +46,7 @@ namespace TestZXing
             RuntimeSettings.LogService = logService;
             RuntimeSettings.SyncKeeper = new SyncKeeper();
             RuntimeSettings.SyncKeeper.Keepers.Add(logService.UserLogKeeper);
-
+            RuntimeSettings.SyncKeeper.Keepers.Add(new FileKeeper());
         }
 
         protected override void OnSleep()

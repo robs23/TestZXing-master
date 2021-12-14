@@ -29,6 +29,7 @@ namespace TestZXing
         PlacesKeeper Keeper;
         User vm;
         bool IsActivated = false;
+        private readonly NLog.ILogger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public ScanPage()
         {
@@ -41,9 +42,11 @@ namespace TestZXing
 
         protected async override void OnAppearing()
         {
+            Logger.Info("Wyświetlono ScanPage. UserId={userId}", RuntimeSettings.CurrentUser.UserId);
             base.OnAppearing();
             if (!IsActivated)
             {
+                Logger.Info("ScanPage IsActivatd=false, rozpoczynam aktywację. UserId={userId}", RuntimeSettings.CurrentUser.UserId);
                 Task.Run(() => RuntimeSettings.LogService.ReportLastSessionCrash());
                 IsActivated = true;
             }
@@ -298,8 +301,7 @@ namespace TestZXing
 
         private async void btnSendLog_Clicked(object sender, EventArgs e)
         {
-            //var path = await Functions.GetLogName();
-            var path = RuntimeSettings.LocalDbPath;
+            var path = await Functions.GetLogName();
             if(path != null)
             {
                 await Functions.SendFileByEmail(path);
@@ -336,12 +338,22 @@ namespace TestZXing
             //    userLogKeeper.Items.Add(u); 
             //}
             //await userLogKeeper.AddToSyncQueue();
+            Logger.Info("Kliknięto btnReportBug. UserId={userId}", RuntimeSettings.CurrentUser.UserId);
             Crashes.GenerateTestCrash();
         }
 
         private void btnSyncQueue_Clicked(object sender, EventArgs e)
         {
             Application.Current.MainPage.Navigation.PushAsync(new SyncQueue());
+        }
+
+        private async void btnSendDb_Clicked(object sender, EventArgs e)
+        {
+            var path = RuntimeSettings.LocalDbPath;
+            if (path != null)
+            {
+                await Functions.SendFileByEmail(path);
+            }
         }
     }
 }

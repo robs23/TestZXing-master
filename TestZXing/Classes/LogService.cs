@@ -45,7 +45,7 @@ namespace TestZXing.Classes
 
         public string CreateSnapshotOfCurrentLog()
         {
-            string newFileName = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string newFileName = $"{DateTime.Now.ToString("yyyyMMddHHmmss")}.csv";
             string path = "";
             string logsFolder = RuntimeSettings.LogsFolderPath;
             string filesFolder = RuntimeSettings.FilesFolderPath;
@@ -55,7 +55,7 @@ namespace TestZXing.Classes
                 //create it first
                 Directory.CreateDirectory(filesFolder);
             }
-            string fileName = Path.Combine(logsFolder, "nLog.csv");
+            string fileName = Path.Combine(logsFolder, "nlog.csv");
             if (System.IO.File.Exists(fileName))
             {
                 //copy file
@@ -101,8 +101,13 @@ namespace TestZXing.Classes
 
                     File f = new File()
                     {
-
+                        Name = report.AppErrorTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                        Link = CreateSnapshotOfCurrentLog(),
+                        UserLogId = u.SqliteId
                     };
+                    FileKeeper fileKeeper = new FileKeeper();
+                    fileKeeper.Items.Add(f);
+                    await fileKeeper.AddToSyncQueue();
                 }
             }
         }
