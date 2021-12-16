@@ -457,6 +457,7 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoundedButtonRendererAndroid.cs" />
+    <Compile Include="Services\DownloaderService.cs" />
     <Compile Include="Services\FileHandler.cs" />
     <Compile Include="Services\GlideWithPlaceholder.cs" />
     <Compile Include="Services\Toaster.cs" />

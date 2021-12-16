@@ -7,6 +7,7 @@ namespace TestZXing.Interfaces
 {
     public interface IFileHandler
     {
+        void OpenApk(string filepath);
         string GetImageGalleryPath();
         string GetVideoGalleryPath();
     }

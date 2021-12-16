@@ -53,6 +53,27 @@ namespace TestZXing.Droid.Services
             }
         }
 
+        public void OpenApk(string filepath)
+        {
+            Java.IO.File file = new Java.IO.File(filepath);
+            Intent install = new Intent(Intent.ActionView);
+
+            // Old Approach
+            if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.N)
+            {
+                install.SetFlags(ActivityFlags.NewTask | ActivityFlags.GrantReadUriPermission);
+                install.SetDataAndType(Android.Net.Uri.FromFile(file), "application/vnd.android.package-archive"); //mimeType
+            }
+            else
+            {
+                Android.Net.Uri apkURI = Android.Support.V4.Content.FileProvider.GetUriForFile(Android.App.Application.Context, Android.App.Application.Context.ApplicationContext.PackageName + ".fileprovider", file);
+                install.SetDataAndType(apkURI, "application/vnd.android.package-archive");
+                install.AddFlags(ActivityFlags.NewTask);
+                install.AddFlags(ActivityFlags.GrantReadUriPermission);
+            }
+
+            Android.App.Application.Context.StartActivity(install);
+        }
 
     }
 }
