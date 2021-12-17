@@ -17,6 +17,7 @@ namespace TestZXing.Interfaces
         bool IsWorking { get; set; }
         Task RestoreSyncQueue();
         Task Sync();
+        Task Sync(string args);
         Task DeleteSynced();
         Task DeleteFromSyncQueue();
 

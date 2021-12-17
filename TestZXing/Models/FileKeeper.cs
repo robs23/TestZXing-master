@@ -19,13 +19,15 @@ namespace TestZXing.Models
         public int? PartId { get; set; }
         public int? PlaceId { get; set; }
         public int? ProcessId { get; set; }
+        public int? UserLogId { get; set; }
         public bool UploadKeeper { get; set; }
 
-        public FileKeeper(int? partId = null, int? placeId = null, int? processId = null, bool uploadKeeper = false)
+        public FileKeeper(int? partId = null, int? placeId = null, int? processId = null, int? userLogId = null, bool uploadKeeper = false)
         {
             PartId = partId;
             PlaceId = placeId;
             ProcessId = processId;
+            UserLogId = userLogId;
             UploadKeeper = uploadKeeper;
         }
 
@@ -130,6 +132,16 @@ namespace TestZXing.Models
 
             db.DeleteAll<File>();
             db.Close();
+        }
+
+        public async Task Sync()
+        {
+            if (IsOfflineKeeper)
+            {
+                //add args
+                string field = "";
+                await base.Sync($"{field}=");
+            }
         }
     }
 }

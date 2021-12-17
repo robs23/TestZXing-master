@@ -24,6 +24,7 @@ namespace TestZXing.Classes
         public LogService()
         {
             UserLogKeeper = new UserLogKeeper();
+            UserLogKeeper.IsOfflineKeeper = true;
         }
 
         public void Initialize(Assembly assembly, string assemblyName)
@@ -99,15 +100,24 @@ namespace TestZXing.Classes
 
                     await UserLogKeeper.AddToSyncQueue();
 
-                    File f = new File()
+                    try
                     {
-                        Name = report.AppErrorTime.ToString("yyyy-MM-dd HH:mm:ss"),
-                        Link = CreateSnapshotOfCurrentLog(),
-                        UserLogId = u.SqliteId
-                    };
-                    FileKeeper fileKeeper = new FileKeeper();
-                    fileKeeper.Items.Add(f);
-                    await fileKeeper.AddToSyncQueue();
+                        File f = new File()
+                        {
+                            Name = report.AppErrorTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                            Link = CreateSnapshotOfCurrentLog(),
+                            UserLogId = u.SqliteId
+                        };
+                        FileKeeper fileKeeper = new FileKeeper(userLogId: u.SqliteId);
+                        fileKeeper.IsOfflineKeeper = true;
+                        fileKeeper.Items.Add(f);
+                        await fileKeeper.DeleteTable();
+                        await fileKeeper.AddToSyncQueue();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw;
+                    }
                 }
             }
         }

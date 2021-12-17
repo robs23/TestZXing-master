@@ -27,7 +27,7 @@ namespace TestZXing.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        [PrimaryKey]
+        //[PrimaryKey]
         public int FileId { get; set; }
         public override int Id
         {

@@ -24,6 +24,8 @@ namespace TestZXing.Models
         protected virtual string ArchiveString { get; set; } = null;
         public bool IsWorking { get; set; } = false;
 
+        public bool IsOfflineKeeper { get; set; } = false;
+
         public Keeper()
         {
             Items = new ObservableCollection<T>();
@@ -163,13 +165,57 @@ namespace TestZXing.Models
                     {
                         i.IsSyncing = true;
                         string res;
+                        if (i.Id > 0)
+                        {
+                            res = await i.Edit();
+                        }
+                        else
+                        {
+
+                            res = await i.Add();
+                            
+                        }
+
+                        i.IsSyncing = false;
+                        if (res == "OK")
+                        {
+                            i.IsSynced = true;
+                        }
+                        else
+                        {
+                            i.IsSynced = false;
+                            i.SyncFailed = true;
+                        }
+                    }
+                    await DeleteSynced();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            IsWorking = false;
+
+        }
+
+        public async Task Sync(string args)
+        {
+            try
+            {
+                IsWorking = true;
+                if (Items.Any())
+                {
+                    foreach (T i in Items)
+                    {
+                        i.IsSyncing = true;
+                        string res;
                         if(i.Id > 0)
                         {
                             res = await i.Edit();
                         }
                         else
                         {
-                            res = await i.Add();
+                            res = await i.Add(args: args);
                         }
                         
                         i.IsSyncing = false;
