@@ -111,7 +111,7 @@ namespace TestZXing.Classes
                         FileKeeper fileKeeper = new FileKeeper(userLogId: u.SqliteId);
                         fileKeeper.IsOfflineKeeper = true;
                         fileKeeper.Items.Add(f);
-                        await fileKeeper.DeleteTable();
+                        //await fileKeeper.DeleteTable();
                         await fileKeeper.AddToSyncQueue();
                     }
                     catch (Exception ex)

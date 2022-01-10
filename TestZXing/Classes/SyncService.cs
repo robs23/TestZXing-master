@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace TestZXing.Models
 {
-    public class SyncKeeper
+    public class SyncService
     {
         public List<IOfflineKeeper> Keepers { get; set; }
         public bool IsWorking
@@ -22,7 +22,7 @@ namespace TestZXing.Models
             }
         }
 
-        public SyncKeeper()
+        public SyncService()
         {
             Keepers = new List<IOfflineKeeper>();
         }
