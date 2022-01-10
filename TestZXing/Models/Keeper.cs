@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using TestZXing.Classes;
 using TestZXing.Interfaces;
@@ -25,6 +26,14 @@ namespace TestZXing.Models
         public bool IsWorking { get; set; } = false;
 
         public bool IsOfflineKeeper { get; set; } = false;
+        public bool IsSynced { get; set; }
+        public string TableName 
+        {
+            get
+            {
+                return typeof(T).Name;
+            }
+        }
 
         public Keeper()
         {
@@ -265,6 +274,27 @@ namespace TestZXing.Models
             var db = new SQLiteConnection(RuntimeSettings.LocalDbPath);
             db.DropTable<T>();
             db.Close();
+        }
+
+        public async Task<string> IsDependentOn()
+        {
+            string res = null;
+            var dict = new Dictionary<MemberInfo, bool>();
+
+            var members = typeof(T).GetMembers(BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => x.MemberType == MemberTypes.Field || x.MemberType == MemberTypes.Property);
+
+            foreach (MemberInfo member in members)
+            {
+                var attr = member.GetCustomAttribute<ForeignKeyAttribute>(true);
+
+                if (attr != null)
+                {
+                    dict.Add(member, attr.ForeignKey);
+                    res = attr.Table;
+                }
+            }
+            return res;
         }
 
         public async Task<T> GetByToken(string Token)

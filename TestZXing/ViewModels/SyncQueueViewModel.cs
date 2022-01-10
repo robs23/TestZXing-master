@@ -28,7 +28,7 @@ namespace TestZXing.ViewModels
         {
             IsWorking = true;
             base.Initialize();
-            keeper = (IOfflineKeeper<UserLog>)RuntimeSettings.SyncKeeper.Keepers.FirstOrDefault();
+            keeper = (IOfflineKeeper<UserLog>)RuntimeSettings.SyncService.Keepers.FirstOrDefault();
             if (!keeper.IsWorking)
             {
                 await keeper.RestoreSyncQueue();

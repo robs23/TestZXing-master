@@ -16,8 +16,11 @@ namespace TestZXing.Interfaces
         Task Reload(string query, int? page, int? pageSize);
         bool IsWorking { get; set; }
         Task RestoreSyncQueue();
+        string TableName { get;}
         Task Sync();
         Task Sync(string args);
+        bool IsSynced { get; set; }
+        Task<string> IsDependentOn();
         Task DeleteSynced();
         Task DeleteFromSyncQueue();
 

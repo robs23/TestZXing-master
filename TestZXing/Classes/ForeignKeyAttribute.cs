@@ -7,9 +7,10 @@ namespace TestZXing.Classes
     [AttributeUsage(AttributeTargets.Property)]
     public class ForeignKeyAttribute : Attribute
     {
-        public ForeignKeyAttribute()
+        public ForeignKeyAttribute(string TableName)
         {
             ForeignKey = false;
+            Table = TableName;
         }
 
         public ForeignKeyAttribute(bool value)
@@ -18,5 +19,6 @@ namespace TestZXing.Classes
         }
 
         public bool ForeignKey { get; set; } = false;
+        public string Table { get; set; }
     }
 }

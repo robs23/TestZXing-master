@@ -139,8 +139,8 @@ namespace TestZXing.Models
             if (IsOfflineKeeper)
             {
                 //add args
-                string field = "";
-                await base.Sync($"{field}=");
+                string field = "UserLogId";
+                await base.Sync($"{field}={UserLogId}");
             }
         }
     }

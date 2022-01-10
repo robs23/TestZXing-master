@@ -38,7 +38,7 @@ namespace TestZXing.Models
         public string Name { get; set; }
         public string Token { get; set; }
         public string Link { get; set; }
-        [ForeignKey]
+        [ForeignKey("UserLog")]
         public int UserLogId { get; set; }
         private string _ImageSource { get; set; }
         public string ImageSource

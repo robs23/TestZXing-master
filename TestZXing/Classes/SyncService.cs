@@ -29,11 +29,42 @@ namespace TestZXing.Models
 
         public async Task Sync()
         {
-            foreach(var keeper in Keepers)
-            {
-                await keeper.Sync();
-            }
+            List<IOfflineKeeper> SyncList = Keepers.Where(k => k.IsSynced == false).ToList();
+            int attemptsLeftCount = 5;
 
+            while (SyncList.Any() && attemptsLeftCount > 0)
+            {
+                bool hasSyncedAnything = false;
+
+                foreach (var keeper in SyncList)
+                {
+                    string masterTable = await keeper.IsDependentOn();
+                    if(masterTable == null)
+                    {
+                        hasSyncedAnything = true;
+                        await keeper.Sync();
+                        SyncList.Remove(keeper);
+                    }
+                    else
+                    {
+                        //check if masterTable isSynced, if yes, we can sync
+                        var master = SyncList.Where(l => l.TableName == masterTable).FirstOrDefault();
+                        if(master == null)
+                        {
+                            if (master.IsSynced)
+                            {
+                                hasSyncedAnything = true;
+                                await keeper.Sync();
+                                SyncList.Remove(keeper);
+                            }
+                        }
+                    }
+                }
+
+                //so we don't go into dead loop
+                if (!hasSyncedAnything)
+                    attemptsLeftCount--;
+            }
         }
 
         public async Task RestoreSyncQueue()
